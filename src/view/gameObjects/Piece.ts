@@ -1,12 +1,5 @@
 import { Scene } from "phaser";
-
-export enum PieceType {
-    Wizard, Queen, Knight, Bishop, Rook, Pawn
-}
-
-export enum PieceColour {
-    White, Black
-}
+import { PieceColour, PieceType } from "../../model/board/entities/pieces";
 
 const getPieceTexture = (type: PieceType, colour: PieceColour): string => {
     let colourPrefix;
@@ -47,6 +40,6 @@ export default class Piece extends Phaser.GameObjects.Sprite {
     public pieceType: PieceType;
     public colour: PieceType;
     constructor(scene: Scene, x: number, y: number, type: PieceType, colour: PieceColour) {
-        super(scene, x, y, getPieceTexture(type, colour))
+        super(scene, x, y, getPieceTexture(type, colour));
     }
 }

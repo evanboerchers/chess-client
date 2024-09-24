@@ -1,13 +1,11 @@
-import { Boot } from './scenes/Boot';
-import { Game as MainGame } from './scenes/Game';
-import { GameOver } from './scenes/GameOver';
-import { MainMenu } from './scenes/MainMenu';
-import { Preloader } from './scenes/Preloader';
+import { Boot } from './view/scenes/Boot';
+import { Game as MainGame } from './view/scenes/Game';
+import { GameOver } from './view/scenes/GameOver';
+import { MainMenu } from './view/scenes/MainMenu';
+import { Preloader } from './view/scenes/Preloader';
 
 import { Game, Types } from "phaser";
 
-//  Find out more information about the Game Config at:
-//  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
 const config: Types.Core.GameConfig = {
     type: Phaser.AUTO,
     width: 1024,
@@ -27,4 +25,12 @@ const config: Types.Core.GameConfig = {
     ]
 };
 
-export default new Game(config);
+declare global {
+    interface Window {
+        __PHASER_GAME__: Game;
+    }
+}
+
+const game  = new Game(config);
+window.__PHASER_GAME__ = game;
+export default game

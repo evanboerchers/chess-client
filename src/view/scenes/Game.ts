@@ -1,5 +1,6 @@
 import { Scene } from 'phaser';
 import Board from '../gameObjects/Board';
+import { GameModel } from '../../model/gameModel';
 
 export class Game extends Scene
 {
@@ -7,10 +8,12 @@ export class Game extends Scene
     camera: Phaser.Cameras.Scene2D.Camera;
     background: Phaser.GameObjects.Image;
     msg_text : Phaser.GameObjects.Text;
+    gameModel: GameModel;
 
     constructor ()
     {
         super('Game');
+        this.gameModel = new GameModel();
     }
 
     create ()
@@ -22,7 +25,7 @@ export class Game extends Scene
     
     addBoard() {
         const boardSize = 500;
-        this.board = new Board(this, (this.scale.width - boardSize)/2, (this.scale.height - boardSize)/2, boardSize);
+        this.board = new Board(this, (this.scale.width - boardSize)/2, (this.scale.height - boardSize)/2, boardSize, this.gameModel.boardModel);
         this.add.existing(this.board)
     }
 }
