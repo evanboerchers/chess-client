@@ -10,6 +10,8 @@ export default class Board extends Phaser.GameObjects.Container {
   board: BoardSquare[][];
   boardModel: BoardModel;
 
+  selectedPiece: Piece | null = null;
+
   constructor(scene: Scene, x: number, y: number, boardWidth: number, boardModel: BoardModel) {
     super(scene, x, y);
     this.boardModel = boardModel;
@@ -18,6 +20,10 @@ export default class Board extends Phaser.GameObjects.Container {
     scene.add.existing(this);
     this.drawBoard();
     this.drawPieces();
+    this.setInteractive();
+    this.on('pointerdown', () => {
+      console.log('Board clicked');
+    })
   }
 
   drawBoard(): void {
@@ -29,6 +35,12 @@ export default class Board extends Phaser.GameObjects.Container {
         const isWhite = (row + col) % 2 === 0;
         const color = isWhite ? 0xffffff : 0x000000;
         const boardSquare = new BoardSquare(this.scene, x, y, squareWidth, color);
+        boardSquare.setInteractive();
+        boardSquare.on('pointerdown', () => {
+          if (this.selectedPiece) {
+            boardSquare.piece = this.selectedPiece;
+          }
+        });
         this.board[row][col] = boardSquare;
         this.add(boardSquare);
       }
@@ -42,9 +54,18 @@ export default class Board extends Phaser.GameObjects.Container {
         const pieceModel = board[row][col].piece;
         if (pieceModel) {
           const piece = new Piece(this.scene, 0, 0, pieceModel.type, pieceModel.colour);
+          piece.setInteractive();
+          piece.on('pointerdown', () => {
+            this.selectPiece(piece);
+          });
           this.board[row][col].piece = piece;
         }
       }
     }
+  }
+
+  selectPiece(piece: Piece): void {
+    console.log('Selected piece', piece);
+    this.selectedPiece = piece;
   }
 }

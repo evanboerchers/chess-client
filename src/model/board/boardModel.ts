@@ -1,4 +1,4 @@
-import { Piece, PieceColour, PieceType } from "./entities/pieces";
+import { Piece, PieceColour, PieceType, getDefaultMovementStrategy } from "./entities/pieces";
 
 interface SquardInfo {
     piece: Piece | null;
@@ -20,14 +20,14 @@ export class BoardModel {
     
         // Set up Black pieces (top rows)
         for (let col = 0; col < 8; col++) {
-            this._board[0][col] = { piece: { type: pieceSetup[col], colour: PieceColour.Black } };
-            this._board[1][col] = { piece: { type: PieceType.Pawn, colour: PieceColour.Black } };
+            this._board[0][col] = { piece: { type: pieceSetup[col], colour: PieceColour.Black, movementStrategy: getDefaultMovementStrategy(pieceSetup[col]) } };
+            this._board[1][col] = { piece: { type: PieceType.Pawn, colour: PieceColour.Black, movementStrategy: getDefaultMovementStrategy(PieceType.Pawn) } };
         }
     
         // Set up White pieces (bottom rows)
         for (let col = 0; col < 8; col++) {
-            this._board[7][col] = { piece: { type: pieceSetup[col], colour: PieceColour.White } };
-            this._board[6][col] = { piece: { type: PieceType.Pawn, colour: PieceColour.White } };
+            this._board[7][col] = { piece: { type: pieceSetup[col], colour: PieceColour.White, movementStrategy: getDefaultMovementStrategy(pieceSetup[col]) } };
+            this._board[6][col] = { piece: { type: PieceType.Pawn, colour: PieceColour.White, movementStrategy: getDefaultMovementStrategy(PieceType.Pawn) } };
         }
     
         // Initialize empty squares for middle of the board
