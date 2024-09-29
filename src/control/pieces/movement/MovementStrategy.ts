@@ -11,7 +11,7 @@ export interface MovemenetStrategy {
     possibleMovements: (board: BoardModel) => Movement[];
 }
 
-export class DaigonaleMovementStrategy implements MovemenetStrategy {
+export class DaigonalMovementStrategy implements MovemenetStrategy {
     possibleMovements(board: BoardModel): Movement[] {
         return [];
     }

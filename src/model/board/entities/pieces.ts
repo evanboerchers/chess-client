@@ -1,4 +1,4 @@
-import { DaigonaleMovementStrategy, MovemenetStrategy } from "../../../control/pieces/movement/MovementStrategy";
+import { DaigonalMovementStrategy, MovemenetStrategy } from "../../../control/pieces/movement/MovementStrategy";
 
 export enum PieceType {
     Wizard, Queen, Knight, Bishop, Rook, Pawn
@@ -10,17 +10,17 @@ export enum PieceColour {
 export const getDefaultMovementStrategy = (type: PieceType): [MovemenetStrategy] => {
     switch(type) {
         case PieceType.Wizard:
-            return [new DaigonaleMovementStrategy()];
+            return [new DaigonalMovementStrategy()];
         case PieceType.Queen:
-            return [new DaigonaleMovementStrategy()];
+            return [new DaigonalMovementStrategy()];
         case PieceType.Knight:
-            return [new DaigonaleMovementStrategy()];
+            return [new DaigonalMovementStrategy()];
         case PieceType.Bishop:
-            return [new DaigonaleMovementStrategy()];
+            return [new DaigonalMovementStrategy()];
         case PieceType.Rook:
-            return [new DaigonaleMovementStrategy()];
+            return [new DaigonalMovementStrategy()];
         case PieceType.Pawn:
-            return [new DaigonaleMovementStrategy()];
+            return [new DaigonalMovementStrategy()];
     }
 }
 
