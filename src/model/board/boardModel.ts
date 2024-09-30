@@ -1,48 +1,73 @@
-import { Piece, PieceColour, PieceType, getDefaultMovementStrategy } from "./entities/pieces";
-
-interface SquardInfo {
-    piece: Piece | null;
-}
+import { PieceColour, PieceType } from './pieces/pieces.types';
+import { BoardCoordinate, SquareData } from './board.types';
+import { PotentialMoves } from './pieces/movement/movement.types';
+import { movementStrategyMap } from './pieces/movement/movementStrategies';
 
 export class BoardModel {
-    private _board: SquardInfo[][];
+  private _board: SquareData[][];
 
-    constructor() {
-        this._board = Array.from({ length: 8 }, () => Array(8).fill(null));
-        this.init();
+  constructor() {
+    this._board = Array.from({ length: 8 }, () => Array(8).fill(null));
+    this.init();
+  }
+
+  public init() {
+    for (let row = 0; row < 8; row++) {
+      for (let col = 0; col < 8; col++) {
+        this._board[row][col] = { piece: null, coordinate: { row, col } };
+      }
+    }
+    this.initStartingPeices();
+  }
+
+  public initStartingPeices() {
+    const pieceSetup: PieceType[] = [
+      PieceType.Rook,
+      PieceType.Knight,
+      PieceType.Bishop,
+      PieceType.Queen,
+      PieceType.Wizard,
+      PieceType.Bishop,
+      PieceType.Knight,
+      PieceType.Rook,
+    ];
+
+    for (let col = 0; col < 8; col++) {
+      this._board[0][col].piece = {
+        type: pieceSetup[col],
+        colour: PieceColour.Black,
+      };
+      this._board[1][col].piece = {
+        type: PieceType.Pawn,
+        colour: PieceColour.Black,
+      };
     }
 
-    public init() {
-        const pieceSetup: PieceType[] = [
-            PieceType.Rook, PieceType.Knight, PieceType.Bishop, PieceType.Wizard, 
-            PieceType.Queen, PieceType.Bishop, PieceType.Knight, PieceType.Rook
-        ];
-    
-        // Set up Black pieces (top rows)
-        for (let col = 0; col < 8; col++) {
-            this._board[0][col] = { piece: { type: pieceSetup[col], colour: PieceColour.Black, movementStrategy: getDefaultMovementStrategy(pieceSetup[col]) } };
-            this._board[1][col] = { piece: { type: PieceType.Pawn, colour: PieceColour.Black, movementStrategy: getDefaultMovementStrategy(PieceType.Pawn) } };
-        }
-    
-        // Set up White pieces (bottom rows)
-        for (let col = 0; col < 8; col++) {
-            this._board[7][col] = { piece: { type: pieceSetup[col], colour: PieceColour.White, movementStrategy: getDefaultMovementStrategy(pieceSetup[col]) } };
-            this._board[6][col] = { piece: { type: PieceType.Pawn, colour: PieceColour.White, movementStrategy: getDefaultMovementStrategy(PieceType.Pawn) } };
-        }
-    
-        // Initialize empty squares for middle of the board
-        for (let row = 2; row < 6; row++) {
-            for (let col = 0; col < 8; col++) {
-                this._board[row][col] = { piece: null };
-            }
-        }
+    for (let col = 0; col < 8; col++) {
+      this._board[7][col].piece = {
+        type: pieceSetup[col],
+        colour: PieceColour.White,
+      };
+      this._board[6][col].piece = {
+        type: PieceType.Pawn,
+        colour: PieceColour.White,
+      };
     }
+  }
 
-    public get board(): SquardInfo[][] {
-        return this._board;
+  getPotentialMoves(coordinate: BoardCoordinate): PotentialMoves {
+    const piece = this._board[coordinate.row][coordinate.col].piece;
+    if (!piece) {
+      return { moves: [], captures: [], castles: [] };
     }
+    return movementStrategyMap[piece.type](coordinate, this._board);
+  }
 
-    public set board(value: SquardInfo[][]) {
-        this._board = value;
-    }
+  public get board(): SquareData[][] {
+    return this._board;
+  }
+
+  public set board(value: SquareData[][]) {
+    this._board = value;
+  }
 }

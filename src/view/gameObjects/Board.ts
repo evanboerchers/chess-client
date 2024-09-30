@@ -1,9 +1,9 @@
 import { Scene } from 'phaser';
-import BoardSquare from './BoardSquare';
+import BoardSquare, { SquareColour } from './BoardSquare';
 import { BoardModel } from '../../model/board/boardModel';
 import Piece from './Piece';
-import ThemeManager from '../ThemeManager';
-import { PieceColour } from '../../model/board/entities/pieces';
+import { BoardCoordinate } from '../../model/board/board.types';
+import { PieceColour } from '../../model/board/pieces/pieces.types';
 
 export default class Board extends Phaser.GameObjects.Container {
   rows: number = 8;
@@ -39,17 +39,14 @@ export default class Board extends Phaser.GameObjects.Container {
         const x = squareWidth * col + squareWidth / 2;
         const y = squareWidth * row + squareWidth / 2;
         const isWhite = (row + col) % 2 === 0;
-        const color = isWhite
-          ? ThemeManager.getTheme().board.lightSquareColour
-          : ThemeManager.getTheme().board.darkSquareColour;
+        const color = isWhite ? SquareColour.Light : SquareColour.Dark;
         const boardSquare = new BoardSquare(
           this.scene,
           x,
           y,
           squareWidth,
           color,
-          row,
-          col
+          { row, col }
         );
         this.board[row][col] = boardSquare;
         this.add(boardSquare);
@@ -76,63 +73,78 @@ export default class Board extends Phaser.GameObjects.Container {
     }
   }
 
-  highlightSquare(row: number, col: number): void {
-    this.board[row][col].highlight();
+  highlightSquare(coordinate: BoardCoordinate): void {
+    this.getBoardSquare(coordinate).highlight();
   }
 
-  highlightAttackSquare(row: number, col: number): void {
-    this.board[row][col].highlightAttack();
+  highlightCaptureSquare(coordinate: BoardCoordinate): void {
+    this.getBoardSquare(coordinate).highlightCapture();
   }
 
-  highlightMoveSquare(row: number, col: number): void {
-    this.board[row][col].highlightMove();
+  highlightMoveSquare(coordinate: BoardCoordinate): void {
+    this.getBoardSquare(coordinate).highlightMove();
   }
 
-  handlePieceClick(row: number, col: number): void {
-    this.selectedPiece = [row, col];
-    console.log('Selected piece:', this.selectedPiece);
-    this.enableSquareInteractions();
+  clearHighlights(): void {
+    this.board.flat().forEach((square) => square.clearHighlight());
   }
 
-  handleMoveClick(row: number, col: number): void {
-    if (!this.selectedPiece) {
+  enableSquareInteractions(
+    callback: (coordinate: BoardCoordinate) => any,
+    coordinates?: BoardCoordinate[]
+  ): void {
+    if (coordinates) {
+      coordinates.forEach((coordinate) => {
+        this.board[coordinate.row][coordinate.col].setInteractive({
+          useHandCursor: true,
+        });
+        this.board[coordinate.row][coordinate.col].on('pointerdown', () =>
+          callback(coordinate)
+        );
+      });
       return;
     }
-    this.movePiece(this.selectedPiece[0], this.selectedPiece[0], row, col);
-    this.selectedPiece = null;
-  }
-
-  enableSquareInteractions(): void {
     this.board.flat().forEach((square) => {
       square.setInteractive({ useHandCursor: true });
-      square.on('pointerdown', () =>
-        this.handleMoveClick(square.row, square.col)
-      );
+      square.on('pointerdown', () => callback(square.coordinate));
     });
   }
 
-  enablePieceInteractions(color: PieceColour): void {
+  enablePieceInteractions(
+    color: PieceColour,
+    callback: (coordinate: BoardCoordinate) => any
+  ): void {
     this.board.flat().forEach((square) => {
       if (!square._piece || square._piece.colour !== color) {
         return;
       }
-      square._piece?.interactive(true, () =>
-        this.handlePieceClick(square.row, square.col)
-      );
+      square.setInteractive({ useHandCursor: true });
+      square.on('pointerdown', () => callback(square.coordinate));
     });
   }
 
-  movePiece(
-    fromRow: number,
-    fromCol: number,
-    toRow: number,
-    toCol: number
-  ): void {
-    const piece = this.board[fromRow][fromCol]._piece;
+  disableInteractive(): this {
+    this.board.flat().forEach((square) => {
+      square.disableInteractive();
+      square.off('pointerdown');
+    });
+    return this;
+  }
+
+  movePiece(from: BoardCoordinate, to: BoardCoordinate): void {
+    const piece = this.board[from.row][from.col]._piece;
     if (!piece) {
       return;
     }
-    this.board[fromRow][fromCol].remove(piece);
-    this.board[toRow][toCol].addPiece(piece);
+    this.board[from.row][from.col].remove(piece);
+    this.board[to.row][to.col].addPiece(piece);
+  }
+
+  getBoardSquare(coordinate: BoardCoordinate): BoardSquare {
+    return this.board[coordinate.row][coordinate.col];
+  }
+
+  getPiece(coordinate: BoardCoordinate): Piece | undefined {
+    return this.board[coordinate.row][coordinate.col].piece;
   }
 }

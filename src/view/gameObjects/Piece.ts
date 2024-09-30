@@ -1,5 +1,5 @@
 import { Scene } from 'phaser';
-import { PieceColour, PieceType } from '../../model/board/entities/pieces';
+import { PieceColour, PieceType } from '../../model/board/pieces/pieces.types';
 
 const getPieceTexture = (type: PieceType, colour: PieceColour): string => {
   let colourPrefix;
@@ -48,15 +48,5 @@ export default class Piece extends Phaser.GameObjects.Sprite {
     super(scene, x, y, getPieceTexture(type, colour));
     this.pieceType = type;
     this.colour = colour;
-  }
-
-  interactive(bool: boolean, onClick: Function): void {
-    if (bool) {
-      this.setInteractive({ useHandCursor: true });
-      this.on('pointerdown', onClick);
-    } else {
-      this.disableInteractive();
-      this.removeListener('pointerdown');
-    }
   }
 }

@@ -1,16 +1,25 @@
 import { Scene } from 'phaser';
-import Board from '../gameObjects/Board';
 import { GameModel } from '../../model/gameModel';
-import { PieceColour } from '../../model/board/entities/pieces';
+import { BoardCoordinate } from '../../model/board/board.types';
+import Board from '../gameObjects/Board';
+import { PieceColour } from '../../model/board/pieces/pieces.types';
 
 const gameEvents = new Phaser.Events.EventEmitter();
+
+enum GameState {
+  WhiteTurn,
+  BlackTurn,
+  WhiteWin,
+  BlackWin,
+  Draw,
+}
 
 export class Game extends Scene {
   board: Board;
   camera: Phaser.Cameras.Scene2D.Camera;
   background: Phaser.GameObjects.Image;
-  msg_text: Phaser.GameObjects.Text;
   gameModel: GameModel;
+  _selectedPiece: BoardCoordinate | null = null;
 
   constructor() {
     super('Game');
@@ -36,11 +45,45 @@ export class Game extends Scene {
     this.add.existing(this.board);
   }
 
+  handlePieceSelect(coordinate: BoardCoordinate) {
+    this.selectedPiece = coordinate;
+    this.board.highlightSquare(this.selectedPiece);
+
+    const potentialMoves = this.getPotentialMoves(coordinate);
+    console.log(potentialMoves);
+    potentialMoves.moves.forEach((move) => {
+      this.board.highlightMoveSquare(move);
+    });
+    potentialMoves.captures.forEach((capture) => {
+      this.board.highlightCaptureSquare(capture);
+    });
+  }
+
+  getPotentialMoves(coordinate: BoardCoordinate) {
+    return this.gameModel.boardModel.getPotentialMoves(coordinate);
+  }
+
   whiteTurn() {
-    this.board.enablePieceInteractions(PieceColour.White);
+    this.board.disableInteractive();
+    this.board.enablePieceInteractions(
+      PieceColour.White,
+      this.handlePieceSelect.bind(this)
+    );
   }
 
   blackTurn() {
-    this.board.enablePieceInteractions(PieceColour.Black);
+    this.board.enablePieceInteractions(
+      PieceColour.Black,
+      this.handlePieceSelect.bind(this)
+    );
+  }
+
+  get selectedPiece() {
+    return this._selectedPiece;
+  }
+
+  set selectedPiece(coordinate: BoardCoordinate | null) {
+    console.log('selected piece', coordinate);
+    this._selectedPiece = coordinate;
   }
 }
