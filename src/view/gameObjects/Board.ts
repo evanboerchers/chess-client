@@ -5,11 +5,20 @@ import Piece from './Piece';
 import { BoardCoordinate } from '../../model/board/board.types';
 import { PieceColour } from '../../model/board/pieces/pieces.types';
 
+export enum OnEvents {
+  HIGHLIGHT = 'Board:highlightSquare',
+  HIGHLIGHT_CAPTURE = 'Board:highlightCaptureSquare',
+  HIGHLIGHT_MOVE = 'Board:highlightMoveSquare',
+  CLEAR_HIGHLIGHTS = 'Board:clearHighlights',
+  ENABLE_WHITE_INTERACTIONS = 'Board:enableWhiteInteractions',
+  ENABLE_BLACK_INTERACTIONS = 'Board:enableBlackInteractions',
+}
+
 export default class Board extends Phaser.GameObjects.Container {
   rows: number = 8;
   columns: number = 8;
   boardWidth: number;
-  board: BoardSquare[][];
+  squares: BoardSquare[][];
   boardModel: BoardModel;
 
   selectedPiece: [number, number] | null = null;
@@ -24,7 +33,7 @@ export default class Board extends Phaser.GameObjects.Container {
     super(scene, x, y);
     this.boardModel = boardModel;
     this.boardWidth = boardWidth;
-    this.board = Array.from({ length: this.rows }, () =>
+    this.squares = Array.from({ length: this.rows }, () =>
       Array(this.columns).fill(null)
     );
     scene.add.existing(this);
@@ -48,7 +57,7 @@ export default class Board extends Phaser.GameObjects.Container {
           color,
           { row, col }
         );
-        this.board[row][col] = boardSquare;
+        this.squares[row][col] = boardSquare;
         this.add(boardSquare);
       }
     }
@@ -67,7 +76,7 @@ export default class Board extends Phaser.GameObjects.Container {
             pieceModel.type,
             pieceModel.colour
           );
-          this.board[row][col].addPiece(piece);
+          this.squares[row][col].addPiece(piece);
         }
       }
     }
@@ -86,7 +95,7 @@ export default class Board extends Phaser.GameObjects.Container {
   }
 
   clearHighlights(): void {
-    this.board.flat().forEach((square) => square.clearHighlight());
+    this.squares.flat().forEach((square) => square.clearHighlight());
   }
 
   enableSquareInteractions(
@@ -95,56 +104,62 @@ export default class Board extends Phaser.GameObjects.Container {
   ): void {
     if (coordinates) {
       coordinates.forEach((coordinate) => {
-        this.board[coordinate.row][coordinate.col].setInteractive({
+        this.squares[coordinate.row][coordinate.col].setInteractive({
           useHandCursor: true,
         });
-        this.board[coordinate.row][coordinate.col].on('pointerdown', () =>
+        this.squares[coordinate.row][coordinate.col].on('pointerdown', () =>
           callback(coordinate)
         );
       });
       return;
     }
-    this.board.flat().forEach((square) => {
+    this.squares.flat().forEach((square) => {
       square.setInteractive({ useHandCursor: true });
       square.on('pointerdown', () => callback(square.coordinate));
     });
   }
 
-  enablePieceInteractions(
-    color: PieceColour,
-    callback: (coordinate: BoardCoordinate) => any
-  ): void {
-    this.board.flat().forEach((square) => {
+  enablePieceInteractions(color: PieceColour): void {
+    this.squares.flat().forEach((square) => {
       if (!square._piece || square._piece.colour !== color) {
         return;
       }
       square.setInteractive({ useHandCursor: true });
-      square.on('pointerdown', () => callback(square.coordinate));
     });
   }
 
   disableInteractive(): this {
-    this.board.flat().forEach((square) => {
+    this.squares.flat().forEach((square) => {
       square.disableInteractive();
-      square.off('pointerdown');
     });
     return this;
   }
 
   movePiece(from: BoardCoordinate, to: BoardCoordinate): void {
-    const piece = this.board[from.row][from.col]._piece;
+    const piece = this.squares[from.row][from.col]._piece;
     if (!piece) {
       return;
     }
-    this.board[from.row][from.col].remove(piece);
-    this.board[to.row][to.col].addPiece(piece);
+    this.squares[from.row][from.col].remove(piece);
+    this.squares[to.row][to.col].addPiece(piece);
+  }
+
+  capturePiece(from: BoardCoordinate, to: BoardCoordinate): void {
+    const piece = this.squares[from.row][from.col]._piece;
+    const capturedPiece = this.squares[to.row][to.col]._piece;
+    if (!piece || !capturedPiece) {
+      return;
+    }
+    this.squares[from.row][from.col].remove(piece);
+    this.squares[to.row][to.col].remove(capturedPiece);
+    this.squares[to.row][to.col].addPiece(piece);
   }
 
   getBoardSquare(coordinate: BoardCoordinate): BoardSquare {
-    return this.board[coordinate.row][coordinate.col];
+    return this.squares[coordinate.row][coordinate.col];
   }
 
   getPiece(coordinate: BoardCoordinate): Piece | undefined {
-    return this.board[coordinate.row][coordinate.col].piece;
+    return this.squares[coordinate.row][coordinate.col].piece;
   }
 }

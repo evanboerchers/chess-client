@@ -63,6 +63,24 @@ export class BoardModel {
     return movementStrategyMap[piece.type](coordinate, this._board);
   }
 
+  movePiece(
+    pieceCoordinate: BoardCoordinate,
+    targetCoordinate: BoardCoordinate
+  ) {
+    this._board[targetCoordinate.row][targetCoordinate.col].piece =
+      this._board[pieceCoordinate.row][pieceCoordinate.col].piece;
+    this._board[pieceCoordinate.row][pieceCoordinate.col].piece = null;
+  }
+
+  capturePiece(
+    pieceCoordinate: BoardCoordinate,
+    targetCoordinate: BoardCoordinate
+  ) {
+    this._board[targetCoordinate.row][targetCoordinate.col].piece =
+      this._board[pieceCoordinate.row][pieceCoordinate.col].piece;
+    this._board[pieceCoordinate.row][pieceCoordinate.col].piece = null;
+  }
+
   public get board(): SquareData[][] {
     return this._board;
   }

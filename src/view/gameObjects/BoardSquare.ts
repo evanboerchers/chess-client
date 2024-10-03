@@ -8,6 +8,10 @@ export enum SquareColour {
   Dark,
 }
 
+export enum EmitEvents {
+  Click = 'BoardSquare:click',
+}
+
 export default class BoardSquare extends Phaser.GameObjects.Container {
   public background: Phaser.GameObjects.Rectangle;
   public _piece?: Piece;
@@ -71,5 +75,27 @@ export default class BoardSquare extends Phaser.GameObjects.Container {
 
   public clearHighlight() {
     this.background.setFillStyle(this.getBackgroundColour());
+  }
+
+  public interactive(on: boolean) {
+    if (on) {
+      this.registerClick();
+      this.setInteractive({ useHandCursor: true });
+    } else {
+      this.deregisterClick();
+      this.setInteractive(false);
+    }
+  }
+
+  private handleClick() {
+    this.emit('click', this);
+  }
+
+  private deregisterClick() {
+    this.off('pointerdown', this.handleClick, this);
+  }
+
+  private registerClick() {
+    this.on('pointerdown', this.handleClick, this);
   }
 }
