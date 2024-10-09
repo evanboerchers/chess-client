@@ -72,6 +72,7 @@ export default class GameController {
   clearBoardActions() {
     console.log('clearing board actions');
     this.gameScene.board.squares.flat().forEach((square) => {
+      square.disableInteractive();
       square.off('pointerdown');
     });
     this.gameScene.board.clearHighlights();
@@ -109,6 +110,7 @@ export default class GameController {
     console.log('moving piece from: ', this._selectedPiece, ' to: ', to);
     if (this._selectedPiece) {
       this.gameScene.board.movePiece(this._selectedPiece, to);
+      this.gameModel.boardModel.movePiece(this._selectedPiece, to);
     }
     this.changeTurn();
   }
@@ -117,11 +119,13 @@ export default class GameController {
     console.log('capturing piece from: ', this._selectedPiece, ' to: ', to);
     if (this._selectedPiece) {
       this.gameScene.board.capturePiece(this._selectedPiece, to);
+      this.gameModel.boardModel.capturePiece(this._selectedPiece, to);
     }
     this.changeTurn();
   }
 
   changeTurn() {
+    this.clearBoardActions();
     if (this.gameScene.currentPlayer === PieceColour.White) {
       this.setupBlackTurn();
     } else {
