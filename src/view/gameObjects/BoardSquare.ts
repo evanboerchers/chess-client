@@ -57,6 +57,12 @@ export default class BoardSquare extends Phaser.GameObjects.Container {
     this.add(this._piece);
   }
 
+  public removePiece() {
+    if(this._piece) {
+      this.remove(this._piece)
+    }
+  }
+
   get piece(): Piece | undefined {
     return this._piece;
   }

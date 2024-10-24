@@ -50,10 +50,10 @@ export default class GameController {
         square.piece &&
         square.piece.colour === this.gameScene.currentPlayer
       ) {
-        console.log('setting up piece selection: ', square.coordinate);
+        console.log('setting up piece selection: ', square.piece.name);
         square.setInteractive({ useHandCursor: true });
         const onClick = () => {
-          console.log('piece clicked: ', square.coordinate);
+          console.log('piece clicked: ', square.piece?.colour, square.piece?.pieceType, square.coordinate);
           this.clearBoardActions();
           this._selectedPiece = square.coordinate;
           square.highlight();
@@ -124,8 +124,14 @@ export default class GameController {
     this.changeTurn();
   }
 
+  redrawBoard() {
+    this.gameScene.board.clearBoard();
+    this.gameScene.board.drawPieces();
+  }
+
   changeTurn() {
     this.clearBoardActions();
+    this.redrawBoard()
     if (this.gameScene.currentPlayer === PieceColour.White) {
       this.setupBlackTurn();
     } else {

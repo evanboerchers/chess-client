@@ -1,15 +1,15 @@
 export enum PieceType {
-  Wizard,
-  Queen,
-  Knight,
-  Bishop,
-  Rook,
-  Pawn,
+  Wizard = "wizard",
+  Queen = "queen",
+  Knight = "knight",
+  Bishop = "bishop",
+  Rook = "rook",
+  Pawn = "pawn",
 }
 
 export enum PieceColour {
-  White,
-  Black,
+  White = "white",
+  Black = "black",
 }
 
 export interface PieceData {

@@ -2,6 +2,8 @@ import { BoardCoordinate, SquareData } from '../../board.types';
 import { PieceColour, PieceType } from '../pieces.types';
 import { MovementStrategy, MovementStrategyMap } from './movement.types';
 
+// ToDo: Refactor so common logic like checking for same piece colour etc is handled by a shared function
+
 export const mergeMovementStrategies = (
   strategies: MovementStrategy[]
 ): MovementStrategy => {
@@ -141,15 +143,24 @@ export const pawnMovement: MovementStrategy = (
   board: SquareData[][]
 ) => {
   const { row, col } = coordinate;
+  const piece = board[row][col].piece
   const moves: BoardCoordinate[] = [];
   const captures: BoardCoordinate[] = [];
 
+  console.log(coordinate)
   const direction =
-    board[row][col].piece?.colour === PieceColour.White ? -1 : 1;
+    piece?.colour === PieceColour.White ? -1 : 1;
 
-  const newRow = row + direction;
+  let newRow = row + direction;
   if (newRow >= 0 && newRow < 8 && !board[newRow][col].piece) {
     moves.push({ row: newRow, col });
+  }
+
+  if ((row === 6 && piece?.colour === PieceColour.White) || (row === 1 && piece?.colour === PieceColour.Black)){
+    newRow += direction
+    if (newRow >= 0 && newRow < 8 && !board[newRow][col].piece) {
+      moves.push({ row: newRow, col });
+    }  
   }
 
   return { moves, captures, castles: [] };

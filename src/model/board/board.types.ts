@@ -1,8 +1,8 @@
 import { PieceData } from './pieces/pieces.types';
 
 export interface BoardCoordinate {
-  row: number;
   col: number;
+  row: number;
 }
 
 export interface SquareData {

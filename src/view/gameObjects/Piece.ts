@@ -38,15 +38,18 @@ const getPieceTexture = (type: PieceType, colour: PieceColour): string => {
 export default class Piece extends Phaser.GameObjects.Sprite {
   public pieceType: PieceType;
   public colour: PieceColour;
+  public id?: string
   constructor(
     scene: Scene,
     x: number,
     y: number,
     type: PieceType,
-    colour: PieceColour
+    colour: PieceColour,
+    name?: string
   ) {
     super(scene, x, y, getPieceTexture(type, colour));
     this.pieceType = type;
     this.colour = colour;
+    if (name) this.name = name
   }
 }
