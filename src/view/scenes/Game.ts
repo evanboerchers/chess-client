@@ -53,4 +53,17 @@ export class Game extends Scene {
     );
     this.add.existing(this.board);
   }
+
+  flipBoard() {
+    if (this.board.angle !== 0) {
+      this.board.angle = 0
+      this.board.setPosition((this.scale.width - this.board.getBounds().width) / 2,
+      (this.scale.height - this.board.getBounds().height) / 2)
+    } else {
+      this.board.angle = 180
+      this.board.setPosition((this.scale.width + this.board.getBounds().width) / 2,
+      (this.scale.height + this.board.getBounds().height) / 2)
+    }
+
+  }
 }

@@ -130,8 +130,7 @@ export default class GameController {
   }
 
   changeTurn() {
-    this.clearBoardActions();
-    this.redrawBoard()
+    this.gameScene.flipBoard();
     if (this.gameScene.currentPlayer === PieceColour.White) {
       this.setupBlackTurn();
     } else {
