@@ -78,7 +78,7 @@ export default class GameController {
     this.gameScene.board.clearHighlights();
   }
 
-  handlePieceClick(piece: Piece, coordinate: BoardCoordinate) {}
+  handlePieceClick(piece: Piece, coordinate: BoardCoordinate) { }
 
   setupMoves(moves: BoardCoordinate[]) {
     moves.forEach((move) => {
@@ -130,7 +130,7 @@ export default class GameController {
   }
 
   changeTurn() {
-    this.gameScene.flipBoard();
+    this.gameScene.board.flip();
     if (this.gameScene.currentPlayer === PieceColour.White) {
       this.setupBlackTurn();
     } else {

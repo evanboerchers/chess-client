@@ -5,6 +5,11 @@ export interface BoardCoordinate {
   row: number;
 }
 
+export interface Move {
+  from: BoardCoordinate;
+  to: BoardCoordinate;
+}
+
 export interface SquareData {
   piece: PieceData | null;
   coordinate: BoardCoordinate;

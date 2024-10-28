@@ -84,10 +84,11 @@ export const linearMovement: MovementStrategy = (
 
     while (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
       if (
-        board[newRow][newCol].piece &&
-        board[newRow][newCol].piece?.colour !== board[row][col].piece?.colour
+        board[newRow][newCol].piece
       ) {
-        captures.push({ row: newRow, col: newCol });
+        if (board[newRow][newCol].piece?.colour !== board[row][col].piece?.colour) {
+          captures.push({ row: newRow, col: newCol });
+        }
         break;
       }
       moves.push({ row: newRow, col: newCol });
@@ -156,11 +157,11 @@ export const pawnMovement: MovementStrategy = (
     moves.push({ row: newRow, col });
   }
 
-  if ((row === 6 && piece?.colour === PieceColour.White) || (row === 1 && piece?.colour === PieceColour.Black)){
+  if ((row === 6 && piece?.colour === PieceColour.White) || (row === 1 && piece?.colour === PieceColour.Black)) {
     newRow += direction
     if (newRow >= 0 && newRow < 8 && !board[newRow][col].piece) {
       moves.push({ row: newRow, col });
-    }  
+    }
   }
 
   return { moves, captures, castles: [] };

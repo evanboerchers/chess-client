@@ -40,7 +40,7 @@ export default class Board extends Phaser.GameObjects.Container {
     this.drawBoard();
     this.drawPieces();
   }
-  
+
   drawBoard(): void {
     for (let row = 0; row < this.rows; row++) {
       for (let col = 0; col < this.columns; col++) {
@@ -149,4 +149,27 @@ export default class Board extends Phaser.GameObjects.Container {
   getPiece(coordinate: BoardCoordinate): Piece | undefined {
     return this.squares[coordinate.row][coordinate.col].piece;
   }
+
+  flip(): void {
+    if (this.angle !== 0) {
+      this.angle = 0
+      this.setPosition(this.x - this.getBounds().width, this.y - this.getBounds().height)
+      this.squares.flat().forEach(square => {
+        if (square._piece) {
+          square._piece.angle = 0
+        }
+      })
+    } else {
+      this.angle = 180
+      this.setPosition(this.x + this.getBounds().width,
+        this.y + this.getBounds().height)
+      this.squares.flat().forEach(square => {
+        if (square._piece) {
+          square._piece.angle = 180
+        }
+      })
+    }
+
+  }
+
 }

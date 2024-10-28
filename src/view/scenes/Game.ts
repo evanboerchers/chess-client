@@ -38,11 +38,18 @@ export class Game extends Scene {
   create() {
     this.camera = this.cameras.main;
     this.camera.setBackgroundColor('#b88f77');
-    this.addBoard(this.controller.gameModel.boardModel);
+    this.createBoard(this.controller.gameModel.boardModel);
+    this.createUi();
     this.controller.startGame();
   }
 
-  addBoard(boardModel: BoardModel) {
+  createUi() {
+    this.add.text(this.scale.width - 20, 20, 'flip')
+      .setOrigin(1, 0.5).on(Phaser.Input.Events.POINTER_DOWN, () => this.board.flip())
+      .setInteractive({ useHandCursor: true })
+  }
+
+  createBoard(boardModel: BoardModel) {
     const boardSize = 500;
     this.board = new Board(
       this,
@@ -52,18 +59,5 @@ export class Game extends Scene {
       boardModel
     );
     this.add.existing(this.board);
-  }
-
-  flipBoard() {
-    if (this.board.angle !== 0) {
-      this.board.angle = 0
-      this.board.setPosition((this.scale.width - this.board.getBounds().width) / 2,
-      (this.scale.height - this.board.getBounds().height) / 2)
-    } else {
-      this.board.angle = 180
-      this.board.setPosition((this.scale.width + this.board.getBounds().width) / 2,
-      (this.scale.height + this.board.getBounds().height) / 2)
-    }
-
   }
 }

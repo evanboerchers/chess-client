@@ -1,10 +1,11 @@
 import { PieceColour, PieceType } from './pieces/pieces.types';
-import { BoardCoordinate, SquareData } from './board.types';
+import { BoardCoordinate, Move, SquareData } from './board.types';
 import { PotentialMoves } from './pieces/movement/movement.types';
 import { movementStrategyMap } from './pieces/movement/movementStrategies';
 
 export class BoardModel {
   private _board: SquareData[][];
+  private _lastMove: Move;
 
   constructor() {
     this._board = Array.from({ length: 8 }, () => Array(8).fill(null));
@@ -67,6 +68,7 @@ export class BoardModel {
     pieceCoordinate: BoardCoordinate,
     targetCoordinate: BoardCoordinate
   ) {
+    this._lastMove = { from: pieceCoordinate, to: targetCoordinate }
     this._board[targetCoordinate.row][targetCoordinate.col].piece =
       this._board[pieceCoordinate.row][pieceCoordinate.col].piece;
     this._board[pieceCoordinate.row][pieceCoordinate.col].piece = null;
