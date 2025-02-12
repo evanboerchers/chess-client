@@ -1,13 +1,9 @@
 import { Scene } from 'phaser';
-import { GameModel } from '../../model/gameModel';
-import { BoardCoordinate } from '../../model/board/board.types';
 import Board from '../gameObjects/Board';
-import { PieceColour } from '../../model/board/pieces/pieces.types';
 import BoardSquare from '../gameObjects/BoardSquare';
 import Piece from '../gameObjects/Piece';
-import { PotentialMoves } from '../../model/board/pieces/movement/movement.types';
+import { PieceColour } from '@evanboerchers/chess-core';
 import GameController from '../../control/GameController';
-import { BoardModel } from '../../model/board/boardModel';
 
 const gameEvents = new Phaser.Events.EventEmitter();
 
@@ -25,7 +21,7 @@ export class Game extends Scene {
   background: Phaser.GameObjects.Image;
   controller: GameController;
 
-  currentPlayer: PieceColour = PieceColour.White;
+  currentPlayer: PieceColour = PieceColour.WHITE;
   potentialMoves: PotentialMoves | null = null;
   _selectedPiece: BoardCoordinate | null = null;
   _inputHandler: Function;

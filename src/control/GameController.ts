@@ -1,20 +1,16 @@
-import game from '../main';
-import { BoardCoordinate } from '../model/board/board.types';
-import { movementStrategyMap } from '../model/board/pieces/movement/movementStrategies';
-import { PieceColour } from '../model/board/pieces/pieces.types';
-import { GameModel } from '../model/gameModel';
+import { ChessGame, Move, PieceColour, PieceType, Position } from '@evanboerchers/chess-core';
 import Piece from '../view/gameObjects/Piece';
 import { Game } from '../view/scenes/Game';
 
 export default class GameController {
   gameScene: Game;
-  gameModel: GameModel;
+  gameModel: ChessGame;
   _currentPlayer: PieceColour;
-  _selectedPiece: BoardCoordinate | null = null;
+  _selectedPiece: Position | null = null;
 
   constructor(gameScene: Game) {
     this.gameScene = gameScene;
-    this.gameModel = new GameModel();
+    this.gameModel = new ChessGame();
   }
 
   startGame() {
@@ -28,13 +24,13 @@ export default class GameController {
 
   setupWhiteTurn() {
     console.log('setting up white turn');
-    this.gameScene.currentPlayer = PieceColour.White;
+    this.gameScene.currentPlayer = PieceColour.WHITE;
     this.setupPieceSelection();
   }
 
   setupBlackTurn() {
     console.log('setting up black turn');
-    this.gameScene.currentPlayer = PieceColour.Black;
+    this.gameScene.currentPlayer = PieceColour.WHITE;
     this.setupPieceSelection();
   }
 
@@ -57,12 +53,12 @@ export default class GameController {
           this.clearBoardActions();
           this._selectedPiece = square.coordinate;
           square.highlight();
-          const potentialMoves = this.gameModel.boardModel.getPotentialMoves(
+          const potentialMoves = this.gameModel.potentialMoves(
             square.coordinate
           );
           this.setupPieceSelection();
-          this.setupMoves(potentialMoves.moves);
-          this.setupCaptureMoves(potentialMoves.captures);
+          this.setupMoves(potentialMoves.filter(move => move.capturedPiece === null || move.capturedPiece === undefined).map(move => move.to));
+          this.setupCaptureMoves(potentialMoves.filter(move => move.capturedPiece !== null || move.capturedPiece !== undefined).map(move => move.to));
         };
         square.on('pointerdown', onClick);
       }
@@ -78,9 +74,9 @@ export default class GameController {
     this.gameScene.board.clearHighlights();
   }
 
-  handlePieceClick(piece: Piece, coordinate: BoardCoordinate) { }
+  handlePieceClick(piece: Piece, coordinate: Position) { }
 
-  setupMoves(moves: BoardCoordinate[]) {
+  setupMoves(moves: Position[]) {
     moves.forEach((move) => {
       const square = this.gameScene.board.squares[move.row][move.col];
       square.setInteractive({ useHandCursor: true });
@@ -93,7 +89,7 @@ export default class GameController {
     });
   }
 
-  setupCaptureMoves(moves: BoardCoordinate[]) {
+  setupCaptureMoves(moves: Position[]) {
     moves.forEach((move) => {
       const square = this.gameScene.board.squares[move.row][move.col];
       square.setInteractive({ useHandCursor: true });
@@ -106,20 +102,37 @@ export default class GameController {
     });
   }
 
-  movePiece(to: BoardCoordinate) {
+  movePiece(to: Position) {
     console.log('moving piece from: ', this._selectedPiece, ' to: ', to);
-    if (this._selectedPiece) {
+    if (this._selectedPiece && this.gameModel.getPosition(this._selectedPiece)) {
+      const piece = <Piece>this.gameModel.getPosition(this._selectedPiece)
+      const move: Move = {
+        //@ts-expect-error
+        piece,
+        from: this._selectedPiece,
+        to
+      }
+      this.gameModel.makeMove(move);
       this.gameScene.board.movePiece(this._selectedPiece, to);
-      this.gameModel.boardModel.movePiece(this._selectedPiece, to);
     }
     this.changeTurn();
   }
 
-  capturePiece(to: BoardCoordinate) {
+  capturePiece(to: Position) {
     console.log('capturing piece from: ', this._selectedPiece, ' to: ', to);
-    if (this._selectedPiece) {
+    if (this._selectedPiece && this.gameModel.getPosition(this._selectedPiece) && this.gameModel.getPosition(to)) {
+      const piece = <Piece>this.gameModel.getPosition(this._selectedPiece)
+      const capturedPiece = <Piece>this.gameModel.getPosition(to)
+      const move: Move = {
+        //@ts-expect-error
+        capturedPiece,
+        //@ts-expect-error
+        piece,
+        from: this._selectedPiece,
+        to
+      }
       this.gameScene.board.capturePiece(this._selectedPiece, to);
-      this.gameModel.boardModel.capturePiece(this._selectedPiece, to);
+      this.gameModel.makeMove(move);
     }
     this.changeTurn();
   }
@@ -131,7 +144,7 @@ export default class GameController {
 
   changeTurn() {
     this.gameScene.board.flip();
-    if (this.gameScene.currentPlayer === PieceColour.White) {
+    if (this.gameScene.currentPlayer === PieceColour.WHITE) {
       this.setupBlackTurn();
     } else {
       this.setupWhiteTurn();

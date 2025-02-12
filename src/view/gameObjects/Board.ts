@@ -20,7 +20,6 @@ export default class Board extends Phaser.GameObjects.Container {
   boardWidth: number;
   squares: BoardSquare[][];
   pieces: Piece[]
-  boardModel: BoardModel;
   selectedPiece: [number, number] | null = null;
 
   constructor(
@@ -31,7 +30,6 @@ export default class Board extends Phaser.GameObjects.Container {
     boardModel: BoardModel
   ) {
     super(scene, x, y);
-    this.boardModel = boardModel;
     this.boardWidth = boardWidth;
     this.squares = Array.from({ length: this.rows }, () =>
       Array(this.columns).fill(null)
