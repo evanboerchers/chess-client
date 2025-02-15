@@ -1,9 +1,7 @@
 import { Scene } from 'phaser';
 import BoardSquare, { SquareColour } from './BoardSquare';
-import { BoardModel } from '../../model/board/boardModel';
 import Piece from './Piece';
-import { BoardCoordinate } from '../../model/board/board.types';
-import { PieceColour, PieceType } from '../../model/board/pieces/pieces.types';
+import {Board as BoardData, PieceColour, Position} from '@evanboerchers/chess-core'
 
 export enum OnEvents {
   HIGHLIGHT = 'Board:highlightSquare',
@@ -27,7 +25,7 @@ export default class Board extends Phaser.GameObjects.Container {
     x: number,
     y: number,
     boardWidth: number,
-    boardModel: BoardModel
+    board: BoardData
   ) {
     super(scene, x, y);
     this.boardWidth = boardWidth;
@@ -36,7 +34,7 @@ export default class Board extends Phaser.GameObjects.Container {
     );
     scene.add.existing(this);
     this.drawBoard();
-    this.drawPieces();
+    this.drawPieces(board);
   }
 
   drawBoard(): void {
@@ -66,20 +64,19 @@ export default class Board extends Phaser.GameObjects.Container {
     this.pieces.forEach((piece) => piece.destroy())
   }
 
-  drawPieces(): void {
+  drawPieces(board: BoardData): void {
     this.pieces = []
-    const board = this.boardModel.board;
     for (let row = 0; row < this.rows; row++) {
       for (let col = 0; col < this.columns; col++) {
-        const pieceModel = board[row][col].piece;
-        if (pieceModel) {
+        const pieceData = board[row][col];
+        if (pieceData) {
           const piece = new Piece(
             this.scene,
             0,
             0,
-            pieceModel.type,
-            pieceModel.colour,
-            `${pieceModel.colour}${pieceModel.type}_${row},${col}`
+            pieceData.type,
+            pieceData.colour,
+            `${pieceData.colour}${pieceData.type}_${row},${col}`
           );
           this.pieces.push(piece)
           this.squares[row][col].addPiece(piece);
@@ -88,15 +85,15 @@ export default class Board extends Phaser.GameObjects.Container {
     }
   }
 
-  highlightSquare(coordinate: BoardCoordinate): void {
+  highlightSquare(coordinate: Position): void {
     this.getBoardSquare(coordinate).highlight();
   }
 
-  highlightCaptureSquare(coordinate: BoardCoordinate): void {
+  highlightCaptureSquare(coordinate: Position): void {
     this.getBoardSquare(coordinate).highlightCapture();
   }
 
-  highlightMoveSquare(coordinate: BoardCoordinate): void {
+  highlightMoveSquare(coordinate: Position): void {
     this.getBoardSquare(coordinate).highlightMove();
   }
 
@@ -120,7 +117,7 @@ export default class Board extends Phaser.GameObjects.Container {
     return this;
   }
 
-  movePiece(from: BoardCoordinate, to: BoardCoordinate): void {
+  movePiece(from: Position, to: Position): void {
     const piece = this.squares[from.row][from.col]._piece;
     if (!piece) {
       return;
@@ -129,7 +126,7 @@ export default class Board extends Phaser.GameObjects.Container {
     this.squares[to.row][to.col].addPiece(piece);
   }
 
-  capturePiece(from: BoardCoordinate, to: BoardCoordinate): void {
+  capturePiece(from: Position, to: Position): void {
     const piece = this.squares[from.row][from.col]._piece;
     const capturedPiece = this.squares[to.row][to.col]._piece;
     if (!piece || !capturedPiece) {
@@ -140,11 +137,11 @@ export default class Board extends Phaser.GameObjects.Container {
     this.squares[to.row][to.col].addPiece(piece);
   }
 
-  getBoardSquare(coordinate: BoardCoordinate): BoardSquare {
+  getBoardSquare(coordinate: Position): BoardSquare {
     return this.squares[coordinate.row][coordinate.col];
   }
 
-  getPiece(coordinate: BoardCoordinate): Piece | undefined {
+  getPiece(coordinate: Position): Piece | undefined {
     return this.squares[coordinate.row][coordinate.col].piece;
   }
 

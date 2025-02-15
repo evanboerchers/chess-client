@@ -1,9 +1,8 @@
 import { Scene } from 'phaser';
 import Board from '../gameObjects/Board';
-import BoardSquare from '../gameObjects/BoardSquare';
-import Piece from '../gameObjects/Piece';
-import { PieceColour } from '@evanboerchers/chess-core';
+import { Move, PieceColour, Position } from '@evanboerchers/chess-core';
 import GameController from '../../control/GameController';
+import { Board as BoardData} from '@evanboerchers/chess-core'
 
 const gameEvents = new Phaser.Events.EventEmitter();
 
@@ -22,8 +21,8 @@ export class Game extends Scene {
   controller: GameController;
 
   currentPlayer: PieceColour = PieceColour.WHITE;
-  potentialMoves: PotentialMoves | null = null;
-  _selectedPiece: BoardCoordinate | null = null;
+  potentialMoves: Move[] | null = null;
+  _selectedPiece: Position | null = null;
   _inputHandler: Function;
 
   constructor() {
@@ -34,18 +33,22 @@ export class Game extends Scene {
   create() {
     this.camera = this.cameras.main;
     this.camera.setBackgroundColor('#b88f77');
-    this.createBoard(this.controller.gameModel.boardModel);
+    this.createBoard(this.controller.gameModel.board);
     this.createUi();
     this.controller.startGame();
   }
 
   createUi() {
     this.add.text(this.scale.width - 20, 20, 'flip')
-      .setOrigin(1, 0.5).on(Phaser.Input.Events.POINTER_DOWN, () => this.board.flip())
+      .setOrigin(1, 0.5).on(Phaser.Input.Events.POINTER_DOWN, () => this.flipBoard)
       .setInteractive({ useHandCursor: true })
   }
 
-  createBoard(boardModel: BoardModel) {
+  flipBoard() {
+    this.board.flip()
+  }
+
+  createBoard(boardModel: BoardData) {
     const boardSize = 500;
     this.board = new Board(
       this,
