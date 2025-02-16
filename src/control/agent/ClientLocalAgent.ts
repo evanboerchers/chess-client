@@ -1,8 +1,8 @@
 import { PieceColour } from "@evanboerchers/chess-core";
-import { Agent, AgentCallbacks } from "./Agent";
-import BoardInputController from "./BoardInputController";
+import { Agent, AgentCallbacks } from "./Agent.types";
+import BoardInputController from "../BoardInputController";
 
-export class ClientLocalAgent implements Agent {
+export default class ClientLocalAgent implements Agent {
     callbacks: AgentCallbacks;
     colour: PieceColour;
     inputController: BoardInputController

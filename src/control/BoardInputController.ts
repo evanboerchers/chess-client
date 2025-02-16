@@ -1,6 +1,5 @@
-import { ChessGame, Move, PieceColour, Position } from "@evanboerchers/chess-core";
+import { ChessGame, Move, PieceColour} from "@evanboerchers/chess-core";
 import Board from "../view/gameObjects/Board";
-import { AgentCallbacks } from "./Agent";
 import BoardSquare from "../view/gameObjects/BoardSquare";
 import { Input } from "phaser";
 
@@ -24,11 +23,11 @@ export default class BoardInputController {
     }
 
     handlePieceSelection(square: BoardSquare, colour: PieceColour, moveCallback: (move: Move) => void) {
-        console.log('piece clicked: ', square.piece?.colour, square.piece?.pieceType, square.coordinate);
+        console.log('piece clicked: ', square.piece?.colour, square.piece?.pieceType, square.boardPosition);
         this.clearBoardActions();
         square.highlight();
         const potentialMoves = this.gameModel.potentialMoves(
-            square.coordinate
+            square.boardPosition
         );
         this.setupPieceSelection(colour, moveCallback);
         this.setupPotentialMoves(potentialMoves, moveCallback);
