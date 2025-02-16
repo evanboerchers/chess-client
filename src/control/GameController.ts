@@ -1,137 +1,93 @@
-import game from '../main';
-import { BoardCoordinate } from '../model/board/board.types';
-import { movementStrategyMap } from '../model/board/pieces/movement/movementStrategies';
-import { PieceColour } from '../model/board/pieces/pieces.types';
-import { GameModel } from '../model/gameModel';
-import Piece from '../view/gameObjects/Piece';
+import { ChessGame, Move, PieceColour, PieceType, Position } from '@evanboerchers/chess-core';
 import { Game } from '../view/scenes/Game';
+import { Agent, AgentCallbacks } from './agent/Agent.types';
+import ClientLocalAgent  from './agent/ClientLocalAgent';
 
 export default class GameController {
   gameScene: Game;
-  gameModel: GameModel;
-  _currentPlayer: PieceColour;
-  _selectedPiece: BoardCoordinate | null = null;
+  gameModel: ChessGame;
+  whiteAgent: Agent;
+  blackAgent: Agent;
+  _currentPlayer: Agent;
+  _selectedPiece: Position | null = null;
 
   constructor(gameScene: Game) {
     this.gameScene = gameScene;
-    this.gameModel = new GameModel();
+    this.gameModel = new ChessGame();
+  }
+
+  handleMove(move: Move) {
+    this.gameModel.makeMove(move);
+    this.redrawBoard();
+    this.changeTurn();
+  }
+
+  handleResign(colour: PieceColour) {
+
+  }
+
+  handleDrawOffer(colour: PieceColour) {
+    
+  }
+
+  handleDrawAccepted() {
+
+  }
+
+  handleDrawDeclined() {
+
+  }
+
+  createAgents() {
+    const whiteCallbacks: AgentCallbacks = {
+      moveMade: (move: Move) => this.handleMove(move),
+      resign: () => this.handleResign(PieceColour.WHITE),
+      offerDraw: () => this.handleDrawOffer(PieceColour.WHITE),
+      drawAccepted: () => this.handleDrawAccepted(),
+      drawDeclined: () => this.handleDrawDeclined(),
+    }
+    this.whiteAgent = new ClientLocalAgent(whiteCallbacks, PieceColour.WHITE, this.gameScene.boardInputController);
+    const blackCallbacks: AgentCallbacks = {
+        moveMade: (move: Move) => this.handleMove(move),
+        resign: () => this.handleResign(PieceColour.WHITE),
+        offerDraw: () => this.handleDrawOffer(PieceColour.WHITE),
+        drawAccepted: () => this.handleDrawAccepted(),
+        drawDeclined: () => this.handleDrawDeclined(),
+    }
+    this.blackAgent = new ClientLocalAgent(blackCallbacks, PieceColour.BLACK, this.gameScene.boardInputController);
   }
 
   startGame() {
+    this.createAgents();
+    this._currentPlayer = this.whiteAgent;
     this.setupWhiteTurn();
-    // this.clearActionsOnclick();
   }
 
-  clearBoardHighlights() {
+  clearBoardHighlights() {  
     this.gameScene.board.clearHighlights();
   }
 
   setupWhiteTurn() {
+    this._currentPlayer = this.whiteAgent;
+    this.whiteAgent.makeMove();
+    this.blackAgent.waiting();
     console.log('setting up white turn');
-    this.gameScene.currentPlayer = PieceColour.White;
-    this.setupPieceSelection();
-  }
+    }
 
   setupBlackTurn() {
+    this._currentPlayer = this.blackAgent
+    this.blackAgent.makeMove();
+    this.whiteAgent.waiting();
     console.log('setting up black turn');
-    this.gameScene.currentPlayer = PieceColour.Black;
-    this.setupPieceSelection();
-  }
-
-  clearActionsOnclick() {
-    this.gameScene.input.on('pointerdown', () => {
-      this.clearBoardActions();
-    });
-  }
-
-  setupPieceSelection() {
-    this.gameScene.board.squares.flat().forEach((square) => {
-      if (
-        square.piece &&
-        square.piece.colour === this.gameScene.currentPlayer
-      ) {
-        console.log('setting up piece selection: ', square.piece.name);
-        square.setInteractive({ useHandCursor: true });
-        const onClick = () => {
-          console.log('piece clicked: ', square.piece?.colour, square.piece?.pieceType, square.coordinate);
-          this.clearBoardActions();
-          this._selectedPiece = square.coordinate;
-          square.highlight();
-          const potentialMoves = this.gameModel.boardModel.getPotentialMoves(
-            square.coordinate
-          );
-          this.setupPieceSelection();
-          this.setupMoves(potentialMoves.moves);
-          this.setupCaptureMoves(potentialMoves.captures);
-        };
-        square.on('pointerdown', onClick);
-      }
-    });
-  }
-
-  clearBoardActions() {
-    console.log('clearing board actions');
-    this.gameScene.board.squares.flat().forEach((square) => {
-      square.disableInteractive();
-      square.off('pointerdown');
-    });
-    this.gameScene.board.clearHighlights();
-  }
-
-  handlePieceClick(piece: Piece, coordinate: BoardCoordinate) { }
-
-  setupMoves(moves: BoardCoordinate[]) {
-    moves.forEach((move) => {
-      const square = this.gameScene.board.squares[move.row][move.col];
-      square.setInteractive({ useHandCursor: true });
-      square.highlightMove();
-      const handleClick = () => {
-        this.clearBoardActions();
-        this.movePiece(move);
-      };
-      square.on('pointerdown', handleClick);
-    });
-  }
-
-  setupCaptureMoves(moves: BoardCoordinate[]) {
-    moves.forEach((move) => {
-      const square = this.gameScene.board.squares[move.row][move.col];
-      square.setInteractive({ useHandCursor: true });
-      square.highlightCapture();
-      const handleClick = () => {
-        this.clearBoardActions();
-        this.capturePiece(move);
-      };
-      square.on('pointerdown', handleClick);
-    });
-  }
-
-  movePiece(to: BoardCoordinate) {
-    console.log('moving piece from: ', this._selectedPiece, ' to: ', to);
-    if (this._selectedPiece) {
-      this.gameScene.board.movePiece(this._selectedPiece, to);
-      this.gameModel.boardModel.movePiece(this._selectedPiece, to);
-    }
-    this.changeTurn();
-  }
-
-  capturePiece(to: BoardCoordinate) {
-    console.log('capturing piece from: ', this._selectedPiece, ' to: ', to);
-    if (this._selectedPiece) {
-      this.gameScene.board.capturePiece(this._selectedPiece, to);
-      this.gameModel.boardModel.capturePiece(this._selectedPiece, to);
-    }
-    this.changeTurn();
   }
 
   redrawBoard() {
     this.gameScene.board.clearBoard();
-    this.gameScene.board.drawPieces();
+    this.gameScene.board.drawPieces(this.gameModel.board);
   }
 
   changeTurn() {
-    this.gameScene.board.flip();
-    if (this.gameScene.currentPlayer === PieceColour.White) {
+    if (this._currentPlayer.colour === PieceColour.WHITE) {
       this.setupBlackTurn();
     } else {
       this.setupWhiteTurn();

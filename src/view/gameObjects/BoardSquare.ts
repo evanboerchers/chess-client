@@ -1,7 +1,7 @@
 import { Scene } from 'phaser';
 import Piece from './Piece';
 import ThemeManager from '../ThemeManager';
-import { BoardCoordinate } from '../../model/board/board.types';
+import { Position } from '@evanboerchers/chess-core';
 
 export enum SquareColour {
   Light,
@@ -16,14 +16,14 @@ export default class BoardSquare extends Phaser.GameObjects.Container {
   public background: Phaser.GameObjects.Rectangle;
   public _piece?: Piece;
   public colour: SquareColour;
-  public coordinate: BoardCoordinate;
+  public boardPosition: Position;
   constructor(
     scene: Scene,
     x: number,
     y: number,
     width: number,
     colour: SquareColour,
-    coordinate: BoardCoordinate,
+    coordinate: Position,
     piece?: Piece
   ) {
     super(scene, x, y);
@@ -40,7 +40,7 @@ export default class BoardSquare extends Phaser.GameObjects.Container {
     this._piece = piece;
     this.width = width;
     this.height = width;
-    this.coordinate = coordinate;
+    this.boardPosition = coordinate;
   }
 
   private getBackgroundColour(): number {

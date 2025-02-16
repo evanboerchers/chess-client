@@ -1,11 +1,11 @@
+import { PieceColour, PieceType } from '@evanboerchers/chess-core';
 import { Scene } from 'phaser';
-import { PieceColour, PieceType } from '../../model/board/pieces/pieces.types';
 
 const getPieceTexture = (type: PieceType, colour: PieceColour): string => {
   let colourPrefix;
   let typeName;
   switch (colour) {
-    case PieceColour.Black:
+    case PieceColour.BLACK:
       colourPrefix = 'black';
       break;
     default:
@@ -13,19 +13,19 @@ const getPieceTexture = (type: PieceType, colour: PieceColour): string => {
   }
 
   switch (type) {
-    case PieceType.Wizard:
+    case PieceType.KING:
       typeName = 'King';
       break;
-    case PieceType.Queen:
+    case PieceType.QUEEN:
       typeName = 'Queen';
       break;
-    case PieceType.Knight:
+    case PieceType.KNIGHT:
       typeName = 'Knight';
       break;
-    case PieceType.Bishop:
+    case PieceType.BISHOP:
       typeName = 'Bishop';
       break;
-    case PieceType.Rook:
+    case PieceType.ROOK:
       typeName = 'Rook';
       break;
     default:
