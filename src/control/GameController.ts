@@ -1,11 +1,16 @@
 import { ChessGame, Move, PieceColour, PieceType, Position } from '@evanboerchers/chess-core';
 import Piece from '../view/gameObjects/Piece';
 import { Game } from '../view/scenes/Game';
+import { Agent, AgentCallbacks } from './Agent';
+import { ClientLocalAgent } from './ClientLocalAgent';
+import BoardInputController from './BoardInputController';
 
 export default class GameController {
   gameScene: Game;
   gameModel: ChessGame;
-  _currentPlayer: PieceColour;
+  whiteAgent: Agent;
+  blackAgent: Agent;
+  _currentPlayer: Agent;
   _selectedPiece: Position | null = null;
 
   constructor(gameScene: Game) {
@@ -13,25 +18,69 @@ export default class GameController {
     this.gameModel = new ChessGame();
   }
 
-  startGame() {
-    this.setupWhiteTurn();
-    // this.clearActionsOnclick();
+  handleMove(move: Move) {
+    this.gameModel.makeMove(move);
+    this.redrawBoard();
+    this.changeTurn();
   }
 
-  clearBoardHighlights() {
+  handleResign(colour: PieceColour) {
+
+  }
+
+  handleDrawOffer(colour: PieceColour) {
+    
+  }
+
+  handleDrawAccepted() {
+
+  }
+
+  handleDrawDeclined() {
+
+  }
+
+  createAgents() {
+    const whiteCallbacks: AgentCallbacks = {
+      moveMade: (move: Move) => this.handleMove(move),
+      resign: () => this.handleResign(PieceColour.WHITE),
+      offerDraw: () => this.handleDrawOffer(PieceColour.WHITE),
+      drawAccepted: () => this.handleDrawAccepted(),
+      drawDeclined: () => this.handleDrawDeclined(),
+    }
+    this.whiteAgent = new ClientLocalAgent(whiteCallbacks, PieceColour.WHITE, this.gameScene.boardInputController);
+    const blackCallbacks: AgentCallbacks = {
+        moveMade: (move: Move) => this.handleMove(move),
+        resign: () => this.handleResign(PieceColour.WHITE),
+        offerDraw: () => this.handleDrawOffer(PieceColour.WHITE),
+        drawAccepted: () => this.handleDrawAccepted(),
+        drawDeclined: () => this.handleDrawDeclined(),
+    }
+    this.blackAgent = new ClientLocalAgent(blackCallbacks, PieceColour.BLACK, this.gameScene.boardInputController);
+  }
+
+  startGame() {
+    this.createAgents();
+    this._currentPlayer = this.whiteAgent;
+    this.setupWhiteTurn();
+  }
+
+  clearBoardHighlights() {  
     this.gameScene.board.clearHighlights();
   }
 
   setupWhiteTurn() {
+    this._currentPlayer = this.whiteAgent;
+    this.whiteAgent.makeMove();
+    this.blackAgent.waiting();
     console.log('setting up white turn');
-    this.gameScene.currentPlayer = PieceColour.WHITE;
-    this.setupPieceSelection();
-  }
+    }
 
   setupBlackTurn() {
+    this._currentPlayer = this.blackAgent
+    this.blackAgent.makeMove();
+    this.whiteAgent.waiting();
     console.log('setting up black turn');
-    this.gameScene.currentPlayer = PieceColour.WHITE;
-    this.setupPieceSelection();
   }
 
   clearActionsOnclick() {
@@ -40,11 +89,11 @@ export default class GameController {
     });
   }
 
-  setupPieceSelection() {
+  setupPieceSelection(colour: PieceColour) {
     this.gameScene.board.squares.flat().forEach((square) => {
       if (
         square.piece &&
-        square.piece.colour === this.gameScene.currentPlayer
+        square.piece.colour === colour
       ) {
         console.log('setting up piece selection: ', square.piece.name);
         square.setInteractive({ useHandCursor: true });
@@ -56,7 +105,7 @@ export default class GameController {
           const potentialMoves = this.gameModel.potentialMoves(
             square.coordinate
           );
-          this.setupPieceSelection();
+          this.setupPieceSelection(colour);
           this.setupMoves(potentialMoves.filter(move => move.capturedPiece === null || move.capturedPiece === undefined).map(move => move.to));
           this.setupCaptureMoves(potentialMoves.filter(move => move.capturedPiece !== null || move.capturedPiece !== undefined).map(move => move.to));
         };
@@ -115,7 +164,6 @@ export default class GameController {
       this.gameModel.makeMove(move);
       this.gameScene.board.movePiece(this._selectedPiece, to);
     }
-    this.changeTurn();
   }
 
   capturePiece(to: Position) {
@@ -134,17 +182,15 @@ export default class GameController {
       this.gameScene.board.capturePiece(this._selectedPiece, to);
       this.gameModel.makeMove(move);
     }
-    this.changeTurn();
   }
 
   redrawBoard() {
     this.gameScene.board.clearBoard();
-    this.gameScene.board.drawPieces();
+    this.gameScene.board.drawPieces(this.gameModel.board);
   }
 
   changeTurn() {
-    this.gameScene.board.flip();
-    if (this.gameScene.currentPlayer === PieceColour.WHITE) {
+    if (this._currentPlayer.colour === PieceColour.WHITE) {
       this.setupBlackTurn();
     } else {
       this.setupWhiteTurn();

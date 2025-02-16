@@ -164,7 +164,5 @@ export default class Board extends Phaser.GameObjects.Container {
         }
       })
     }
-
   }
-
 }
