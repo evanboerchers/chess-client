@@ -3,19 +3,16 @@ import Board from '../gameObjects/Board';
 import GameController from '../../control/GameController';
 import { Board as BoardData} from '@evanboerchers/chess-core'
 import BoardInputController from '../../control/BoardInputController';
-import PlayerPanel from '../gameObjects/PlayerPanel';
 
-export class Game extends Scene {
+export default class BoardScene extends Scene {
   board: Board;
-  whitePanel: PlayerPanel;
-  blackPanel: PlayerPanel;
   camera: Phaser.Cameras.Scene2D.Camera;
   background: Phaser.GameObjects.Image;
   controller: GameController;
   boardInputController: BoardInputController
 
   constructor() {
-    super('Game');
+    super('Board');
     this.controller = new GameController(this);
   }
   
@@ -32,10 +29,6 @@ export class Game extends Scene {
     this.add.text(this.scale.width - 20, 20, 'flip')
       .setOrigin(1, 0.5).on(Phaser.Input.Events.POINTER_DOWN, () => this.flipBoard())
       .setInteractive({ useHandCursor: true })
-      this.whitePanel = new PlayerPanel(this, 770, 550, "whitePlayer", "King")
-      this.add.existing(this.whitePanel)
-      this.blackPanel = new PlayerPanel(this, 770, 150, "blackPlayer", "King")
-      this.add.existing(this.blackPanel)
   }
 
   flipBoard() {
@@ -46,7 +39,7 @@ export class Game extends Scene {
     const boardSize = 500;
     this.board = new Board(
       this,
-      (this.scale.width - boardSize) / 2,
+      (this.scale.width * 0.75- boardSize) / 2,
       (this.scale.height - boardSize) / 2,
       boardSize,
       boardModel

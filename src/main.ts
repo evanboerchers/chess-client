@@ -1,10 +1,11 @@
-import { Boot } from './view/scenes/Boot';
-import { Game as MainGame } from './view/scenes/Game';
-import { GameOver } from './view/scenes/GameOver';
-import { MainMenu } from './view/scenes/MainMenu';
-import { Preloader } from './view/scenes/Preloader';
+import BoardScene from './view/scenes/BoardScene';
+import BootScene from './view/scenes/BootScene';
+import PreloaderScene from './view/scenes/PreloaderScene';
 
 import { Game, Types } from "phaser";
+import GameSidebarScene from './view/scenes/sidebar/GameSidebarScene';
+import QueueSidebarScene from './view/scenes/sidebar/QueueSidebarScene';
+import MenuSidebarScene from './view/scenes/sidebar/MenuSidebarScene';
 
 const config: Types.Core.GameConfig = {
     type: Phaser.AUTO,
@@ -17,11 +18,12 @@ const config: Types.Core.GameConfig = {
         autoCenter: Phaser.Scale.CENTER_BOTH
     },
     scene: [
-        Boot,
-        Preloader,
-        MainMenu,
-        MainGame,
-        GameOver
+        BootScene,
+        PreloaderScene,
+        BoardScene,
+        MenuSidebarScene,
+        QueueSidebarScene,
+        GameSidebarScene,
     ]
 };
 
