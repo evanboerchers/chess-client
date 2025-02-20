@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
 import Piece from './Piece';
-import ThemeManager from '../ThemeManager';
+import ThemeManager from '../../style/ThemeManager';
 import { Position } from '@evanboerchers/chess-core';
 
 export enum SquareColour {

@@ -1,5 +1,5 @@
 import { Scene } from 'phaser';
-import Board from '../gameObjects/Board';
+import Board from '../gameObjects/board/Board';
 import GameController from '../../control/GameController';
 import { Board as BoardData} from '@evanboerchers/chess-core'
 import BoardInputController from '../../control/BoardInputController';

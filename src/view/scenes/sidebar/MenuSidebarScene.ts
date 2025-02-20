@@ -1,19 +1,47 @@
+import { SceneNames } from "../scenes.enum";
 import SidebarScene from "./SidebarScene";
 
 export default class MenuSidebarScene extends SidebarScene {
-    constructor() {
-        super("MenuSidebar");
-    }
+    menuContainer: Phaser.GameObjects.Container;
+    buttons: Phaser.GameObjects.Text[];
 
+    constructor() {
+        super(SceneNames.MENU_SIDEBAR);
+    }
+    
     create(): void {
         super.create();
-        const sidebarX = this.scale.width * 0.75 + 10;
+        this.buttons = []
+        this.createPlayerBanner();
+        this.createMenuButtons();
+    }
 
-        this.add.text(sidebarX, 20, "Player", { fontSize: "18px", color: "#fff" });
-        this.add.circle(sidebarX + 50, 50, 20, 0xffffff);
-        this.add.text(sidebarX + 70, 40, "Username", { fontSize: "16px", color: "#fff" });
+    createMenuButtons() {
+        this.menuContainer = this.add.container(0, this.background.y)
+        this.contentContainer.add(this.menuContainer);
+        this.buttons.push(this.createButton('Online Play', () => {
+            this.scene.start(SceneNames.QUEUE_SIDEBAR)
+        }))
+        this.buttons.push(this.createButton('Local Play', () => {
+            this.scene.start(SceneNames.GAME_SIDEBAR)
+        }))
+        let y = 0 
+        for(let i = 0; i < this.buttons.length; i++) {
+            this.menuContainer.add(this.buttons[i]);
+            this.buttons[i].y = y
+            y -= 50
+        }
+        this.menuContainer.y -= this.menuContainer.height / 2;
+    }
+    
+    createPlayerBanner(): void {
+        
+    }
 
-        this.add.text(sidebarX, 100, "Online Play", { fontSize: "18px", color: "#0f0" }).setInteractive();
-        this.add.text(sidebarX, 140, "Local Play", { fontSize: "18px", color: "#0f0" }).setInteractive();
+    createButton(name: string, onClick: () => void): Phaser.GameObjects.Text {
+        const button = this.add.text(0, 140, name, { fontSize: "18px", color: "#0f0" })
+        .setInteractive({ useHandCursor: true }).setOrigin(0.5)
+        .on(Phaser.Input.Events.POINTER_DOWN, () => onClick())
+        return button
     }
 }
