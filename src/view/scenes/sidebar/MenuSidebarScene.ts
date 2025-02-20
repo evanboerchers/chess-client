@@ -1,3 +1,4 @@
+import { menuText } from "../../style/textStyle";
 import { SceneNames } from "../scenes.enum";
 import SidebarScene from "./SidebarScene";
 
@@ -39,7 +40,7 @@ export default class MenuSidebarScene extends SidebarScene {
     }
 
     createButton(name: string, onClick: () => void): Phaser.GameObjects.Text {
-        const button = this.add.text(0, 140, name, { fontSize: "18px", color: "#0f0" })
+        const button = this.add.text(0, 140, name, menuText)
         .setInteractive({ useHandCursor: true }).setOrigin(0.5)
         .on(Phaser.Input.Events.POINTER_DOWN, () => onClick())
         return button
