@@ -1,5 +1,6 @@
 import { Scene } from "phaser";
 import { SceneNames } from "../scenes.enum";
+import ThemeManager from "../../style/ThemeManager";
 
 export default class SidebarScene extends Scene {
     contentContainer: Phaser.GameObjects.Container;
@@ -26,7 +27,7 @@ export default class SidebarScene extends Scene {
     createBacking() {
         const sidebarWidth = this.scale.width * this.widthFactor;
         const sidebarHeight = this.scale.height;
-        this.background = this.add.rectangle(0, sidebarHeight/2, sidebarWidth, sidebarHeight, 0x333333);
+        this.background = this.add.rectangle(0, sidebarHeight/2, sidebarWidth, sidebarHeight, ThemeManager.getTheme().ui.sidebarColour);
         this.contentContainer.add(this.background)
     }
     

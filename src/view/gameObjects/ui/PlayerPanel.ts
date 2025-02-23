@@ -1,53 +1,40 @@
+import { panelButtonText } from "../../style/textStyle";
+import ThemeManager from "../../style/ThemeManager";
+import PlayerBanner, { BannerProperties } from "./PlayerBanner";
+
+export interface PanelProperties {
+    bannerProps: BannerProperties
+    showButtons: boolean
+}
+
 export default class PlayerPanel extends Phaser.GameObjects.Container {
-    private background: Phaser.GameObjects.Rectangle;
-    private icon: Phaser.GameObjects.Image;
-    private nameText: Phaser.GameObjects.Text;
-    private drawButton?: Phaser.GameObjects.Rectangle;
-    private resignButton?: Phaser.GameObjects.Rectangle;
+    private banner: PlayerBanner
+    private drawButton?: Phaser.GameObjects.Container;
+    private resignButton?: Phaser.GameObjects.Container;
 
     constructor(
         scene: Phaser.Scene,
-        x: number,
+        x: number, 
         y: number,
-        playerName: string,
-        iconTexture: string,
-        showButtons: boolean = true
+        properties: PanelProperties
     ) {
         super(scene, x, y);
         this.scene = scene;
-
-        // Background panel
-        this.background = scene.add.rectangle(0, 0, 200, 100, 0x222222, 0.8);
-        this.background.setOrigin(0, 0);
-
-        // Player Icon
-        this.icon = scene.add.image(10, 10, iconTexture).setOrigin(0, 0);
-        this.icon.setDisplaySize(40, 40); // Adjust as needed
-
-        // Player Name
-        this.nameText = scene.add.text(60, 20, playerName, {
-            fontSize: "16px",
-            color: "#ffffff",
-        });
-
-        this.add([this.background, this.icon, this.nameText]);
-
-        if (showButtons) {
+        this.banner = new PlayerBanner(this.scene, 0, 0, properties.bannerProps)
+        this.add(this.banner)
+        if (properties.showButtons) {
             this.createButtons();
         }
     }
 
     private createButtons(): void {
-        // Draw Button
-        this.drawButton = this.createButton(10, 60, "Draw", () => {
+        this.drawButton = this.createButton(50, 60, "Draw", () => {
             this.emit("drawClicked");
         });
-
-        // Resign Button
-        this.resignButton = this.createButton(110, 60, "Resign", () => {
+        this.resignButton = this.createButton(-50, 60, "Resign", () => {
+            console.log("resign clicked")
             this.emit("resignClicked");
         });
-
         this.add([this.drawButton, this.resignButton]);
     }
 
@@ -56,17 +43,21 @@ export default class PlayerPanel extends Phaser.GameObjects.Container {
         y: number,
         text: string,
         callback: () => void
-    ): Phaser.GameObjects.Rectangle {
-        let button = this.scene.add.rectangle(x, y, 80, 30, 0x4444ff, 1).setOrigin(0, 0);
-        let buttonText = this.scene.add.text(x + 10, y + 5, text, {
-            fontSize: "14px",
-            color: "#ffffff",
-        });
-
-        button.setInteractive();
+    ): Phaser.GameObjects.Container {
+        const width = 80
+        const height = 30
+        const radius = 10
+        const button = this.scene.add.container();
+        const background = this.scene.add.graphics();
+        background.lineStyle(4, ThemeManager.getTheme().ui.button.default.stroke)
+        background.strokeRoundedRect(x - width/2, y - height/2, width, height, radius)
+        background.fillStyle(ThemeManager.getTheme().ui.button.default.fill) 
+        background.fillRoundedRect(x - width/2, y - height/2, width, height, radius)
+        const buttonText = this.scene.add.text(x, y, text, panelButtonText).setOrigin(0.5);
+        button.add([background, buttonText]);
+        button.setSize(width, height);
+        button.setInteractive({ useHandCursor: true });
         button.on("pointerdown", callback);
-
-        this.add([button, buttonText]);
         return button;
     }
 }

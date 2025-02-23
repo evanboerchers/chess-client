@@ -1,4 +1,5 @@
 import { Scene } from 'phaser';
+import { defaultInitData } from './sidebar/GameSidebarScene';
 
 export default class PreloaderScene extends Scene
 {
@@ -30,33 +31,32 @@ export default class PreloaderScene extends Scene
     preload ()
     {
         //  Load the assets for the game - Replace with your own assets
-        this.load.setPath('assets');
-
-        this.load.image('logo', 'logo.png');
-              // Black Pieces
-              this.load.image('blackPawn', 'b_pawn.webp');
-              this.load.image('blackRook', 'b_rook.webp');
-              this.load.image('blackKnight', 'b_knight.webp');
-              this.load.image('blackBishop', 'b_bishop.webp');
-              this.load.image('blackQueen', 'b_queen.webp');
-              this.load.image('blackKing', 'b_king.webp');
-      
-              // White Pieces
-              this.load.image('whitePawn', 'w_pawn.webp');
-              this.load.image('whiteRook', 'w_rook.webp');
-              this.load.image('whiteKnight', 'w_knight.webp');
-              this.load.image('whiteBishop', 'w_bishop.webp');
-              this.load.image('whiteQueen', 'w_queen.webp');
-              this.load.image('whiteKing', 'w_king.webp');
+        this.load.setPath('assets/board');
+    
+        // Black Pieces
+        this.load.image('blackPawn', 'b_pawn.webp');
+        this.load.image('blackRook', 'b_rook.webp');
+        this.load.image('blackKnight', 'b_knight.webp');
+        this.load.image('blackBishop', 'b_bishop.webp');
+        this.load.image('blackQueen', 'b_queen.webp');
+        this.load.image('blackKing', 'b_king.webp');
+        
+        // White Pieces
+        this.load.image('whitePawn', 'w_pawn.webp');
+        this.load.image('whiteRook', 'w_rook.webp');
+        this.load.image('whiteKnight', 'w_knight.webp');
+        this.load.image('whiteBishop', 'w_bishop.webp');
+        this.load.image('whiteQueen', 'w_queen.webp');
+        this.load.image('whiteKing', 'w_king.webp');
+        
+        this.load.setPath('assets/profile');
+        this.load.image('profile1', 'profile_1.webp');
+        this.load.image('profile2', 'profile_2.webp');
     }
-
+    
     create ()
     {
-        //  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.
-        //  For example, you can define global animations here, so we can use them in other scenes.
-
-        //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
         this.scene.start('Board');
-        this.scene.start('MenuSidebar');
+        this.scene.start('GameSidebar', defaultInitData);
     }
 }

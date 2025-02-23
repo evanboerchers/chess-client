@@ -1,26 +1,53 @@
+import { PieceColour } from "@evanboerchers/chess-core";
+import PlayerPanel, { PanelProperties } from "../../gameObjects/ui/PlayerPanel";
 import SidebarScene from "./SidebarScene";
 
+export interface GameSideBarSceneData {
+    whiteProps: PanelProperties
+    blackProps: PanelProperties
+}
+
+
+export const defaultInitData: GameSideBarSceneData = {
+    whiteProps: {
+        bannerProps: {
+            colour: PieceColour.WHITE,
+            playerName: "White Player",
+            iconTexture: "profile1",
+        },
+        showButtons: true
+    },
+    blackProps: {
+        bannerProps: {
+            colour: PieceColour.BLACK,
+            playerName: "Black Player",
+            iconTexture: "profile2",
+        },
+        showButtons: true
+    }
+}
+
 export default class GameSidebarScene extends SidebarScene {
+    initData: GameSideBarSceneData
+    whitePanel: PlayerPanel
+    blackPanel: PlayerPanel
     constructor() {
         super("GameSidebar");
     }
 
-    create(): void {
-        super.create();
-        const sidebarX = this.scale.width * 0.75 + 10;
-
-        this.createPlayerPanel(sidebarX, 20, "Black");
-        this.createPlayerPanel(sidebarX, this.scale.height - 100, "White");
+    init(data: GameSideBarSceneData) {
+        this.initData = data;
     }
 
-    private createPlayerPanel(x: number, y: number, player: string): void {
-        this.add.rectangle(x + 90, y + 25, 180, 50, 0x555555);
-        this.add.circle(x + 20, y + 25, 20, 0xffffff);
-        this.add.text(x + 50, y + 15, `${player} Player`, { fontSize: "16px", color: "#fff" });
+    create(): void {
+        super.create();
+        this.whitePanel = this.createPlayerPanel(0, 600, this.initData.whiteProps)
+        this.blackPanel = this.createPlayerPanel(0, 200, this.initData.blackProps)
+        this.contentContainer.add([this.whitePanel, this.blackPanel])
+    }
 
-        if (Math.random() > 0.5) {
-            this.add.text(x + 150, y + 15, "Resign", { fontSize: "14px", color: "#f00" }).setInteractive();
-            this.add.text(x + 150, y + 35, "Draw", { fontSize: "14px", color: "#ff0" }).setInteractive();
-        }
+    private createPlayerPanel(x: number, y: number, props: PanelProperties): PlayerPanel {
+        const panel = new PlayerPanel(this, x, y, props) 
+        return panel
     }
 }
