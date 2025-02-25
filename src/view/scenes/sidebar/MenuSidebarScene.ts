@@ -1,4 +1,3 @@
-import PlayerPanel from "../../gameObjects/ui/PlayerPanel";
 import { menuText, menuText_Hover } from "../../style/textStyle";
 import { SceneNames } from "../scenes.enum";
 import { defaultInitData } from "./GameSidebarScene";
@@ -27,7 +26,7 @@ export default class MenuSidebarScene extends SidebarScene {
         this.buttons.unshift(this.createButton('Local Play', () => {
             this.scene.start(SceneNames.GAME_SIDEBAR, defaultInitData)
         }))
-        let y = 0 
+        let y = 0  
         for(let i = 0; i < this.buttons.length; i++) {
             this.menuContainer.add(this.buttons[i]);
             this.buttons[i].y = y

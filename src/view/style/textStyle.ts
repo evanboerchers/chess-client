@@ -32,7 +32,9 @@ export const playerrNameText: TextStyle = {
 
 export const panelButtonText: TextStyle = {
     fontFamily: MAIN_FONT,
-    fontSize: 12,
+    fontSize: 14,
+    strokeThickness: 2,
+    stroke: "#000000",
     color: "#ffffff",
     align: "center",
 }

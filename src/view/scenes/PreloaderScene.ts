@@ -57,6 +57,8 @@ export default class PreloaderScene extends Scene
     create ()
     {
         this.scene.start('Board');
-        this.scene.start('GameSidebar', defaultInitData);
+        // this.scene.start('MenuSidebar')
+        this.scene.start('QueueSidebar')
+        // this.scene.start('GameSidebar', defaultInitData);
     }
 }

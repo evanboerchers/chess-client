@@ -9,6 +9,7 @@ export interface PanelProperties {
 
 export default class PlayerPanel extends Phaser.GameObjects.Container {
     private banner: PlayerBanner
+    private buttonContainer: Phaser.GameObjects.Container;
     private drawButton?: Phaser.GameObjects.Container;
     private resignButton?: Phaser.GameObjects.Container;
 
@@ -20,22 +21,23 @@ export default class PlayerPanel extends Phaser.GameObjects.Container {
     ) {
         super(scene, x, y);
         this.scene = scene;
-        this.banner = new PlayerBanner(this.scene, 0, 0, properties.bannerProps)
-        this.add(this.banner)
+        this.banner = new PlayerBanner(this.scene, 0, -20, properties.bannerProps)
+        this.buttonContainer = this.scene.add.container(0, 40)
+        this.add([this.banner, this.buttonContainer])
         if (properties.showButtons) {
             this.createButtons();
         }
     }
 
     private createButtons(): void {
-        this.drawButton = this.createButton(50, 60, "Draw", () => {
+        this.drawButton = this.createButton(50, 0, "Draw", () => {
             this.emit("drawClicked");
         });
-        this.resignButton = this.createButton(-50, 60, "Resign", () => {
+        this.resignButton = this.createButton(-50, 0, "Resign", () => {
             console.log("resign clicked")
             this.emit("resignClicked");
         });
-        this.add([this.drawButton, this.resignButton]);
+        this.buttonContainer.add([this.drawButton, this.resignButton]);
     }
 
     private createButton(

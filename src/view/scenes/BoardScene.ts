@@ -36,7 +36,7 @@ export default class BoardScene extends Scene {
   }
 
   createBoard(boardModel: BoardData) {
-    const boardSize = 500;
+    const boardSize = 700;
     this.board = new Board(
       this,
       (this.scale.width * 0.75- boardSize) / 2,
