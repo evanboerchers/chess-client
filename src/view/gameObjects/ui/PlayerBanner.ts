@@ -1,6 +1,6 @@
 import { PieceColour } from "@evanboerchers/chess-core";
 import ThemeManager from "../../style/ThemeManager";
-import { playerrNameText as playerName } from "../../style/textStyle";
+import { playerNameText as playerName } from "../../style/textStyle";
 
 export interface BannerProperties {
     playerName: string,

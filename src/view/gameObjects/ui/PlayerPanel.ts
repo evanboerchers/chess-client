@@ -1,5 +1,6 @@
 import { panelButtonText } from "../../style/textStyle";
 import ThemeManager from "../../style/ThemeManager";
+import Button from "./Button";
 import PlayerBanner, { BannerProperties } from "./PlayerBanner";
 
 export interface PanelProperties {
@@ -30,36 +31,18 @@ export default class PlayerPanel extends Phaser.GameObjects.Container {
     }
 
     private createButtons(): void {
-        this.drawButton = this.createButton(50, 0, "Draw", () => {
+        const drawProps = {
+            text:"Draw", 
+            callback: () => {
             this.emit("drawClicked");
-        });
-        this.resignButton = this.createButton(-50, 0, "Resign", () => {
-            console.log("resign clicked")
+        }}
+        this.drawButton = new Button(this.scene, 50, 0, drawProps);
+        const resignProps = {
+            text:"Resign", 
+            callback: () => {
             this.emit("resignClicked");
-        });
+        }}
+        this.resignButton = new Button(this.scene, -50, 0, resignProps)
         this.buttonContainer.add([this.drawButton, this.resignButton]);
-    }
-
-    private createButton(
-        x: number,
-        y: number,
-        text: string,
-        callback: () => void
-    ): Phaser.GameObjects.Container {
-        const width = 80
-        const height = 30
-        const radius = 10
-        const button = this.scene.add.container();
-        const background = this.scene.add.graphics();
-        background.lineStyle(4, ThemeManager.getTheme().ui.button.default.stroke)
-        background.strokeRoundedRect(x - width/2, y - height/2, width, height, radius)
-        background.fillStyle(ThemeManager.getTheme().ui.button.default.fill) 
-        background.fillRoundedRect(x - width/2, y - height/2, width, height, radius)
-        const buttonText = this.scene.add.text(x, y, text, panelButtonText).setOrigin(0.5);
-        button.add([background, buttonText]);
-        button.setSize(width, height);
-        button.setInteractive({ useHandCursor: true });
-        button.on("pointerdown", callback);
-        return button;
     }
 }

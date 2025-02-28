@@ -21,12 +21,21 @@ export const menuText_Hover: TextStyle = {
     align: "center",
 }
 
-export const playerrNameText: TextStyle = {
+export const playerNameText: TextStyle = {
     fontFamily: MAIN_FONT,
     fontSize: 18,
     color: "#ffffff",
     stroke: "#000000",
     strokeThickness: 2,
+    align: "center",
+}
+
+export const buttonDefaultText: TextStyle = {
+    fontFamily: MAIN_FONT,
+    fontSize: 18,
+    strokeThickness: 2,
+    stroke: "#000000",
+    color: "#ffffff",
     align: "center",
 }
 
