@@ -47,6 +47,7 @@ export default class QueueSidebarScene extends SidebarScene {
     }
 
     handleQueueClick() {
+        console.log("queue button clicked")
         if (this.queued) {
 
         } else {

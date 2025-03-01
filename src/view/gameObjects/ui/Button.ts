@@ -23,10 +23,11 @@ export default class Button extends Phaser.GameObjects.Container {
         super(scene, x, y);
         this.scene = scene;
         
-        this.text = this.scene.add.text(0, 0, properties.text ?? '', properties.textStyle ?? buttonDefaultText)
+        this.text = this.scene.add.text(0, 0, properties.text ?? '', properties.textStyle ?? buttonDefaultText).setOrigin(0.5)
         this.background = properties.background ?? this.createBackground()
         this.add([this.background, this.text])
         this.callback = properties.callback ?? (() => {})
+        this.setInteractive()
         this.createEvents();
     }
 
@@ -36,13 +37,16 @@ export default class Button extends Phaser.GameObjects.Container {
         const radius = 10
         const background = this.scene.add.graphics();
         background.lineStyle(4, ThemeManager.getTheme().ui.button.default.stroke)
-        background.strokeRoundedRect(this.x - width/2, this.y - height/2, width, height, radius)
+        background.strokeRoundedRect(-width/2, -height/2, width, height, radius)
         background.fillStyle(ThemeManager.getTheme().ui.button.default.fill) 
-        background.fillRoundedRect(width/2, height/2, width, height, radius)
+        background.fillRoundedRect(-width/2, -height/2, width, height, radius)
         return background
     }
     
     createEvents() {
-        this.background.on(Phaser.Input.Events.POINTER_DOWN, this.callback)
+        this.setInteractive(new Phaser.Geom.Rectangle(0, 0, this.width, this.height)
+        )
+        this.setSize(this.width, this.height)
+        this.on(Phaser.Input.Events.POINTER_DOWN, this.callback)
     }
 }

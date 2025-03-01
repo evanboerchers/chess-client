@@ -42,7 +42,7 @@ const defaultTheme: Theme = {
     button: {
       default: {
         stroke: 0x332233, 
-        fill: 0x222222,
+        fill: 0x223322,
       },
       active: {
         stroke: 0x332233, 
