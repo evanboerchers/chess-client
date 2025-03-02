@@ -5,6 +5,7 @@ export interface ButtonProperties {
     text?: string
     textStyle?: Phaser.Types.GameObjects.Text.TextStyle;
     background?: Phaser.GameObjects.Graphics
+    hitArea?: Phaser.Geom.Rectangle | Phaser.Geom.Circle | Phaser.Geom.Polygon 
     callback?: () => void
 }
 
@@ -12,6 +13,7 @@ export interface ButtonProperties {
 export default class Button extends Phaser.GameObjects.Container {
     background: Phaser.GameObjects.Graphics;
     text: Phaser.GameObjects.Text;
+    hitArea: Phaser.Geom.Rectangle | Phaser.Geom.Circle | Phaser.Geom.Polygon 
     callback: () => void
 
     constructor(
@@ -25,9 +27,9 @@ export default class Button extends Phaser.GameObjects.Container {
         
         this.text = this.scene.add.text(0, 0, properties.text ?? '', properties.textStyle ?? buttonDefaultText).setOrigin(0.5)
         this.background = properties.background ?? this.createBackground()
+        this.hitArea = properties.hitArea ?? this.createHitArea();
         this.add([this.background, this.text])
         this.callback = properties.callback ?? (() => {})
-        this.setInteractive()
         this.createEvents();
     }
 
@@ -42,11 +44,20 @@ export default class Button extends Phaser.GameObjects.Container {
         background.fillRoundedRect(-width/2, -height/2, width, height, radius)
         return background
     }
+
+
+    createHitArea(): Phaser.Geom.Rectangle {
+        const width = 80
+        const height = 30
+        return new Phaser.Geom.Rectangle(-width/2, -height/2, width, height)
+    }
     
     createEvents() {
-        this.setInteractive(new Phaser.Geom.Rectangle(0, 0, this.width, this.height)
-        )
-        this.setSize(this.width, this.height)
+        this.setInteractive({
+            hitArea: this.hitArea,
+            hitAreaCallback: Phaser.Geom.Rectangle.Contains,
+            useHandCursor: true
+        })
         this.on(Phaser.Input.Events.POINTER_DOWN, this.callback)
     }
 }
