@@ -45,7 +45,6 @@ export default class Button extends Phaser.GameObjects.Container {
         return background
     }
 
-
     createHitArea(): Phaser.Geom.Rectangle {
         const width = 80
         const height = 30
