@@ -6,6 +6,7 @@ import { Game, Types } from "phaser";
 import GameSidebarScene from './view/scenes/sidebar/GameSidebarScene';
 import QueueSidebarScene from './view/scenes/sidebar/QueueSidebarScene';
 import MenuSidebarScene from './view/scenes/sidebar/MenuSidebarScene';
+import PlayerCustomScene from './view/scenes/PlayerCustomScene';
 
 const config: Types.Core.GameConfig = {
     type: Phaser.AUTO,
@@ -25,6 +26,7 @@ const config: Types.Core.GameConfig = {
         MenuSidebarScene,
         QueueSidebarScene,
         GameSidebarScene,
+        PlayerCustomScene
     ]
 };
 

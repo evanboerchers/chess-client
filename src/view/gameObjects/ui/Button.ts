@@ -4,14 +4,14 @@ import ThemeManager from "../../style/ThemeManager";
 export interface ButtonProperties {
     text?: string
     textStyle?: Phaser.Types.GameObjects.Text.TextStyle;
-    background?: Phaser.GameObjects.Graphics
+    background?: Phaser.GameObjects.Sprite
     hitArea?: Phaser.Geom.Rectangle | Phaser.Geom.Circle | Phaser.Geom.Polygon 
     callback?: () => void
 }
 
 
 export default class Button extends Phaser.GameObjects.Container {
-    background: Phaser.GameObjects.Graphics;
+    _background: Phaser.GameObjects.Sprite;
     text: Phaser.GameObjects.Text;
     hitArea: Phaser.Geom.Rectangle | Phaser.Geom.Circle | Phaser.Geom.Polygon 
     callback: () => void
@@ -26,24 +26,28 @@ export default class Button extends Phaser.GameObjects.Container {
         this.scene = scene;
         
         this.text = this.scene.add.text(0, 0, properties.text ?? '', properties.textStyle ?? buttonDefaultText).setOrigin(0.5)
-        this.background = properties.background ?? this.createBackground()
+        this._background = properties.background ?? this.generateBackground();
         this.hitArea = properties.hitArea ?? this.createHitArea();
-        this.add([this.background, this.text])
+        this.add([this._background, this.text])
         this.callback = properties.callback ?? (() => {})
         this.createEvents();
     }
 
-    createBackground(): Phaser.GameObjects.Graphics {
+    generateBackground(): Phaser.GameObjects.Sprite {
+        // TODO: Make util for converting graphic to sprite
         const width = 80
         const height = 30
         const radius = 10
         const background = this.scene.add.graphics();
         background.lineStyle(4, ThemeManager.getTheme().ui.button.default.stroke)
-        background.strokeRoundedRect(-width/2, -height/2, width, height, radius)
+        background.strokeRoundedRect(4, 4, width, height, radius)
         background.fillStyle(ThemeManager.getTheme().ui.button.default.fill) 
-        background.fillRoundedRect(-width/2, -height/2, width, height, radius)
-        return background
-    }
+        background.fillRoundedRect(4, 4, width, height, radius)
+        const texture= `${this.name}-texture-${Math.random() * 100}`
+        background.generateTexture(texture, width+8, height+8)
+        background.destroy()
+        return this.scene.add.sprite(0, 0, texture).setOrigin(0.5).setName(texture)
+    } 
 
     createHitArea(): Phaser.Geom.Rectangle {
         const width = 80
@@ -52,11 +56,9 @@ export default class Button extends Phaser.GameObjects.Container {
     }
     
     createEvents() {
-        this.setInteractive({
-            hitArea: this.hitArea,
-            hitAreaCallback: Phaser.Geom.Rectangle.Contains,
+        this._background.setInteractive({
             useHandCursor: true
         })
-        this.on(Phaser.Input.Events.POINTER_DOWN, this.callback)
+        this._background.on(Phaser.Input.Events.POINTER_DOWN, this.callback)
     }
 }

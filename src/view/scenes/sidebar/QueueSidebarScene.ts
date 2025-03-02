@@ -21,11 +21,7 @@ export default class QueueSidebarScene extends SidebarScene {
         super.create();
         this.queueContainer = this.add.container(0, this.scale.height/2);
         this.contentContainer.add(this.queueContainer);
-        this.banner = new PlayerBanner(this, 0, -100, {
-            playerName: "profile1",
-            iconTexture: "profile1",
-            colour: PieceColour.WHITE
-        })
+        this.createPlayerBanner();
         this.searchText = this.add.text(0, 25, "Searching", { fontSize: "18px", color: "#fff" }).setOrigin(0.5);
         this.countText = this.add.text(0, -4, "Players in Queue: 0", { fontSize: "16px", color: "#fff" }).setOrigin(0.5);
         this.createQueueButton();
@@ -35,6 +31,19 @@ export default class QueueSidebarScene extends SidebarScene {
             this.countText.setText(`Players in Queue: ${count}`);
         });
         this.animateSearchText();
+    }
+
+    createPlayerBanner() {
+        this.banner = new PlayerBanner(this, 0, -100, {
+            playerName: "profile1",
+            iconTexture: "profile1",
+            colour: PieceColour.WHITE
+        })
+        this.add.existing(this.banner)
+        this.banner.background.setInteractive({ useHandCursor: true})
+        .on(Phaser.Input.Events.POINTER_DOWN, () => {
+            this.scene.launch('PlayerCustom');
+        })
     }
 
     createQueueButton() {

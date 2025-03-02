@@ -1,17 +1,17 @@
 import { ChessGame, Move, PieceColour, PieceType, Position } from '@evanboerchers/chess-core';
-import { Game } from '../view/scenes/Game';
+import BoardScene from '../view/scenes/BoardScene';
 import { Agent, AgentCallbacks } from './agent/Agent.types';
 import ClientLocalAgent  from './agent/ClientLocalAgent';
 
 export default class GameController {
-  gameScene: Game;
+  gameScene: BoardScene;
   gameModel: ChessGame;
   whiteAgent: Agent;
   blackAgent: Agent;
   _currentPlayer: Agent;
   _selectedPiece: Position | null = null;
 
-  constructor(gameScene: Game) {
+  constructor(gameScene: BoardScene) {
     this.gameScene = gameScene;
     this.gameModel = new ChessGame();
   }

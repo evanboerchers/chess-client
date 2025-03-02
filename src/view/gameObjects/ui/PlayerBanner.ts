@@ -9,9 +9,9 @@ export interface BannerProperties {
 }
 
 export default class PlayerBanner extends Phaser.GameObjects.Container {
-    private background: Phaser.GameObjects.Graphics;
-    private icon: Phaser.GameObjects.Image;
-    private nameText: Phaser.GameObjects.Text;
+    background: Phaser.GameObjects.Sprite;
+    icon: Phaser.GameObjects.Image;
+    nameText: Phaser.GameObjects.Text;
 
     constructor(
         scene: Phaser.Scene,
@@ -32,15 +32,19 @@ export default class PlayerBanner extends Phaser.GameObjects.Container {
     createBackground(colour: PieceColour) {
         const width = 200;
         const height = 60;
-        const x = -width/2; 
-        const y = -height/2;
+        const x = 4
+        const y = 4
         const radius = 10; 
         const strokeColour = colour === PieceColour.WHITE ? 0xffffff : 0x000000
-        this.background = this.scene.add.graphics()
-        this.background.lineStyle(4, strokeColour)
-        this.background.strokeRoundedRect(x, y, width, height, radius)
-        this.background.fillStyle(ThemeManager.getTheme().ui.bannerColour, 0.8)
-        this.background.fillRoundedRect(x, y, width, height, radius)
+        const background = this.scene.add.graphics()
+        background.lineStyle(4, strokeColour)
+        background.strokeRoundedRect(x, y, width, height, radius)
+        background.fillStyle(ThemeManager.getTheme().ui.bannerColour, 0.8)
+        background.fillRoundedRect(x, y, width, height, radius)
+        const texture= `${this.name}-texture-${Math.random() * 100}`
+        background.generateTexture(texture, width+8, height+8)
+        background.destroy()
+        this.background = this.scene.add.sprite(0,0, texture).setOrigin(0.5).setName(texture)
         this.add(this.background)
     }
 }

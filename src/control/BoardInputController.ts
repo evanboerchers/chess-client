@@ -1,7 +1,7 @@
 import { ChessGame, Move, PieceColour} from "@evanboerchers/chess-core";
-import Board from "../view/gameObjects/Board";
-import BoardSquare from "../view/gameObjects/BoardSquare";
 import { Input } from "phaser";
+import Board from "../view/gameObjects/board/Board";
+import BoardSquare from "../view/gameObjects/board/BoardSquare";
 
 export default class BoardInputController {
     board: Board
