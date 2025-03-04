@@ -59,6 +59,7 @@ export default class PreloaderScene extends Scene
         this.scene.start('Board');
         // this.scene.start('MenuSidebar')
         this.scene.start('QueueSidebar')
+        this.scene.start('PlayerCustom')
         // this.scene.start('GameSidebar', defaultInitData);
     }
 }
