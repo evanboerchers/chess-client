@@ -1,7 +1,11 @@
 import { Scene } from 'phaser';
 import BoardSquare, { SquareColour } from './BoardSquare';
 import Piece from './Piece';
-import {Board as BoardData, PieceColour, Position} from '@evanboerchers/chess-core'
+import {
+  Board as BoardData,
+  PieceColour,
+  Position,
+} from '@evanboerchers/chess-core';
 
 export enum OnEvents {
   HIGHLIGHT = 'Board:highlightSquare',
@@ -17,7 +21,7 @@ export default class Board extends Phaser.GameObjects.Container {
   columns: number = 8;
   boardWidth: number;
   squares: BoardSquare[][];
-  pieces: Piece[]
+  pieces: Piece[];
   selectedPiece: [number, number] | null = null;
 
   constructor(
@@ -53,7 +57,7 @@ export default class Board extends Phaser.GameObjects.Container {
           color,
           { row, col }
         );
-        boardSquare.name = `square_${row},${col}`
+        boardSquare.name = `square_${row},${col}`;
         this.squares[row][col] = boardSquare;
         this.add(boardSquare);
       }
@@ -61,11 +65,11 @@ export default class Board extends Phaser.GameObjects.Container {
   }
 
   clearBoard(): void {
-    this.pieces.forEach((piece) => piece.destroy())
+    this.pieces.forEach((piece) => piece.destroy());
   }
 
   drawPieces(board: BoardData): void {
-    this.pieces = []
+    this.pieces = [];
     for (let row = 0; row < this.rows; row++) {
       for (let col = 0; col < this.columns; col++) {
         const pieceData = board[row][col];
@@ -78,7 +82,7 @@ export default class Board extends Phaser.GameObjects.Container {
             pieceData.colour,
             `${pieceData.colour}${pieceData.type}_${row},${col}`
           );
-          this.pieces.push(piece)
+          this.pieces.push(piece);
           this.squares[row][col].addPiece(piece);
         }
       }
@@ -147,22 +151,27 @@ export default class Board extends Phaser.GameObjects.Container {
 
   flip(): void {
     if (this.angle !== 0) {
-      this.angle = 0
-      this.setPosition(this.x - this.getBounds().width, this.y - this.getBounds().height)
-      this.squares.flat().forEach(square => {
+      this.angle = 0;
+      this.setPosition(
+        this.x - this.getBounds().width,
+        this.y - this.getBounds().height
+      );
+      this.squares.flat().forEach((square) => {
         if (square._piece) {
-          square._piece.angle = 0
+          square._piece.angle = 0;
         }
-      })
+      });
     } else {
-      this.angle = 180
-      this.setPosition(this.x + this.getBounds().width,
-        this.y + this.getBounds().height)
-      this.squares.flat().forEach(square => {
+      this.angle = 180;
+      this.setPosition(
+        this.x + this.getBounds().width,
+        this.y + this.getBounds().height
+      );
+      this.squares.flat().forEach((square) => {
         if (square._piece) {
-          square._piece.angle = 180
+          square._piece.angle = 180;
         }
-      })
+      });
     }
   }
 }

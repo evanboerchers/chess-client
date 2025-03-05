@@ -1,20 +1,14 @@
 import { Scene } from 'phaser';
 import { SceneNames } from './scenes.enum';
 
-export default class BootScene extends Scene
-{
-    constructor ()
-    {
-        super(SceneNames.BOOT);
-    }
+export default class BootScene extends Scene {
+  constructor() {
+    super(SceneNames.BOOT);
+  }
 
-    preload ()
-    {
-        
-    }
+  preload() {}
 
-    create ()
-    {
-        this.scene.start(SceneNames.PRELOADER);
-    }
+  create() {
+    this.scene.start(SceneNames.PRELOADER);
+  }
 }

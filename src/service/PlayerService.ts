@@ -1,39 +1,39 @@
-import { playerData } from "./player.types";
+import { playerData } from './player.types';
 
 class PlayerService {
-    data: playerData;
+  data: playerData;
 
-    constructor() {
-        this.data = {
-            name: this.generateRandomName(),
-            icon: this.getRandomIcon()
-        }
-    }
+  constructor() {
+    this.data = {
+      name: this.generateRandomName(),
+      icon: this.getRandomIcon(),
+    };
+  }
 
-    generateRandomName(): string {
-        return `player${Math.floor(Math.random() * 100000)}`
-    }
+  generateRandomName(): string {
+    return `player${Math.floor(Math.random() * 100000)}`;
+  }
 
-    getRandomIcon(): string {
-        return `profile${Math.floor(Math.random() * 10) + 1}`
-    }
+  getRandomIcon(): string {
+    return `profile${Math.floor(Math.random() * 10) + 1}`;
+  }
 
-    setIcon(texture: string) {
-        this.data.icon = texture
-    }
+  setIcon(texture: string) {
+    this.data.icon = texture;
+  }
 
-    getIcon() {
-        return this.data.icon
-    }
+  getIcon() {
+    return this.data.icon;
+  }
 
-    getName() {
-        return this.data.name
-    }
+  getName() {
+    return this.data.name;
+  }
 
-    setName(name: string) {
-        this.data.name = name
-    }
+  setName(name: string) {
+    this.data.name = name;
+  }
 }
 
 const playerService = new PlayerService();
-export default playerService
+export default playerService;

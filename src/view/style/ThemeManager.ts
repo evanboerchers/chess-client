@@ -17,14 +17,14 @@ export interface UITheme {
   bannerColour: number;
   button: {
     default: {
-      stroke: number, 
-      fill: number,
-    },
+      stroke: number;
+      fill: number;
+    };
     active: {
-      stroke: number, 
-      fill: number,
-    }
-  }
+      stroke: number;
+      fill: number;
+    };
+  };
 }
 
 const defaultTheme: Theme = {
@@ -41,15 +41,15 @@ const defaultTheme: Theme = {
     bannerColour: 0x222222,
     button: {
       default: {
-        stroke: 0x332233, 
+        stroke: 0x332233,
         fill: 0x223322,
       },
       active: {
-        stroke: 0x332233, 
-        fill: 0x222222
-      }
-    }
-  }
+        stroke: 0x332233,
+        fill: 0x222222,
+      },
+    },
+  },
 };
 
 export class ThemeManager {
