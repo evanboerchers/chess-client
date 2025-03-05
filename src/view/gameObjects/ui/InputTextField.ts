@@ -37,18 +37,18 @@ export default class InputTextField extends Phaser.GameObjects.Container {
         }
         this.textValue = properties.placeholderTextValue || '';
         this.createBackground();
+        this.createActiveHighlight();
         this.background.setInteractive(
             {
-                hitArea: new Phaser.Geom.Rectangle(-this.properties.width/2, -this.properties.height/2, this.properties.width, this.height), 
+                hitArea: new Phaser.Geom.Rectangle(-this.properties.width/2, -this.properties.height/2, this.properties.width, this.properties.height), 
                 hitAreaCallback: Phaser.Geom.Rectangle.Contains,
                 useHandCursor: true,
             }
         );
-        this.background.on('pointerdown', () => {
-            this.activate();
-        });
+        this.background.on(Phaser.Input.Events.POINTER_DOWN, this.handleBackgroundClick, this);
         this.createText();
         this.scene.add.existing(this);
+        this.deactivate();
     }
 
     createBackground(): void {
@@ -62,9 +62,9 @@ export default class InputTextField extends Phaser.GameObjects.Container {
     
     createActiveHighlight(): void {
         this.highlight = this.scene.add.graphics();
-        this.highlight.lineStyle(1, 0xffffff);
-        this.highlight.fillRoundedRect(0, 0, this.properties.width, this.properties.height, 8);
-        this.highlight.strokeRoundedRect(0, 0, this.properties.width, this.properties.height, 8);
+        this.highlight.lineStyle(2, 0x00ff00);
+        this.highlight.fillRoundedRect(-this.properties.width/2, -this.properties.height/2, this.properties.width, this.properties.height, 8);
+        this.highlight.strokeRoundedRect(-this.properties.width/2, -this.properties.height/2, this.properties.width, this.properties.height, 8);
         this.add(this.highlight);
     }
 
@@ -73,15 +73,24 @@ export default class InputTextField extends Phaser.GameObjects.Container {
             0, 
             0, 
             'placeholder',
-            
+            this.properties.textStyle            
         );
         this.text.setOrigin(0.5);
         this.add(this.text);
     }
 
+    private handleBackgroundClick(pointer: Phaser.Input.Pointer): void {
+        pointer.event.stopPropagation();
+        if (!this.inputActive) {
+            this.activate();
+        }
+    }
+
     public activate(): void {
+        console.log("Text input activated")
         this.inputActive = true;
         this.highlight.visible = true;
+        this.scene.input.on(Phaser.Input.Events.POINTER_DOWN, this.handleGlobalClick, this);
         if (this.textValue === '') {
             this.text.setText('|');
         } else {
@@ -90,7 +99,29 @@ export default class InputTextField extends Phaser.GameObjects.Container {
         this.scene.input.keyboard?.on('keydown', this.handleKeyPress, this);
     }
 
+    private handleGlobalClick = (pointer: Phaser.Input.Pointer) => {
+        // Check if the click is outside the input field
+        const localPoint = this.background.getLocalPoint(pointer.x, pointer.y);
+        const isInside = Phaser.Geom.Rectangle.Contains(
+            new Phaser.Geom.Rectangle(
+                -this.properties.width/2, 
+                -this.properties.height/2, 
+                this.properties.width, 
+                this.properties.height
+            ), 
+            localPoint.x, 
+            localPoint.y
+        );
+
+        // Only deactivate if clicked outside the input field
+        if (!isInside) {
+            this.deactivate();
+        }
+    }
+    
     public deactivate(): void {
+        console.log("Text input deactivated")
+        this.scene.input.off(Phaser.Input.Events.POINTER_DOWN, this.handleGlobalClick)
         this.inputActive = false;
         this.highlight.visible = false;
         // Update displayed text

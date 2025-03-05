@@ -1,5 +1,5 @@
 import { Input } from "phaser";
-import { playerNameText } from "../../style/textStyle";
+import { customizationLabelText, playerNameText } from "../../style/textStyle";
 import ThemeManager from "../../style/ThemeManager";
 import InputTextField, { defaultProperties as inputTextFieldDefaultProperties, InputTextFieldProperties } from "./InputTextField";
 import IconSelectionGrid, { defaultProperties as iconSelectionGridDefaultProperties, IconSelectionGridProperties } from "./IconSelectionGrid";
@@ -14,6 +14,7 @@ export interface PlayerCustomModalProperties {
     cornerRadius?: number;
     playerNameInput?: InputTextFieldProperties
     iconSelectionGrid?: IconSelectionGridProperties
+    labelTextStyle?: Phaser.Types.GameObjects.Text.TextStyle
 }
 
 export const defaultProperties: Required<PlayerCustomModalProperties> = {
@@ -26,6 +27,7 @@ export const defaultProperties: Required<PlayerCustomModalProperties> = {
     cornerRadius: 16,
     playerNameInput: inputTextFieldDefaultProperties,
     iconSelectionGrid: iconSelectionGridDefaultProperties,
+    labelTextStyle: customizationLabelText
 }
 
 export default class PlayerCustomModal extends Phaser.GameObjects.Container {
@@ -38,8 +40,6 @@ export default class PlayerCustomModal extends Phaser.GameObjects.Container {
     constructor(scene: Phaser.Scene, x: number, y: number, properties: PlayerCustomModalProperties = {}) {
         super(scene, x, y);
         this.scene = scene;
-        
-        // Default options with TypeScript type safety
         this.properties = {
             ...defaultProperties,
             ...properties
@@ -50,7 +50,7 @@ export default class PlayerCustomModal extends Phaser.GameObjects.Container {
         this.createTextInput();
         this.createIconSelectionGrid();
         this.add(this.contentContainer);
-           scene.add.existing(this);
+        scene.add.existing(this);
     }
     
     private createBackground(): void {
@@ -64,14 +64,14 @@ export default class PlayerCustomModal extends Phaser.GameObjects.Container {
     }
     
     private createTextInput(): void {
-        const label = this.scene.add.text(0, 25, 'Player Name').setOrigin(0.5)
-        this.playerNameInput = new InputTextField(this.scene, 0, 60, this.properties.playerNameInput)
+        const label = this.scene.add.text(0, 25, 'Player Name', this.properties.labelTextStyle).setOrigin(0.5)
+        this.playerNameInput = new InputTextField(this.scene, 0, 75, this.properties.playerNameInput)
         this.contentContainer.add([this.playerNameInput, label])
     }
 
     private createIconSelectionGrid(): void {
-        const label = this.scene.add.text(0, 125, 'Player Icon').setOrigin(0.5)
-        this.iconSelectionGrid = new IconSelectionGrid(this.scene, 0, 0, this.properties.iconSelectionGrid);
+        const label = this.scene.add.text(0, 150, 'Player Icon', this.properties.labelTextStyle).setOrigin(0.5)
+        this.iconSelectionGrid = new IconSelectionGrid(this.scene, 0, 170, this.properties.iconSelectionGrid);
         this.contentContainer.add([this.iconSelectionGrid, label])
     }
 }

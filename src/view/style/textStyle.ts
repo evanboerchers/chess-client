@@ -11,7 +11,6 @@ export const menuText: TextStyle = {
     align: "center",
 }
 
-
 export const menuText_Hover: TextStyle = {
     fontFamily: MAIN_FONT,
     fontSize: 30,
@@ -42,6 +41,15 @@ export const buttonDefaultText: TextStyle = {
 export const panelButtonText: TextStyle = {
     fontFamily: MAIN_FONT,
     fontSize: 14,
+    strokeThickness: 2,
+    stroke: "#000000",
+    color: "#ffffff",
+    align: "center",
+}
+
+export const customizationLabelText: TextStyle = {
+    fontFamily: MAIN_FONT,
+    fontSize: 17,
     strokeThickness: 2,
     stroke: "#000000",
     color: "#ffffff",
