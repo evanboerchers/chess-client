@@ -3,6 +3,7 @@ import { customizationLabelText, playerNameText } from "../../style/textStyle";
 import ThemeManager from "../../style/ThemeManager";
 import InputTextField, { defaultProperties as inputTextFieldDefaultProperties, InputTextFieldProperties } from "./InputTextField";
 import IconSelectionGrid, { defaultProperties as iconSelectionGridDefaultProperties, IconSelectionGridProperties } from "./IconSelectionGrid";
+import playerService from "../../../service/PlayerService";
 
 export interface PlayerCustomModalProperties {
     width?: number
@@ -33,7 +34,7 @@ export const defaultProperties: Required<PlayerCustomModalProperties> = {
 export default class PlayerCustomModal extends Phaser.GameObjects.Container {
     private properties: Required<PlayerCustomModalProperties>;
     private contentContainer: Phaser.GameObjects.Container;
-    private background: Phaser.GameObjects.Graphics;
+    public background: Phaser.GameObjects.Graphics;
     private playerNameInput: InputTextField;
     private iconSelectionGrid: IconSelectionGrid;
 
@@ -51,6 +52,7 @@ export default class PlayerCustomModal extends Phaser.GameObjects.Container {
         this.createIconSelectionGrid();
         this.add(this.contentContainer);
         scene.add.existing(this);
+        this.blockClickThrough();
     }
     
     private createBackground(): void {
@@ -62,10 +64,22 @@ export default class PlayerCustomModal extends Phaser.GameObjects.Container {
         this.background.strokeRoundedRect(-this.properties.width/2, -this.properties.height/2, this.properties.width, this.properties.height, this.properties.cornerRadius);
         this.add(this.background);
     }
+
+    private blockClickThrough() {
+        this.background.setInteractive(
+            {
+                hitArea: new Phaser.Geom.Rectangle(-this.properties.width/2, -this.properties.height/2, this.properties.width, this.properties.height), 
+                hitAreaCallback: Phaser.Geom.Rectangle.Contains,
+            }
+        );
+        this.background.on(Phaser.Input.Events.POINTER_DOWN, (pointer: Phaser.Input.Pointer) => {
+          pointer.event.stopPropagation()
+        });
+    }
     
     private createTextInput(): void {
         const label = this.scene.add.text(0, 25, 'Player Name', this.properties.labelTextStyle).setOrigin(0.5)
-        this.playerNameInput = new InputTextField(this.scene, 0, 75, this.properties.playerNameInput)
+        this.playerNameInput = new InputTextField(this.scene, 0, 75, { ...this.properties.playerNameInput, placeholderTextValue: playerService.getName() }, (text: string) => {playerService.setName(text)})
         this.contentContainer.add([this.playerNameInput, label])
     }
 

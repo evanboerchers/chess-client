@@ -1,3 +1,5 @@
+import playerService from "../../../service/PlayerService"
+
 export interface IconSelectionGridProperties {
     iconsPerRow?: number
     iconPadding?: number
@@ -11,7 +13,7 @@ export const defaultProperties: Required<IconSelectionGridProperties> = {
     iconsPerRow: 5,
     iconPadding: 10,
     iconSize: 75,
-    outlineColour: 0xffffff,
+    outlineColour: 0x00ff00,
     outlineThickness: 4,
     texturePrefix: 'profile'
 }
@@ -28,6 +30,7 @@ export default class IconSelectionGrid extends Phaser.GameObjects.Container {
             ...defaultProperties,
             ...properties
         }
+        this.selectedIconKey = playerService.getIcon();
         this.icons = new Map();
         this.createProfileIconsGrid();
     }
@@ -88,5 +91,6 @@ export default class IconSelectionGrid extends Phaser.GameObjects.Container {
         this.selectedIconKey = key;
         const outline = this.icons.get(key)?.outlineGraphic
         if (outline) outline.visible = true
+        playerService.setIcon(key);
     }
 }

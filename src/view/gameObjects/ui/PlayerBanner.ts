@@ -9,9 +9,9 @@ export interface BannerProperties {
 }
 
 export default class PlayerBanner extends Phaser.GameObjects.Container {
-    background: Phaser.GameObjects.Sprite;
-    icon: Phaser.GameObjects.Image;
-    nameText: Phaser.GameObjects.Text;
+    public background: Phaser.GameObjects.Sprite;
+    private icon: Phaser.GameObjects.Image;
+    private nameText: Phaser.GameObjects.Text;
 
     constructor(
         scene: Phaser.Scene,
@@ -46,5 +46,13 @@ export default class PlayerBanner extends Phaser.GameObjects.Container {
         background.destroy()
         this.background = this.scene.add.sprite(0,0, texture).setOrigin(0.5).setName(texture)
         this.add(this.background)
+    }
+
+    setPlayerName(text: string) {
+        this.nameText.text = text
+    }
+
+    setPlayerIcon(icon: string) {
+        this.icon.setTexture(icon)
     }
 }

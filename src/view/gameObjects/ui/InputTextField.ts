@@ -19,7 +19,7 @@ export const defaultProperties: Required<InputTextFieldProperties> = {
     textStyle: playerNameText,
     placeholderTextValue: 'placeholder',
     minCharLength: 5,
-    maxCharLength: 20,
+    maxCharLength: 12,
 }
 
 export default class InputTextField extends Phaser.GameObjects.Container {
@@ -29,13 +29,15 @@ export default class InputTextField extends Phaser.GameObjects.Container {
     public inputActive: boolean;
     public text: Phaser.GameObjects.Text;
     public textValue: string;
-    constructor(scene: Phaser.Scene, x: number, y: number, properties: InputTextFieldProperties = {}) {
+    private onChange: (text: string) => void
+    constructor(scene: Phaser.Scene, x: number, y: number, properties: InputTextFieldProperties = {}, onChange: (text: string) => void = ()=> {}) {
         super(scene, x, y);
         this.properties = {
             ...defaultProperties,
             ...properties
         }
         this.textValue = properties.placeholderTextValue || '';
+        this.onChange = onChange;
         this.createBackground();
         this.createActiveHighlight();
         this.background.setInteractive(
@@ -91,16 +93,11 @@ export default class InputTextField extends Phaser.GameObjects.Container {
         this.inputActive = true;
         this.highlight.visible = true;
         this.scene.input.on(Phaser.Input.Events.POINTER_DOWN, this.handleGlobalClick, this);
-        if (this.textValue === '') {
-            this.text.setText('|');
-        } else {
-            this.text.setText(this.textValue + '|');
-        }
+        this.setText(this.textValue); 
         this.scene.input.keyboard?.on('keydown', this.handleKeyPress, this);
     }
 
     private handleGlobalClick = (pointer: Phaser.Input.Pointer) => {
-        // Check if the click is outside the input field
         const localPoint = this.background.getLocalPoint(pointer.x, pointer.y);
         const isInside = Phaser.Geom.Rectangle.Contains(
             new Phaser.Geom.Rectangle(
@@ -112,8 +109,6 @@ export default class InputTextField extends Phaser.GameObjects.Container {
             localPoint.x, 
             localPoint.y
         );
-
-        // Only deactivate if clicked outside the input field
         if (!isInside) {
             this.deactivate();
         }
@@ -126,38 +121,31 @@ export default class InputTextField extends Phaser.GameObjects.Container {
         this.highlight.visible = false;
         // Update displayed text
         if (this.textValue === '') {
-            this.text.setText(this.properties.placeholderTextValue);
+            this.setText(this.properties.placeholderTextValue);
         } else {
-            this.text.setText(this.textValue);
+            this.setText(this.textValue);
         }
-        
-        // Remove keyboard listener
         this.scene.input.keyboard?.off('keydown', this.handleKeyPress, this);
     }
 
     private handleKeyPress(event: KeyboardEvent): void {
         if (!this.inputActive) return;
         
-        // Handle backspace
         if (event.keyCode === Phaser.Input.Keyboard.KeyCodes.BACKSPACE) {
-            this.textValue = this.textValue.slice(0, -1);
+                this.textValue = this.textValue.slice(0, -1);
         }
-        // Handle Enter key to deactivate input
         else if (event.keyCode === Phaser.Input.Keyboard.KeyCodes.ENTER) {
             if (this.textValue.length >= this.properties.minCharLength) {
                 this.deactivate();
             }
         }
-        // Handle regular text input
         else if ((event.keyCode >= Phaser.Input.Keyboard.KeyCodes.A && 
                   event.keyCode <= Phaser.Input.Keyboard.KeyCodes.Z) || 
                  (event.keyCode >= Phaser.Input.Keyboard.KeyCodes.ZERO && 
                   event.keyCode <= Phaser.Input.Keyboard.KeyCodes.NINE) ||
                  event.keyCode === Phaser.Input.Keyboard.KeyCodes.SPACE) {
             
-            // Only add character if we're under max length
             if (this.textValue.length < this.properties.maxCharLength) {
-                // Get the actual character from keycode
                 let char = '';
                 if (event.keyCode === Phaser.Input.Keyboard.KeyCodes.SPACE) {
                     char = ' ';
@@ -165,7 +153,6 @@ export default class InputTextField extends Phaser.GameObjects.Container {
                            event.keyCode <= Phaser.Input.Keyboard.KeyCodes.NINE) {
                     char = String.fromCharCode(event.keyCode);
                 } else {
-                    // Handle shift key for uppercase
                     if (event.shiftKey) {
                         char = String.fromCharCode(event.keyCode);
                     } else {
@@ -175,6 +162,11 @@ export default class InputTextField extends Phaser.GameObjects.Container {
                 this.textValue += char;
             }
         }
-        this.text.setText(this.textValue + '|');
+        this.setText(this.textValue);
+    }
+
+    setText(text: string) {
+        this.text.setText(text)
+        this.onChange(text)
     }
 }

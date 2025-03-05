@@ -1,8 +1,8 @@
 import { PieceColour } from "@evanboerchers/chess-core";
 import PlayerBanner from "../../gameObjects/ui/PlayerBanner";
 import SidebarScene from "./SidebarScene";
-import ThemeManager from "../../style/ThemeManager";
 import Button, { ButtonProperties } from "../../gameObjects/ui/Button";
+import playerService from "../../../service/PlayerService";
 
 export default class QueueSidebarScene extends SidebarScene {
     private queueContainer: Phaser.GameObjects.Container; 
@@ -33,6 +33,11 @@ export default class QueueSidebarScene extends SidebarScene {
         this.animateSearchText();
     }
 
+    update(time: number, delta: number): void {
+        this.banner.setPlayerName(playerService.getName());
+        this.banner.setPlayerIcon(playerService.getIcon());
+    }
+
     createPlayerBanner() {
         this.banner = new PlayerBanner(this, 0, -100, {
             playerName: "profile1",
@@ -47,18 +52,8 @@ export default class QueueSidebarScene extends SidebarScene {
     }
 
     createQueueButton() {
-        // const width = 100
-        // const height = 20
-        // const radius = 10
-        // const background = this.add.graphics();
-        // background.lineStyle(4, ThemeManager.getTheme().ui.button.default.stroke)
-        // background.strokeRoundedRect(-width/2, -height/2, width, height, radius)
-        // background.fillStyle(ThemeManager.getTheme().ui.button.default.fill) 
-        // background.fillRoundedRect(-width/2, -height/2, width, height, radius)
         const buttonProps: ButtonProperties = {
             text:"Queue",
-            // background: background,
-            // hitArea: new Phaser.Geom.Rectangle(-width/2, -height/2, width, height),
             callback: () => {
             this.handleQueueClick()
         }}

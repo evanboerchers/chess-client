@@ -1,6 +1,7 @@
 import { PieceColour } from "@evanboerchers/chess-core";
 import PlayerPanel, { PanelProperties } from "../../gameObjects/ui/PlayerPanel";
 import SidebarScene from "./SidebarScene";
+import { SceneNames } from "../scenes.enum";
 
 export interface GameSideBarSceneData {
     whiteProps: PanelProperties

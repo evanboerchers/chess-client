@@ -1,11 +1,11 @@
 import { Scene } from 'phaser';
-import { defaultInitData } from './sidebar/GameSidebarScene';
+import { SceneNames } from './scenes.enum';
 
 export default class PreloaderScene extends Scene
 {
     constructor ()
     {
-        super('Preloader');
+        super(SceneNames.PRELOADER);
     }
 
     init ()
@@ -64,10 +64,7 @@ export default class PreloaderScene extends Scene
     
     create ()
     {
-        this.scene.start('Board');
-        // this.scene.start('MenuSidebar')
-        this.scene.start('QueueSidebar')
-        this.scene.start('PlayerCustom')
-        // this.scene.start('GameSidebar', defaultInitData);
+        this.scene.start(SceneNames.BOARD);
+        this.scene.start(SceneNames.MENU_SIDEBAR)
     }
 }
