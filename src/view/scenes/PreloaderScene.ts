@@ -52,6 +52,14 @@ export default class PreloaderScene extends Scene
         this.load.setPath('assets/profile');
         this.load.image('profile1', 'profile_1.webp');
         this.load.image('profile2', 'profile_2.webp');
+        this.load.image('profile3', 'profile_3.webp');
+        this.load.image('profile4', 'profile_3.webp');
+        this.load.image('profile5', 'profile_3.webp');
+        this.load.image('profile6', 'profile_3.webp');
+        this.load.image('profile7', 'profile_3.webp');
+        this.load.image('profile8', 'profile_3.webp');
+        this.load.image('profile9', 'profile_3.webp');
+        this.load.image('profile10', 'profile_3.webp');
     }
     
     create ()

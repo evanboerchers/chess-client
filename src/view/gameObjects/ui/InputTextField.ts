@@ -1,13 +1,25 @@
 import { playerNameText } from "../../style/textStyle";
 
-interface InputTextFieldProperties {
-    backgroundColour?: number
-    width?: number,
-    height?: number
+export interface InputTextFieldProperties {
+    backgroundColour?: number;
+    outlineColour?: number;
+    width?: number;
+    height?: number;
     textStyle?: Phaser.Types.GameObjects.Text.TextStyle;
-    maxCharLength?: number,
-    minCharLength?: number,
+    maxCharLength?: number;
+    minCharLength?: number;
     placeholderTextValue?: string;
+}
+
+export const defaultProperties: Required<InputTextFieldProperties> = {
+    backgroundColour: 0x000000,
+    outlineColour: 0xffffff,
+    width: 250,
+    height: 50,
+    textStyle: playerNameText,
+    placeholderTextValue: 'placeholder',
+    minCharLength: 5,
+    maxCharLength: 20,
 }
 
 export default class InputTextField extends Phaser.GameObjects.Container {
@@ -20,52 +32,50 @@ export default class InputTextField extends Phaser.GameObjects.Container {
     constructor(scene: Phaser.Scene, x: number, y: number, properties: InputTextFieldProperties = {}) {
         super(scene, x, y);
         this.properties = {
-            backgroundColour: 0x00000,
-            width: 100,
-            height: 20,
-            textStyle: playerNameText,
-            placeholderTextValue: 'placeholder',
-            minCharLength: 5,
-            maxCharLength: 20,
+            ...defaultProperties,
             ...properties
         }
         this.textValue = properties.placeholderTextValue || '';
-        this.scene.add.existing(this);
-
+        this.createBackground();
         this.background.setInteractive(
-            new Phaser.Geom.Rectangle(0, 0, this.properties.width, this.height), 
-            Phaser.Geom.Rectangle.Contains
+            {
+                hitArea: new Phaser.Geom.Rectangle(-this.properties.width/2, -this.properties.height/2, this.properties.width, this.height), 
+                hitAreaCallback: Phaser.Geom.Rectangle.Contains,
+                useHandCursor: true,
+            }
         );
         this.background.on('pointerdown', () => {
             this.activate();
         });
+        this.createText();
+        this.scene.add.existing(this);
     }
 
     createBackground(): void {
         this.background = this.scene.add.graphics();
-        this.background.fillStyle(0x000000, 0.5);
+        this.background.fillStyle(0x000000, 1);
         this.background.lineStyle(1, 0xffffff);
-        this.background.fillRoundedRect(0, 0, this.properties.width, this.height, 8);
-        this.background.strokeRoundedRect(0, 0, this.properties.width, this.properties.height, 8);
+        this.background.fillRoundedRect(-this.properties.width/2, -this.properties.height/2, this.properties.width, this.properties.height, 8);
+        this.background.strokeRoundedRect(-this.properties.width/2, -this.properties.height/2, this.properties.width, this.properties.height, 8);
         this.add(this.background);
     }
     
     createActiveHighlight(): void {
         this.highlight = this.scene.add.graphics();
         this.highlight.lineStyle(1, 0xffffff);
-        this.highlight.fillRoundedRect(0, 0, this.properties.width, this.height, 8);
+        this.highlight.fillRoundedRect(0, 0, this.properties.width, this.properties.height, 8);
         this.highlight.strokeRoundedRect(0, 0, this.properties.width, this.properties.height, 8);
         this.add(this.highlight);
     }
 
     createText(): void {
         this.text = this.scene.add.text(
-            10, 
-            this.properties.height / 2, 
+            0, 
+            0, 
             'placeholder',
             
         );
-        this.text.setOrigin(0, 0.5);
+        this.text.setOrigin(0.5);
         this.add(this.text);
     }
 
@@ -103,7 +113,7 @@ export default class InputTextField extends Phaser.GameObjects.Container {
         }
         // Handle Enter key to deactivate input
         else if (event.keyCode === Phaser.Input.Keyboard.KeyCodes.ENTER) {
-            if (this.textValue.length >= this.properties.minNameLength) {
+            if (this.textValue.length >= this.properties.minCharLength) {
                 this.deactivate();
             }
         }
@@ -115,7 +125,7 @@ export default class InputTextField extends Phaser.GameObjects.Container {
                  event.keyCode === Phaser.Input.Keyboard.KeyCodes.SPACE) {
             
             // Only add character if we're under max length
-            if (this.textValue.length < this.properties.maxTextLength) {
+            if (this.textValue.length < this.properties.maxCharLength) {
                 // Get the actual character from keycode
                 let char = '';
                 if (event.keyCode === Phaser.Input.Keyboard.KeyCodes.SPACE) {
