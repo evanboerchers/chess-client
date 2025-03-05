@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
 import Piece from './Piece';
-import ThemeManager from '../ThemeManager';
+import ThemeManager from '../../style/ThemeManager';
 import { Position } from '@evanboerchers/chess-core';
 
 export enum SquareColour {
@@ -58,8 +58,8 @@ export default class BoardSquare extends Phaser.GameObjects.Container {
   }
 
   public removePiece() {
-    if(this._piece) {
-      this.remove(this._piece)
+    if (this._piece) {
+      this.remove(this._piece);
       this._piece = undefined;
     }
   }
@@ -82,27 +82,5 @@ export default class BoardSquare extends Phaser.GameObjects.Container {
 
   public clearHighlight() {
     this.background.setFillStyle(this.getBackgroundColour());
-  }
-
-  public interactive(on: boolean) {
-    if (on) {
-      this.registerClick();
-      this.setInteractive({ useHandCursor: true });
-    } else {
-      this.deregisterClick();
-      this.setInteractive(false);
-    }
-  }
-
-  private handleClick() {
-    this.emit('click', this);
-  }
-
-  private deregisterClick() {
-    this.off('pointerdown', this.handleClick, this);
-  }
-
-  private registerClick() {
-    this.on('pointerdown', this.handleClick, this);
   }
 }

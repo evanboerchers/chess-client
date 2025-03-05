@@ -1,17 +1,23 @@
-import { ChessGame, Move, PieceColour, PieceType, Position } from '@evanboerchers/chess-core';
-import { Game } from '../view/scenes/Game';
+import {
+  ChessGame,
+  Move,
+  PieceColour,
+  PieceType,
+  Position,
+} from '@evanboerchers/chess-core';
+import BoardScene from '../view/scenes/BoardScene';
 import { Agent, AgentCallbacks } from './agent/Agent.types';
-import ClientLocalAgent  from './agent/ClientLocalAgent';
+import ClientLocalAgent from './agent/ClientLocalAgent';
 
 export default class GameController {
-  gameScene: Game;
+  gameScene: BoardScene;
   gameModel: ChessGame;
   whiteAgent: Agent;
   blackAgent: Agent;
   _currentPlayer: Agent;
   _selectedPiece: Position | null = null;
 
-  constructor(gameScene: Game) {
+  constructor(gameScene: BoardScene) {
     this.gameScene = gameScene;
     this.gameModel = new ChessGame();
   }
@@ -22,21 +28,13 @@ export default class GameController {
     this.changeTurn();
   }
 
-  handleResign(colour: PieceColour) {
+  handleResign(colour: PieceColour) {}
 
-  }
+  handleDrawOffer(colour: PieceColour) {}
 
-  handleDrawOffer(colour: PieceColour) {
-    
-  }
+  handleDrawAccepted() {}
 
-  handleDrawAccepted() {
-
-  }
-
-  handleDrawDeclined() {
-
-  }
+  handleDrawDeclined() {}
 
   createAgents() {
     const whiteCallbacks: AgentCallbacks = {
@@ -45,16 +43,24 @@ export default class GameController {
       offerDraw: () => this.handleDrawOffer(PieceColour.WHITE),
       drawAccepted: () => this.handleDrawAccepted(),
       drawDeclined: () => this.handleDrawDeclined(),
-    }
-    this.whiteAgent = new ClientLocalAgent(whiteCallbacks, PieceColour.WHITE, this.gameScene.boardInputController);
+    };
+    this.whiteAgent = new ClientLocalAgent(
+      whiteCallbacks,
+      PieceColour.WHITE,
+      this.gameScene.boardInputController
+    );
     const blackCallbacks: AgentCallbacks = {
-        moveMade: (move: Move) => this.handleMove(move),
-        resign: () => this.handleResign(PieceColour.WHITE),
-        offerDraw: () => this.handleDrawOffer(PieceColour.WHITE),
-        drawAccepted: () => this.handleDrawAccepted(),
-        drawDeclined: () => this.handleDrawDeclined(),
-    }
-    this.blackAgent = new ClientLocalAgent(blackCallbacks, PieceColour.BLACK, this.gameScene.boardInputController);
+      moveMade: (move: Move) => this.handleMove(move),
+      resign: () => this.handleResign(PieceColour.WHITE),
+      offerDraw: () => this.handleDrawOffer(PieceColour.WHITE),
+      drawAccepted: () => this.handleDrawAccepted(),
+      drawDeclined: () => this.handleDrawDeclined(),
+    };
+    this.blackAgent = new ClientLocalAgent(
+      blackCallbacks,
+      PieceColour.BLACK,
+      this.gameScene.boardInputController
+    );
   }
 
   startGame() {
@@ -63,7 +69,7 @@ export default class GameController {
     this.setupWhiteTurn();
   }
 
-  clearBoardHighlights() {  
+  clearBoardHighlights() {
     this.gameScene.board.clearHighlights();
   }
 
@@ -72,10 +78,10 @@ export default class GameController {
     this.whiteAgent.makeMove();
     this.blackAgent.waiting();
     console.log('setting up white turn');
-    }
+  }
 
   setupBlackTurn() {
-    this._currentPlayer = this.blackAgent
+    this._currentPlayer = this.blackAgent;
     this.blackAgent.makeMove();
     this.whiteAgent.waiting();
     console.log('setting up black turn');

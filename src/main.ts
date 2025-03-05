@@ -1,36 +1,41 @@
-import { Boot } from './view/scenes/Boot';
-import { Game as MainGame } from './view/scenes/Game';
-import { GameOver } from './view/scenes/GameOver';
-import { MainMenu } from './view/scenes/MainMenu';
-import { Preloader } from './view/scenes/Preloader';
+import BoardScene from './view/scenes/BoardScene';
+import BootScene from './view/scenes/BootScene';
+import PreloaderScene from './view/scenes/PreloaderScene';
 
-import { Game, Types } from "phaser";
+import { Game, Types } from 'phaser';
+import GameSidebarScene from './view/scenes/sidebar/GameSidebarScene';
+import QueueSidebarScene from './view/scenes/sidebar/QueueSidebarScene';
+import MenuSidebarScene from './view/scenes/sidebar/MenuSidebarScene';
+import PlayerCustomScene from './view/scenes/PlayerCustomScene';
 
 const config: Types.Core.GameConfig = {
-    type: Phaser.AUTO,
-    width: 1024,
-    height: 768,
-    parent: 'game-container',
-    backgroundColor: '#028af8',
-    scale: {
-        mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_BOTH
-    },
-    scene: [
-        Boot,
-        Preloader,
-        MainMenu,
-        MainGame,
-        GameOver
-    ]
+  type: Phaser.AUTO,
+  width: 1024,
+  height: 768,
+  parent: 'game-container',
+  backgroundColor: '#fffffff',
+  roundPixels: true,
+  scale: {
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+  },
+  scene: [
+    BootScene,
+    PreloaderScene,
+    BoardScene,
+    MenuSidebarScene,
+    QueueSidebarScene,
+    GameSidebarScene,
+    PlayerCustomScene,
+  ],
 };
 
 declare global {
-    interface Window {
-        __PHASER_GAME__: Game;
-    }
+  interface Window {
+    __PHASER_GAME__: Game;
+  }
 }
 
-const game  = new Game(config);
+const game = new Game(config);
 window.__PHASER_GAME__ = game;
-export default game
+export default game;

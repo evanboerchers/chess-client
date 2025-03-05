@@ -1,6 +1,7 @@
 export interface Theme {
   name: string;
   board: BoardTheme;
+  ui: UITheme;
 }
 
 export interface BoardTheme {
@@ -11,6 +12,21 @@ export interface BoardTheme {
   moveColour: number;
 }
 
+export interface UITheme {
+  sidebarColour: number;
+  bannerColour: number;
+  button: {
+    default: {
+      stroke: number;
+      fill: number;
+    };
+    active: {
+      stroke: number;
+      fill: number;
+    };
+  };
+}
+
 const defaultTheme: Theme = {
   name: 'default',
   board: {
@@ -19,6 +35,20 @@ const defaultTheme: Theme = {
     highlightColour: 0x0000ff,
     attackColour: 0xff0000,
     moveColour: 0x00ff00,
+  },
+  ui: {
+    sidebarColour: 0x333333,
+    bannerColour: 0x222222,
+    button: {
+      default: {
+        stroke: 0x332233,
+        fill: 0x223322,
+      },
+      active: {
+        stroke: 0x332233,
+        fill: 0x222222,
+      },
+    },
   },
 };
 
