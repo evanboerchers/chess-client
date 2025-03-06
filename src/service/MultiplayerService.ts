@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client';
 import { ServerToClientEvents, GameSocket } from './server.types';
-import { Move } from '../model/board/board.types';
-import { GameOutcome, GameState } from '@evanboerchers/chess-core';
+import { GameOutcome, GameState, Move } from '@evanboerchers/chess-core';
+import playerService from './PlayerService';
 
 export class MultiplayerService {
   private socket: GameSocket | null = null;
@@ -23,7 +23,7 @@ export class MultiplayerService {
       });
 
       this.socket.on('connect', () => {
-        console.log('Connected to game server');
+        console.log('Connected to game server, socket id:' + this.socket?.id);
         this.registerServerEvents();
         resolve();
       });
@@ -92,11 +92,19 @@ export class MultiplayerService {
   }
 
   // Client to Server events
-  public joinQueue(playerName: string): void {
+  public joinQueue(): void {
     if (!this.socket?.connected) {
       throw new Error('Socket not connected');
     }
+    const playerName = playerService.getName();
     this.socket.emit('joinQueue', playerName);
+  }
+  
+  public leaveQueue() {
+    if (!this.socket?.connected) {
+      throw new Error('Socket not connected');
+    }
+    throw new Error("Not yet implemented")
   }
 
   public makeMove(move: Move): void {
@@ -170,3 +178,6 @@ export class SocketEventError extends Error {
     this.name = 'SocketEventError';
   }
 }
+
+const multiplayerService = new MultiplayerService('http://localhost:3000')
+export default multiplayerService;
