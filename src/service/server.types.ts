@@ -3,6 +3,7 @@ import { Socket } from 'socket.io-client';
 
 export interface ServerToClientEvents {
   queueJoined: () => void;
+  queueCount: (count: number) => void;
   gameStarted: (state: GameState) => void;
   makeMove: () => void;
   waiting: () => void;

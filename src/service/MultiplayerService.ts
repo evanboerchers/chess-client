@@ -8,6 +8,7 @@ export class MultiplayerService {
   private readonly url: string;
   private readonly eventHandlers: Map<keyof ServerToClientEvents, Function[]> =
     new Map();
+  public queueCount: number;
 
   constructor(url: string) {
     this.url = url;
@@ -25,13 +26,14 @@ export class MultiplayerService {
       this.socket.on('connect', () => {
         console.log('Connected to game server, socket id:' + this.socket?.id);
         this.registerServerEvents();
+        this.on('queueCount', (count: number) => this.queueCount = count)
         resolve();
       });
 
       this.socket.on('connect_error', (error: any) => {
         console.error('Connection error:', error);
         reject(error);
-      });
+      }); 
 
       this.socket.on('disconnect', (reason: any) => {
         console.log('Disconnected:', reason);
@@ -57,6 +59,7 @@ export class MultiplayerService {
       this.emit('gameOver', result)
     );
     this.socket.on('drawDeclined', () => this.emit('drawDeclined'));
+    this.socket.on('queueCount', () => this.emit('queueCount'))
   }
 
   private emit(event: keyof ServerToClientEvents, ...args: any[]) {
