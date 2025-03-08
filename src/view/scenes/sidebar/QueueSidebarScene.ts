@@ -49,7 +49,7 @@ export default class QueueSidebarScene extends SidebarScene {
       this.searchText,
       this.button,
     ]);
-    this.registry.events.on('updateQueue', (count: number) => {
+    multiplayerService.on('queueCount', (count: number) => {
       this.countText.setText(`Players in Queue: ${count}`);
     });
     this.animateDotText(this.searchText);
@@ -61,6 +61,7 @@ export default class QueueSidebarScene extends SidebarScene {
       this.banner.setPlayerName(playerService.getName());
       this.banner.setPlayerIcon(playerService.getIcon());
     }
+  
   }
 
   createPlayerBanner() {

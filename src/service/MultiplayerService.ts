@@ -8,15 +8,32 @@ export class MultiplayerService {
   private readonly url: string;
   private readonly eventHandlers: Map<keyof ServerToClientEvents, Function[]> =
     new Map();
+  private playerId: string;
   public queueCount: number;
 
   constructor(url: string) {
     this.url = url;
   }
 
+  private loadPlayerId() {
+    this.playerId = localStorage.getItem("playerId") || crypto.randomUUID();
+    localStorage.setItem("playerId", this.playerId)
+  }
+
+  private setupLogging(): void {
+    this.socket?.onAny((event, ...args) => {
+      console.log(`⬅️ Received event "${event}"`, args);
+  });
+    this.socket?.onAnyOutgoing((event, ...args) => {
+        console.log(`➡️ Emitted event "${event}")`, args);
+    });
+  }
+
   public connect(): Promise<void> {
+    this.loadPlayerId();
     return new Promise((resolve, reject) => {
       this.socket = io(this.url, {
+        auth: {playerId: this.playerId},
         autoConnect: true,
         reconnection: true,
         reconnectionAttempts: 5,
@@ -26,7 +43,8 @@ export class MultiplayerService {
       this.socket.on('connect', () => {
         console.log('Connected to game server, socket id:' + this.socket?.id);
         this.registerServerEvents();
-        this.on('queueCount', (count: number) => this.queueCount = count)
+        this.socket?.on('queueCount', (count: number) => this.queueCount = count)
+        this.setupLogging()
         resolve();
       });
 
@@ -43,8 +61,6 @@ export class MultiplayerService {
 
   private registerServerEvents() {
     if (!this.socket) return;
-
-    // Register all server-to-client event handlers
     this.socket.on('queueJoined', () => this.emit('queueJoined'));
     this.socket.on('gameStarted', (state: GameState) =>
       this.emit('gameStarted', state)
@@ -59,7 +75,7 @@ export class MultiplayerService {
       this.emit('gameOver', result)
     );
     this.socket.on('drawDeclined', () => this.emit('drawDeclined'));
-    this.socket.on('queueCount', () => this.emit('queueCount'))
+    this.socket.on('queueCount', (count: number) => this.emit('queueCount', count))
   }
 
   private emit(event: keyof ServerToClientEvents, ...args: any[]) {
