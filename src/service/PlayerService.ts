@@ -1,7 +1,8 @@
-import { playerData } from './player.types';
+import { PlayerData } from "./server.types";
+
 
 class PlayerService {
-  data: playerData;
+  data: PlayerData;
 
   constructor() {
     this.data = {
@@ -32,6 +33,10 @@ class PlayerService {
 
   setName(name: string) {
     this.data.name = name;
+  }
+
+  getData(): PlayerData {
+    return this.data
   }
 }
 

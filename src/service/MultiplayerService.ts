@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client';
-import { ServerToClientEvents, GameSocket } from './server.types';
-import { GameOutcome, GameState, Move } from '@evanboerchers/chess-core';
+import { ServerToClientEvents, GameSocket, PlayerData } from './server.types';
+import { GameOutcome, GameState, Move, PieceColour } from '@evanboerchers/chess-core';
 import playerService from './PlayerService';
 
 export class MultiplayerService {
@@ -62,8 +62,9 @@ export class MultiplayerService {
   private registerServerEvents() {
     if (!this.socket) return;
     this.socket.on('queueJoined', () => this.emit('queueJoined'));
-    this.socket.on('gameStarted', (state: GameState) =>
-      this.emit('gameStarted', state)
+    this.socket.on('leftQueue', () => this.emit('leftQueue'));
+    this.socket.on('gameFound', (playerColour: PieceColour, opponentData: PlayerData, state: GameState) =>
+      this.emit('gameFound', playerColour, opponentData, state)
     );
     this.socket.on('makeMove', () => this.emit('makeMove'));
     this.socket.on('waiting', () => this.emit('waiting'));
@@ -110,20 +111,26 @@ export class MultiplayerService {
     }
   }
 
-  // Client to Server events
   public joinQueue(): void {
     if (!this.socket?.connected) {
       throw new Error('Socket not connected');
     }
-    const playerName = playerService.getName();
-    this.socket.emit('joinQueue', playerName);
+    const playerData = playerService.getData();
+    this.socket.emit('joinQueue', playerData);
   }
   
   public leaveQueue() {
     if (!this.socket?.connected) {
       throw new Error('Socket not connected');
     }
-    throw new Error("Not yet implemented")
+    this.socket.emit('leaveQueue')
+  }
+  
+  public gameReady() {
+    if (!this.socket?.connected) {
+      throw new Error('Socket not connected');
+    }
+    this.socket.emit('gameReady')
   }
 
   public makeMove(move: Move): void {

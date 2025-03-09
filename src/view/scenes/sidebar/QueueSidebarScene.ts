@@ -1,10 +1,14 @@
-import { PieceColour } from '@evanboerchers/chess-core';
-import PlayerBanner from '../../gameObjects/ui/PlayerBanner';
+import { GameState, PieceColour } from '@evanboerchers/chess-core';
+import PlayerBanner, { BannerProperties } from '../../gameObjects/ui/PlayerBanner';
 import SidebarScene from './SidebarScene';
 import Button, { ButtonProperties } from '../../gameObjects/ui/Button';
 import playerService from '../../../service/PlayerService';
 import multiplayerService from '../../../service/MultiplayerService';
 import { menuInfoText } from '../../style/textStyle';
+import { SceneNames } from '../scenes.enum';
+import { GameSideBarSceneData } from './GameSidebarScene';
+import { PlayerData } from '../../../service/server.types';
+import { PanelProperties } from '../../gameObjects/ui/PlayerPanel';
 
 export default class QueueSidebarScene extends SidebarScene {
   private queueContainer: Phaser.GameObjects.Container;
@@ -54,6 +58,12 @@ export default class QueueSidebarScene extends SidebarScene {
     });
     this.animateDotText(this.searchText);
     this.registerServerEvents();
+    this.events.on('shutdown', () => {
+      this.derigisterServerEvents();
+    })
+    this.events.on('destroy', () => {
+      this.derigisterServerEvents();
+    })
   }
 
   update(time: number, delta: number): void {
@@ -132,22 +142,51 @@ export default class QueueSidebarScene extends SidebarScene {
 
   private registerServerEvents() {
     multiplayerService.on('queueJoined', this.handleQueueJoined)
-
+    multiplayerService.on('leftQueue', this.handleLeftQueue)
+    multiplayerService.on('gameFound', this.handleGameFound)
   }
-
-  private deregisterServerEvets() {
-
+  
+  private derigisterServerEvents() {
+    multiplayerService.off('queueJoined', this.handleQueueJoined)
+    multiplayerService.off('leftQueue', this.handleLeftQueue)
+    multiplayerService.on('gameFound', this.handleGameFound)
   }
   
   private handleQueueJoined = () =>  {
     console.log("Queue Joined")
     this.setToQueuedState()
   }
-
+  
   private handleLeftQueue = () => {
+    console.log("Left Queue")
     this.setToWaitState()
   }
 
+  private handleGameFound = (playerColour: PieceColour, oppData: PlayerData, state: GameState) => {
+    console.log("Game Found")
+    const isPlayerWhite = playerColour === PieceColour.WHITE
+    const playerProps: PanelProperties = {
+      bannerProps: {
+        colour: playerColour,
+        playerName: playerService.data.name,
+        iconTexture: playerService.data.icon
+      },
+      showButtons: true
+    }
+    const oppProps: PanelProperties = {
+      bannerProps: {
+        colour: isPlayerWhite ? PieceColour.BLACK : PieceColour.WHITE,
+        playerName: oppData.name,
+        iconTexture: oppData.icon
+      },
+      showButtons: false
+    } 
+    const data: GameSideBarSceneData = {
+      whiteProps: isPlayerWhite ? playerProps : oppProps,
+      blackProps: !isPlayerWhite ? playerProps : oppProps
+    }
+    this.scene.start(SceneNames.GAME_SIDEBAR, data)
+  }
 
   handleQueueClick() {
     if (this.queued) {

@@ -3,6 +3,7 @@ import Board from '../gameObjects/board/Board';
 import GameController from '../../control/GameController';
 import { Board as BoardData } from '@evanboerchers/chess-core';
 import BoardInputController from '../../control/BoardInputController';
+import { SceneNames } from './scenes.enum';
 
 export default class BoardScene extends Scene {
   board: Board;
@@ -12,7 +13,7 @@ export default class BoardScene extends Scene {
   boardInputController: BoardInputController;
 
   constructor() {
-    super('Board');
+    super(SceneNames.BOARD);
     this.controller = new GameController(this);
   }
 
