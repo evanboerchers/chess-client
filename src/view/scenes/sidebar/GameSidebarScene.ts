@@ -3,6 +3,7 @@ import PlayerPanel, { PanelProperties } from '../../gameObjects/ui/PlayerPanel';
 import SidebarScene from './SidebarScene';
 import { SceneNames } from '../scenes.enum';
 import BoardScene from '../BoardScene';
+import gameController from '../../../control/GameController';
 
 export interface GameSideBarSceneData {
   whiteProps: PanelProperties;
@@ -32,12 +33,14 @@ export default class GameSidebarScene extends SidebarScene {
   initData: GameSideBarSceneData;
   whitePanel: PlayerPanel;
   blackPanel: PlayerPanel;
+  
   constructor() {
-    super('GameSidebar');
+    super(SceneNames.GAME_SIDEBAR);
   }
 
   init(data: GameSideBarSceneData) {
     this.initData = data;
+    gameController.setGameSidebarScene(this)
   }
 
   create(): void {

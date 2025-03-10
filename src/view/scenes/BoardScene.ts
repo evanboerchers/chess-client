@@ -1,32 +1,33 @@
 import { Scene } from 'phaser';
 import Board from '../gameObjects/board/Board';
-import GameController from '../../control/GameController';
 import { Board as BoardData } from '@evanboerchers/chess-core';
 import BoardInputController from '../../control/BoardInputController';
 import { SceneNames } from './scenes.enum';
+import gameController from '../../control/GameController';
 
 export default class BoardScene extends Scene {
   board: Board;
   camera: Phaser.Cameras.Scene2D.Camera;
   background: Phaser.GameObjects.Image;
-  controller: GameController;
   boardInputController: BoardInputController;
 
   constructor() {
     super(SceneNames.BOARD);
-    this.controller = new GameController(this);
+  }
+
+  init() {
+    gameController.setBoardScene(this)
   }
 
   create() {
     this.camera = this.cameras.main;
     this.camera.setBackgroundColor('#b88f77');
-    this.createBoard(this.controller.gameModel.board);
+    this.createBoard(gameController.gameModel.board);
     this.createUi();
     this.boardInputController = new BoardInputController(
       this.board,
-      this.controller.gameModel
+      gameController.gameModel
     );
-    this.controller.startGame();
   }
 
   createUi() {

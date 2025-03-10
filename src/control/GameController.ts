@@ -8,18 +8,30 @@ import {
 import BoardScene from '../view/scenes/BoardScene';
 import { Agent, AgentCallbacks } from './agent/Agent.types';
 import ClientLocalAgent from './agent/ClientLocalAgent';
+import GameSidebarScene from '../view/scenes/sidebar/GameSidebarScene';
+import SidebarScene from '../view/scenes/sidebar/SidebarScene';
+import Piece from '../view/gameObjects/board/Piece';
+import ClientMultiplayerAgent from './agent/ClientMultiplayerAgent';
 
-export default class GameController {
-  gameScene: BoardScene;
+export class GameController {
+  boardScene: BoardScene;
+  gameSidebarScene: GameSidebarScene;
   gameModel: ChessGame;
   whiteAgent: Agent;
   blackAgent: Agent;
   _currentPlayer: Agent;
   _selectedPiece: Position | null = null;
 
-  constructor(gameScene: BoardScene) {
-    this.gameScene = gameScene;
+  constructor() {
     this.gameModel = new ChessGame();
+  }
+
+  setBoardScene(boardScene: BoardScene) {
+    this.boardScene = boardScene
+  }
+
+  setGameSidebarScene(gameSidebarScene: GameSidebarScene) {
+    this.gameSidebarScene = gameSidebarScene
   }
 
   handleMove(move: Move) {
@@ -36,41 +48,57 @@ export default class GameController {
 
   handleDrawDeclined() {}
 
-  createAgents() {
-    const whiteCallbacks: AgentCallbacks = {
+  createLocalAgent(colour: PieceColour) {
+    const callbacks: AgentCallbacks = {
       moveMade: (move: Move) => this.handleMove(move),
-      resign: () => this.handleResign(PieceColour.WHITE),
-      offerDraw: () => this.handleDrawOffer(PieceColour.WHITE),
+      resign: () => this.handleResign(colour),
+      offerDraw: () => this.handleDrawOffer(colour),
       drawAccepted: () => this.handleDrawAccepted(),
       drawDeclined: () => this.handleDrawDeclined(),
     };
-    this.whiteAgent = new ClientLocalAgent(
-      whiteCallbacks,
-      PieceColour.WHITE,
-      this.gameScene.boardInputController
+    return new ClientLocalAgent(
+      colour,
+      callbacks,
+      this.boardScene.boardInputController
     );
-    const blackCallbacks: AgentCallbacks = {
+  }
+
+  createMultiplayerAgent(colour: PieceColour) {
+    const callbacks: AgentCallbacks = {
       moveMade: (move: Move) => this.handleMove(move),
-      resign: () => this.handleResign(PieceColour.WHITE),
-      offerDraw: () => this.handleDrawOffer(PieceColour.WHITE),
+      resign: () => this.handleResign(colour),
+      offerDraw: () => this.handleDrawOffer(colour),
       drawAccepted: () => this.handleDrawAccepted(),
       drawDeclined: () => this.handleDrawDeclined(),
     };
-    this.blackAgent = new ClientLocalAgent(
-      blackCallbacks,
-      PieceColour.BLACK,
-      this.gameScene.boardInputController
+    return new ClientMultiplayerAgent(
+      colour,
+      callbacks
     );
+  }
+
+  setupLocalGame() {
+    this.blackAgent = this.createLocalAgent(PieceColour.BLACK)
+    this.whiteAgent = this.createLocalAgent(PieceColour.WHITE)
+    this.setupWhiteTurn();
+    this._currentPlayer = this.whiteAgent;
+  }
+
+  setupMultiplayerGame(playerColour: PieceColour) {
+    if (playerColour === PieceColour.WHITE) {
+      this.whiteAgent = this.createLocalAgent(PieceColour.WHITE)
+      this.blackAgent = this.createMultiplayerAgent(PieceColour.BLACK)
+    } else {
+      this.whiteAgent = this.createMultiplayerAgent(PieceColour.WHITE)
+      this.blackAgent = this.createLocalAgent(PieceColour.BLACK)
+    }
   }
 
   startGame() {
-    this.createAgents();
-    this._currentPlayer = this.whiteAgent;
-    this.setupWhiteTurn();
   }
 
   clearBoardHighlights() {
-    this.gameScene.board.clearHighlights();
+    this.boardScene.board.clearHighlights();
   }
 
   setupWhiteTurn() {
@@ -88,8 +116,8 @@ export default class GameController {
   }
 
   redrawBoard() {
-    this.gameScene.board.clearBoard();
-    this.gameScene.board.drawPieces(this.gameModel.board);
+    this.boardScene.board.clearBoard();
+    this.boardScene.board.drawPieces(this.gameModel.board);
   }
 
   changeTurn() {
@@ -99,4 +127,12 @@ export default class GameController {
       this.setupWhiteTurn();
     }
   }
+
+  flipBoard() {
+    this.boardScene.flipBoard();
+    this.gameSidebarScene.flip();
+  }
 }
+
+const gameController = new GameController()
+export default gameController

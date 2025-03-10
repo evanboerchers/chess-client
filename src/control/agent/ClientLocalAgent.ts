@@ -8,8 +8,8 @@ export default class ClientLocalAgent implements Agent {
   inputController: BoardInputController;
 
   constructor(
-    callbacks: AgentCallbacks,
     colour: PieceColour,
+    callbacks: AgentCallbacks,
     inputController: BoardInputController
   ) {
     this.callbacks = callbacks;

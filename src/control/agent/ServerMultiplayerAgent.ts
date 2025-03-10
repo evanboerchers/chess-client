@@ -1,7 +1,7 @@
 import { PieceColour } from '@evanboerchers/chess-core';
 import { Agent, AgentCallbacks } from './Agent.types';
 
-export default class ServerAgent implements Agent {
+export default class ServerMultiplayerAgent implements Agent {
   colour: PieceColour;
   callbacks: AgentCallbacks;
   waiting(): void {

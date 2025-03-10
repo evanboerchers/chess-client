@@ -186,6 +186,7 @@ export default class QueueSidebarScene extends SidebarScene {
       blackProps: !isPlayerWhite ? playerProps : oppProps
     }
     this.scene.start(SceneNames.GAME_SIDEBAR, data)
+    
   }
 
   handleQueueClick() {
