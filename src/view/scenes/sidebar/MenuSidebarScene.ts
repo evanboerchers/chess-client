@@ -1,3 +1,4 @@
+import gameController from '../../../control/GameController';
 import { menuText, menuText_Hover } from '../../style/textStyle';
 import { SceneNames } from '../scenes.enum';
 import { defaultInitData } from './GameSidebarScene';
@@ -28,6 +29,7 @@ export default class MenuSidebarScene extends SidebarScene {
     this.buttons.unshift(
       this.createButton('Local Play', () => {
         this.scene.start(SceneNames.GAME_SIDEBAR, defaultInitData)
+        gameController.setupLocalGame();
       })
     );
     let y = 0;

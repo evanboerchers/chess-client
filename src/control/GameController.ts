@@ -63,7 +63,22 @@ export class GameController {
     );
   }
 
-  createMultiplayerAgent(colour: PieceColour) {
+  createClientMultiplayerAgent(colour: PieceColour) {
+    const callbacks: AgentCallbacks = {
+      moveMade: (move: Move) => this.handleMove(move),
+      resign: () => this.handleResign(colour),
+      offerDraw: () => this.handleDrawOffer(colour),
+      drawAccepted: () => this.handleDrawAccepted(),
+      drawDeclined: () => this.handleDrawDeclined(),
+    };
+    return new ClientLocalAgent(
+      colour,
+      callbacks,
+      this.boardScene.boardInputController
+    );
+  }
+
+  createServerMultiplayerAgent(colour: PieceColour) {
     const callbacks: AgentCallbacks = {
       moveMade: (move: Move) => this.handleMove(move),
       resign: () => this.handleResign(colour),
@@ -73,7 +88,8 @@ export class GameController {
     };
     return new ClientMultiplayerAgent(
       colour,
-      callbacks
+      callbacks,
+      this.boardScene.boardInputController
     );
   }
 
@@ -86,15 +102,17 @@ export class GameController {
 
   setupMultiplayerGame(playerColour: PieceColour) {
     if (playerColour === PieceColour.WHITE) {
-      this.whiteAgent = this.createLocalAgent(PieceColour.WHITE)
-      this.blackAgent = this.createMultiplayerAgent(PieceColour.BLACK)
+      this.whiteAgent = this.createClientMultiplayerAgent(PieceColour.WHITE)
+      this.blackAgent = this.createServerMultiplayerAgent(PieceColour.BLACK)
     } else {
-      this.whiteAgent = this.createMultiplayerAgent(PieceColour.WHITE)
-      this.blackAgent = this.createLocalAgent(PieceColour.BLACK)
+      this.whiteAgent = this.createServerMultiplayerAgent(PieceColour.WHITE)
+      this.blackAgent = this.createClientMultiplayerAgent(PieceColour.BLACK)
     }
   }
 
-  startGame() {
+  handleGameReady() {
+    this.whiteAgent.makeMove()
+    this.blackAgent.waiting()
   }
 
   clearBoardHighlights() {
