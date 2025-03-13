@@ -22,7 +22,7 @@ export default class BoardScene extends Scene {
   create() {
     this.camera = this.cameras.main;
     this.camera.setBackgroundColor('#b88f77');
-    this.createBoard(gameController.gameModel.board);
+    this.createBoard(gameController.gameInstance.gameModel.board);
     this.createUi();
     this.boardInputController = new BoardInputController(
       this.board,

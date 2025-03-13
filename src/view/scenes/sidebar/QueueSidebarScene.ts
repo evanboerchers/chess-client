@@ -9,6 +9,7 @@ import { SceneNames } from '../scenes.enum';
 import { GameSideBarSceneData } from './GameSidebarScene';
 import { PlayerData } from '../../../service/server.types';
 import { PanelProperties } from '../../gameObjects/ui/PlayerPanel';
+import gameController from '../../../control/GameController';
 
 export default class QueueSidebarScene extends SidebarScene {
   private queueContainer: Phaser.GameObjects.Container;
@@ -162,7 +163,7 @@ export default class QueueSidebarScene extends SidebarScene {
     this.setToWaitState()
   }
 
-  private handleGameFound = (playerColour: PieceColour, oppData: PlayerData, state: GameState) => {
+  private handleGameFound = (playerColour: PieceColour, oppData: PlayerData, gameState: GameState) => {
     console.log("Game Found")
     const isPlayerWhite = playerColour === PieceColour.WHITE
     const playerProps: PanelProperties = {
@@ -186,7 +187,7 @@ export default class QueueSidebarScene extends SidebarScene {
       blackProps: !isPlayerWhite ? playerProps : oppProps
     }
     this.scene.start(SceneNames.GAME_SIDEBAR, data)
-    
+    gameController.setupMultiplayerGame(playerColour, gameState)
   }
 
   handleQueueClick() {

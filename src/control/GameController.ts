@@ -1,29 +1,28 @@
 import {
   ChessGame,
+  GameState,
   Move,
   PieceColour,
-  PieceType,
-  Position,
 } from '@evanboerchers/chess-core';
 import BoardScene from '../view/scenes/BoardScene';
 import { Agent, AgentCallbacks } from './agent/Agent.types';
 import ClientLocalAgent from './agent/ClientLocalAgent';
 import GameSidebarScene from '../view/scenes/sidebar/GameSidebarScene';
-import SidebarScene from '../view/scenes/sidebar/SidebarScene';
-import Piece from '../view/gameObjects/board/Piece';
 import ClientMultiplayerAgent from './agent/ClientMultiplayerAgent';
+import { GameInstance } from './GameInstance.types';
+import MultiplayerGameInstance from './MultiplayerGameInstance';
+import LocalGameInstance from './LocalGameInstance';
 
 export class GameController {
   boardScene: BoardScene;
   gameSidebarScene: GameSidebarScene;
-  gameModel: ChessGame;
+  gameInstance: GameInstance;
   whiteAgent: Agent;
   blackAgent: Agent;
   _currentPlayer: Agent;
-  _selectedPiece: Position | null = null;
 
   constructor() {
-    this.gameModel = new ChessGame();
+    this.gameInstance = new LocalGameInstance();
   }
 
   setBoardScene(boardScene: BoardScene) {
@@ -34,10 +33,15 @@ export class GameController {
     this.gameSidebarScene = gameSidebarScene
   }
 
+  setupMultiplayerGame(playerColour: PieceColour, gameState: GameState) {
+    this.gameInstance = new MultiplayerGameInstance(
+      this.boardScene.boardInputController, 
+      new ChessGame(gameState), 
+      playerColour)
+  }
+
   handleMove(move: Move) {
-    this.gameModel.makeMove(move);
     this.redrawBoard();
-    this.changeTurn();
   }
 
   handleResign(colour: PieceColour) {}
@@ -48,68 +52,6 @@ export class GameController {
 
   handleDrawDeclined() {}
 
-  createLocalAgent(colour: PieceColour) {
-    const callbacks: AgentCallbacks = {
-      moveMade: (move: Move) => this.handleMove(move),
-      resign: () => this.handleResign(colour),
-      offerDraw: () => this.handleDrawOffer(colour),
-      drawAccepted: () => this.handleDrawAccepted(),
-      drawDeclined: () => this.handleDrawDeclined(),
-    };
-    return new ClientLocalAgent(
-      colour,
-      callbacks,
-      this.boardScene.boardInputController
-    );
-  }
-
-  createClientMultiplayerAgent(colour: PieceColour) {
-    const callbacks: AgentCallbacks = {
-      moveMade: (move: Move) => this.handleMove(move),
-      resign: () => this.handleResign(colour),
-      offerDraw: () => this.handleDrawOffer(colour),
-      drawAccepted: () => this.handleDrawAccepted(),
-      drawDeclined: () => this.handleDrawDeclined(),
-    };
-    return new ClientLocalAgent(
-      colour,
-      callbacks,
-      this.boardScene.boardInputController
-    );
-  }
-
-  createServerMultiplayerAgent(colour: PieceColour) {
-    const callbacks: AgentCallbacks = {
-      moveMade: (move: Move) => this.handleMove(move),
-      resign: () => this.handleResign(colour),
-      offerDraw: () => this.handleDrawOffer(colour),
-      drawAccepted: () => this.handleDrawAccepted(),
-      drawDeclined: () => this.handleDrawDeclined(),
-    };
-    return new ClientMultiplayerAgent(
-      colour,
-      callbacks,
-      this.boardScene.boardInputController
-    );
-  }
-
-  setupLocalGame() {
-    this.blackAgent = this.createLocalAgent(PieceColour.BLACK)
-    this.whiteAgent = this.createLocalAgent(PieceColour.WHITE)
-    this.setupWhiteTurn();
-    this._currentPlayer = this.whiteAgent;
-  }
-
-  setupMultiplayerGame(playerColour: PieceColour) {
-    if (playerColour === PieceColour.WHITE) {
-      this.whiteAgent = this.createClientMultiplayerAgent(PieceColour.WHITE)
-      this.blackAgent = this.createServerMultiplayerAgent(PieceColour.BLACK)
-    } else {
-      this.whiteAgent = this.createServerMultiplayerAgent(PieceColour.WHITE)
-      this.blackAgent = this.createClientMultiplayerAgent(PieceColour.BLACK)
-    }
-  }
-
   handleGameReady() {
     this.whiteAgent.makeMove()
     this.blackAgent.waiting()
@@ -119,31 +61,9 @@ export class GameController {
     this.boardScene.board.clearHighlights();
   }
 
-  setupWhiteTurn() {
-    this._currentPlayer = this.whiteAgent;
-    this.whiteAgent.makeMove();
-    this.blackAgent.waiting();
-    console.log('setting up white turn');
-  }
-
-  setupBlackTurn() {
-    this._currentPlayer = this.blackAgent;
-    this.blackAgent.makeMove();
-    this.whiteAgent.waiting();
-    console.log('setting up black turn');
-  }
-
   redrawBoard() {
     this.boardScene.board.clearBoard();
-    this.boardScene.board.drawPieces(this.gameModel.board);
-  }
-
-  changeTurn() {
-    if (this._currentPlayer.colour === PieceColour.WHITE) {
-      this.setupBlackTurn();
-    } else {
-      this.setupWhiteTurn();
-    }
+    this.boardScene.board.drawPieces(this.gameInstance.gameModel.board);
   }
 
   flipBoard() {
