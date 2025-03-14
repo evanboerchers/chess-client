@@ -12,6 +12,8 @@ import ClientMultiplayerAgent from './agent/ClientMultiplayerAgent';
 import { GameInstance } from './GameInstance.types';
 import MultiplayerGameInstance from './MultiplayerGameInstance';
 import LocalGameInstance from './LocalGameInstance';
+import Board from '../view/gameObjects/board/Board';
+import BoardInputController from './BoardInputController';
 
 export class GameController {
   boardScene: BoardScene;
@@ -34,10 +36,17 @@ export class GameController {
   }
 
   setupMultiplayerGame(playerColour: PieceColour, gameState: GameState) {
+    console.log('setting up multiplayer game')
+    const model = new ChessGame(gameState) 
+    const inputController = new BoardInputController(this.boardScene.board, model)
     this.gameInstance = new MultiplayerGameInstance(
-      this.boardScene.boardInputController, 
-      new ChessGame(gameState), 
+      inputController,
+      model,
       playerColour)
+  }
+
+  setupLocalGame() {
+
   }
 
   handleMove(move: Move) {

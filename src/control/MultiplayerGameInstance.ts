@@ -13,29 +13,32 @@ export default class MultiplayerGameInstance implements GameInstance {
         this.gameModel = gameModel ?? new ChessGame()
         this.boardInputController = boardInputController
         this.localPlayer = localPlayer?? PieceColour.WHITE
+        this.registerEvents()
         this.gameReady()
     }
 
-    registerEvents() {
+    private registerEvents() {
         multiplayerService.on('moveMade', this.handleMoveMade)
         multiplayerService.on('waiting', this.handleWaiting)
         multiplayerService.on('makeMove', this.handleMakeMove)
     }
 
-    gameReady() {
+    private gameReady = () => {
         multiplayerService.gameReady();
     }
 
-    handleMoveMade(move: Move, gameState: GameState) {
+    private handleMoveMade = (move: Move, gameState: GameState) => {
+        console.log('handling move made')
         this.gameModel.makeMove(move)
         gameController.handleMove(move)
     }
 
-    handleWaiting() {
-
+    private handleWaiting = () => {
+        console.log('handling waiting') 
     }
 
-    handleMakeMove() {
+    private handleMakeMove = () => {
+        console.log('handling make move')
         this.boardInputController.setupPieceSelection(this.gameModel.currentTurn, (move: Move) => {
             gameController.handleMove(move)
             multiplayerService.makeMove(move)

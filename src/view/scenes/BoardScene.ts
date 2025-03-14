@@ -9,7 +9,6 @@ export default class BoardScene extends Scene {
   board: Board;
   camera: Phaser.Cameras.Scene2D.Camera;
   background: Phaser.GameObjects.Image;
-  boardInputController: BoardInputController;
 
   constructor() {
     super(SceneNames.BOARD);
@@ -24,10 +23,6 @@ export default class BoardScene extends Scene {
     this.camera.setBackgroundColor('#b88f77');
     this.createBoard(gameController.gameInstance.gameModel.board);
     this.createUi();
-    this.boardInputController = new BoardInputController(
-      this.board,
-      gameController.gameModel
-    );
   }
 
   createUi() {
