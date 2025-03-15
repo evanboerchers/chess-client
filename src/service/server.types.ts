@@ -1,11 +1,20 @@
-import { GameOutcome, GameState, Move, PieceColour } from '@evanboerchers/chess-core';
+import {
+  GameOutcome,
+  GameState,
+  Move,
+  PieceColour,
+} from '@evanboerchers/chess-core';
 import { Socket } from 'socket.io-client';
 
 export interface ServerToClientEvents {
   queueJoined: () => void;
   leftQueue: () => void;
   queueCount: (count: number) => void;
-  gameFound: (playerColour: PieceColour, opponentData: PlayerData, state: GameState) => void;
+  gameFound: (
+    playerColour: PieceColour,
+    opponentData: PlayerData,
+    state: GameState
+  ) => void;
   makeMove: () => void;
   waiting: () => void;
   moveMade: (move: Move, state: GameState) => void;
@@ -26,8 +35,8 @@ export interface ClientToServerEvents {
 }
 
 export interface PlayerData {
-  name: string
-  icon: string
+  name: string;
+  icon: string;
 }
 
 export type GameSocket = Socket<ServerToClientEvents, ClientToServerEvents>;

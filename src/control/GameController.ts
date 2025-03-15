@@ -28,32 +28,36 @@ export class GameController {
   }
 
   setBoardScene(boardScene: BoardScene) {
-    this.boardScene = boardScene
+    this.boardScene = boardScene;
   }
 
   setGameSidebarScene(gameSidebarScene: GameSidebarScene) {
-    this.gameSidebarScene = gameSidebarScene
+    this.gameSidebarScene = gameSidebarScene;
   }
 
   setupMultiplayerGame(playerColour: PieceColour, gameState: GameState) {
-    console.log('setting up multiplayer game')
-    const model = new ChessGame(gameState) 
-    const inputController = new BoardInputController(this.boardScene.board, model)
+    console.log('setting up multiplayer game');
+    const model = new ChessGame(gameState);
+    const inputController = new BoardInputController(
+      this.boardScene.board,
+      model
+    );
     this.gameInstance = new MultiplayerGameInstance(
       inputController,
       model,
-      playerColour)
-      if (playerColour === PieceColour.BLACK) this.flipBoard();
-    }
-    
-    setupLocalGame() {
-      console.log('setting up local game')
-      const model = new ChessGame()
-      const inputController = new BoardInputController(this.boardScene.board, model)
-      this.gameInstance = new LocalGameInstance(
-        inputController,
-        model,
-      )
+      playerColour
+    );
+    if (playerColour === PieceColour.BLACK) this.flipBoard();
+  }
+
+  setupLocalGame() {
+    console.log('setting up local game');
+    const model = new ChessGame();
+    const inputController = new BoardInputController(
+      this.boardScene.board,
+      model
+    );
+    this.gameInstance = new LocalGameInstance(inputController, model);
   }
 
   handleMove(move: Move) {
@@ -69,8 +73,8 @@ export class GameController {
   handleDrawDeclined() {}
 
   handleGameReady() {
-    this.whiteAgent.makeMove()
-    this.blackAgent.waiting()
+    this.whiteAgent.makeMove();
+    this.blackAgent.waiting();
   }
 
   clearBoardHighlights() {
@@ -88,5 +92,5 @@ export class GameController {
   }
 }
 
-const gameController = new GameController()
-export default gameController
+const gameController = new GameController();
+export default gameController;

@@ -28,7 +28,7 @@ export default class MenuSidebarScene extends SidebarScene {
     );
     this.buttons.unshift(
       this.createButton('Local Play', () => {
-        this.scene.start(SceneNames.GAME_SIDEBAR, defaultInitData)
+        this.scene.start(SceneNames.GAME_SIDEBAR, defaultInitData);
         gameController.setupLocalGame();
       })
     );

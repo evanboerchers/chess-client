@@ -15,7 +15,7 @@ export default class BoardScene extends Scene {
   }
 
   init() {
-    gameController.setBoardScene(this)
+    gameController.setBoardScene(this);
   }
 
   create() {

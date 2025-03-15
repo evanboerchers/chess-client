@@ -1,5 +1,4 @@
-import { PlayerData } from "./server.types";
-
+import { PlayerData } from './server.types';
 
 class PlayerService {
   data: PlayerData;
@@ -36,7 +35,7 @@ class PlayerService {
   }
 
   getData(): PlayerData {
-    return this.data
+    return this.data;
   }
 }
 

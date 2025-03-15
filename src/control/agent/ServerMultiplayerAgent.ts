@@ -11,18 +11,16 @@ export default class ServerMultiplayerAgent implements Agent {
     this.callbacks = callbacks;
   }
 
-  registerEvents() {
-  }
-  
-  waiting(): void {
-  }
-  
+  registerEvents() {}
+
+  waiting(): void {}
+
   makeMove(): void {
     const callback = (move: Move) => {
-      this.callbacks.moveMade(move)
-      multiplayerService.off('moveMade', this.callbacks.moveMade)
-    }
-    multiplayerService.on('moveMade', callback)
+      this.callbacks.moveMade(move);
+      multiplayerService.off('moveMade', this.callbacks.moveMade);
+    };
+    multiplayerService.on('moveMade', callback);
   }
 
   drawOffered(): void {

@@ -33,14 +33,14 @@ export default class GameSidebarScene extends SidebarScene {
   initData: GameSideBarSceneData;
   whitePanel: PlayerPanel;
   blackPanel: PlayerPanel;
-  
+
   constructor() {
     super(SceneNames.GAME_SIDEBAR);
   }
 
   init(data: GameSideBarSceneData) {
     this.initData = data;
-    gameController.setGameSidebarScene(this)
+    gameController.setGameSidebarScene(this);
   }
 
   create(): void {
@@ -68,9 +68,9 @@ export default class GameSidebarScene extends SidebarScene {
   }
 
   public flip() {
-    const whiteY = this.whitePanel.y
-    const blackY = this.blackPanel.y
-    this.whitePanel.y = blackY
-    this.blackPanel.y = whiteY
+    const whiteY = this.whitePanel.y;
+    const blackY = this.blackPanel.y;
+    this.whitePanel.y = blackY;
+    this.blackPanel.y = whiteY;
   }
 }
