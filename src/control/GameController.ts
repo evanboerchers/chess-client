@@ -1,31 +1,67 @@
 import {
   ChessGame,
+  GameState,
   Move,
   PieceColour,
-  PieceType,
-  Position,
 } from '@evanboerchers/chess-core';
 import BoardScene from '../view/scenes/BoardScene';
 import { Agent, AgentCallbacks } from './agent/Agent.types';
 import ClientLocalAgent from './agent/ClientLocalAgent';
+import GameSidebarScene from '../view/scenes/sidebar/GameSidebarScene';
+import ClientMultiplayerAgent from './agent/ClientMultiplayerAgent';
+import { GameInstance } from './instance/GameInstance.types';
+import MultiplayerGameInstance from './instance/MultiplayerGameInstance';
+import LocalGameInstance from './instance/LocalGameInstance';
+import Board from '../view/gameObjects/board/Board';
+import BoardInputController from './BoardInputController';
 
-export default class GameController {
-  gameScene: BoardScene;
-  gameModel: ChessGame;
+export class GameController {
+  boardScene: BoardScene;
+  gameSidebarScene: GameSidebarScene;
+  gameInstance: GameInstance;
   whiteAgent: Agent;
   blackAgent: Agent;
   _currentPlayer: Agent;
-  _selectedPiece: Position | null = null;
 
-  constructor(gameScene: BoardScene) {
-    this.gameScene = gameScene;
-    this.gameModel = new ChessGame();
+  constructor() {
+    this.gameInstance = new LocalGameInstance();
+  }
+
+  setBoardScene(boardScene: BoardScene) {
+    this.boardScene = boardScene;
+  }
+
+  setGameSidebarScene(gameSidebarScene: GameSidebarScene) {
+    this.gameSidebarScene = gameSidebarScene;
+  }
+
+  setupMultiplayerGame(playerColour: PieceColour, gameState: GameState) {
+    console.log('setting up multiplayer game');
+    const model = new ChessGame(gameState);
+    const inputController = new BoardInputController(
+      this.boardScene.board,
+      model
+    );
+    this.gameInstance = new MultiplayerGameInstance(
+      inputController,
+      model,
+      playerColour
+    );
+    if (playerColour === PieceColour.BLACK) this.flipBoard();
+  }
+
+  setupLocalGame() {
+    console.log('setting up local game');
+    const model = new ChessGame();
+    const inputController = new BoardInputController(
+      this.boardScene.board,
+      model
+    );
+    this.gameInstance = new LocalGameInstance(inputController, model);
   }
 
   handleMove(move: Move) {
-    this.gameModel.makeMove(move);
     this.redrawBoard();
-    this.changeTurn();
   }
 
   handleResign(colour: PieceColour) {}
@@ -36,67 +72,25 @@ export default class GameController {
 
   handleDrawDeclined() {}
 
-  createAgents() {
-    const whiteCallbacks: AgentCallbacks = {
-      moveMade: (move: Move) => this.handleMove(move),
-      resign: () => this.handleResign(PieceColour.WHITE),
-      offerDraw: () => this.handleDrawOffer(PieceColour.WHITE),
-      drawAccepted: () => this.handleDrawAccepted(),
-      drawDeclined: () => this.handleDrawDeclined(),
-    };
-    this.whiteAgent = new ClientLocalAgent(
-      whiteCallbacks,
-      PieceColour.WHITE,
-      this.gameScene.boardInputController
-    );
-    const blackCallbacks: AgentCallbacks = {
-      moveMade: (move: Move) => this.handleMove(move),
-      resign: () => this.handleResign(PieceColour.WHITE),
-      offerDraw: () => this.handleDrawOffer(PieceColour.WHITE),
-      drawAccepted: () => this.handleDrawAccepted(),
-      drawDeclined: () => this.handleDrawDeclined(),
-    };
-    this.blackAgent = new ClientLocalAgent(
-      blackCallbacks,
-      PieceColour.BLACK,
-      this.gameScene.boardInputController
-    );
-  }
-
-  startGame() {
-    this.createAgents();
-    this._currentPlayer = this.whiteAgent;
-    this.setupWhiteTurn();
+  handleGameReady() {
+    this.whiteAgent.makeMove();
+    this.blackAgent.waiting();
   }
 
   clearBoardHighlights() {
-    this.gameScene.board.clearHighlights();
-  }
-
-  setupWhiteTurn() {
-    this._currentPlayer = this.whiteAgent;
-    this.whiteAgent.makeMove();
-    this.blackAgent.waiting();
-    console.log('setting up white turn');
-  }
-
-  setupBlackTurn() {
-    this._currentPlayer = this.blackAgent;
-    this.blackAgent.makeMove();
-    this.whiteAgent.waiting();
-    console.log('setting up black turn');
+    this.boardScene.board.clearHighlights();
   }
 
   redrawBoard() {
-    this.gameScene.board.clearBoard();
-    this.gameScene.board.drawPieces(this.gameModel.board);
+    this.boardScene.board.clearBoard();
+    this.boardScene.board.drawPieces(this.gameInstance.gameModel.board);
   }
 
-  changeTurn() {
-    if (this._currentPlayer.colour === PieceColour.WHITE) {
-      this.setupBlackTurn();
-    } else {
-      this.setupWhiteTurn();
-    }
+  flipBoard() {
+    this.boardScene.flipBoard();
+    this.gameSidebarScene.flip();
   }
 }
+
+const gameController = new GameController();
+export default gameController;

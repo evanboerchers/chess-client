@@ -1,7 +1,9 @@
-import { PieceColour } from '@evanboerchers/chess-core';
+import { GameState, PieceColour } from '@evanboerchers/chess-core';
 import PlayerPanel, { PanelProperties } from '../../gameObjects/ui/PlayerPanel';
 import SidebarScene from './SidebarScene';
 import { SceneNames } from '../scenes.enum';
+import BoardScene from '../BoardScene';
+import gameController from '../../../control/GameController';
 
 export interface GameSideBarSceneData {
   whiteProps: PanelProperties;
@@ -31,12 +33,14 @@ export default class GameSidebarScene extends SidebarScene {
   initData: GameSideBarSceneData;
   whitePanel: PlayerPanel;
   blackPanel: PlayerPanel;
+
   constructor() {
-    super('GameSidebar');
+    super(SceneNames.GAME_SIDEBAR);
   }
 
   init(data: GameSideBarSceneData) {
     this.initData = data;
+    gameController.setGameSidebarScene(this);
   }
 
   create(): void {
@@ -61,5 +65,12 @@ export default class GameSidebarScene extends SidebarScene {
   ): PlayerPanel {
     const panel = new PlayerPanel(this, x, y, props);
     return panel;
+  }
+
+  public flip() {
+    const whiteY = this.whitePanel.y;
+    const blackY = this.blackPanel.y;
+    this.whitePanel.y = blackY;
+    this.blackPanel.y = whiteY;
   }
 }

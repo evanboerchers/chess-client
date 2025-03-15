@@ -11,6 +11,15 @@ export const menuText: TextStyle = {
   align: 'center',
 };
 
+export const menuInfoText: TextStyle = {
+  fontFamily: MAIN_FONT,
+  fontSize: 18,
+  color: '#ffffff',
+  stroke: '#000000',
+  strokeThickness: 2,
+  align: 'center',
+};
+
 export const menuText_Hover: TextStyle = {
   fontFamily: MAIN_FONT,
   fontSize: 30,
