@@ -1,7 +1,7 @@
 import { ChessGame, GameState, Move, PieceColour } from "@evanboerchers/chess-core";
-import multiplayerService from "../service/MultiplayerService";
-import BoardInputController from "./BoardInputController";
-import gameController from "./GameController";
+import multiplayerService from "../../service/MultiplayerService";
+import BoardInputController from "../BoardInputController";
+import gameController from "../GameController";
 import { GameInstance } from "./GameInstance.types";
 
 export default class MultiplayerGameInstance implements GameInstance {
@@ -38,7 +38,7 @@ export default class MultiplayerGameInstance implements GameInstance {
     }
 
     private handleMakeMove = () => {
-        console.log('handling make move')
+        
         this.boardInputController.setupPieceSelection(this.gameModel.currentTurn, (move: Move) => {
             gameController.handleMove(move)
             multiplayerService.makeMove(move)

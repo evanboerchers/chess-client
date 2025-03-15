@@ -9,9 +9,9 @@ import { Agent, AgentCallbacks } from './agent/Agent.types';
 import ClientLocalAgent from './agent/ClientLocalAgent';
 import GameSidebarScene from '../view/scenes/sidebar/GameSidebarScene';
 import ClientMultiplayerAgent from './agent/ClientMultiplayerAgent';
-import { GameInstance } from './GameInstance.types';
-import MultiplayerGameInstance from './MultiplayerGameInstance';
-import LocalGameInstance from './LocalGameInstance';
+import { GameInstance } from './instance/GameInstance.types';
+import MultiplayerGameInstance from './instance/MultiplayerGameInstance';
+import LocalGameInstance from './instance/LocalGameInstance';
 import Board from '../view/gameObjects/board/Board';
 import BoardInputController from './BoardInputController';
 
@@ -43,10 +43,17 @@ export class GameController {
       inputController,
       model,
       playerColour)
-  }
-
-  setupLocalGame() {
-
+      if (playerColour === PieceColour.BLACK) this.flipBoard();
+    }
+    
+    setupLocalGame() {
+      console.log('setting up local game')
+      const model = new ChessGame()
+      const inputController = new BoardInputController(this.boardScene.board, model)
+      this.gameInstance = new LocalGameInstance(
+        inputController,
+        model,
+      )
   }
 
   handleMove(move: Move) {
