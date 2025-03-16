@@ -26,7 +26,9 @@ export default class PreloaderScene extends Scene {
   preload() {
     //  Load the assets for the game - Replace with your own assets
     this.load.setPath('assets/board');
-
+    this.load.image('coffeeBean', 'coffee_bean.webp');
+    
+    this.load.setPath('assets/board/pieces');
     // Black Pieces
     this.load.image('blackPawn', 'b_pawn.webp');
     this.load.image('blackRook', 'b_rook.webp');

@@ -5,14 +5,11 @@ import {
   PieceColour,
 } from '@evanboerchers/chess-core';
 import BoardScene from '../view/scenes/BoardScene';
-import { Agent, AgentCallbacks } from './agent/Agent.types';
-import ClientLocalAgent from './agent/ClientLocalAgent';
+import { Agent } from './agent/Agent.types';
 import GameSidebarScene from '../view/scenes/sidebar/GameSidebarScene';
-import ClientMultiplayerAgent from './agent/ClientMultiplayerAgent';
 import { GameInstance } from './instance/GameInstance.types';
 import MultiplayerGameInstance from './instance/MultiplayerGameInstance';
 import LocalGameInstance from './instance/LocalGameInstance';
-import Board from '../view/gameObjects/board/Board';
 import BoardInputController from './BoardInputController';
 
 export class GameController {
@@ -84,6 +81,11 @@ export class GameController {
   redrawBoard() {
     this.boardScene.board.clearBoard();
     this.boardScene.board.drawPieces(this.gameInstance.gameModel.board);
+    const previousMove = this.gameInstance.gameModel.moveHistory[0]
+    if (previousMove) {
+      this.boardScene.board.highlightPreviousMoveSquare(previousMove.from)
+      this.boardScene.board.highlightPreviousMoveSquare(previousMove.to)
+    }
   }
 
   flipBoard() {

@@ -90,11 +90,15 @@ export default class Board extends Phaser.GameObjects.Container {
   }
 
   highlightSquare(coordinate: Position): void {
-    this.getBoardSquare(coordinate).highlight();
+    this.getBoardSquare(coordinate).highlightSelected();
   }
 
   highlightCaptureSquare(coordinate: Position): void {
     this.getBoardSquare(coordinate).highlightCapture();
+  }
+
+  highlightPreviousMoveSquare(coordinate: Position): void {
+    this.getBoardSquare(coordinate).highlightPreviousMove();
   }
 
   highlightMoveSquare(coordinate: Position): void {
@@ -102,7 +106,11 @@ export default class Board extends Phaser.GameObjects.Container {
   }
 
   clearHighlights(): void {
-    this.squares.flat().forEach((square) => square.clearHighlight());
+    this.squares.flat().forEach((square) => square.clearHighlights());
+  }
+
+  clearActionHighlights(): void {
+    this.squares.flat().forEach((square) => square.clearActionHighlights());
   }
 
   enablePieceInteractions(color: PieceColour): void {

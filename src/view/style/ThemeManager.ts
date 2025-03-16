@@ -8,6 +8,7 @@ export interface BoardTheme {
   lightSquareColour: number;
   darkSquareColour: number;
   highlightColour: number;
+  previousMoveColour: number;
   attackColour: number;
   moveColour: number;
 }
@@ -32,6 +33,7 @@ const defaultTheme: Theme = {
   board: {
     lightSquareColour: 0xf0d9b5,
     darkSquareColour: 0xb58863,
+    previousMoveColour: 0x0000ff, 
     highlightColour: 0x0000ff,
     attackColour: 0xff0000,
     moveColour: 0x00ff00,

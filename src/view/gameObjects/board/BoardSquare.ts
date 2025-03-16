@@ -1,4 +1,4 @@
-import { Scene } from 'phaser';
+import { Scene, Tweens } from 'phaser';
 import Piece from './Piece';
 import ThemeManager from '../../style/ThemeManager';
 import { Position } from '@evanboerchers/chess-core';
@@ -14,6 +14,11 @@ export enum EmitEvents {
 
 export default class BoardSquare extends Phaser.GameObjects.Container {
   public background: Phaser.GameObjects.Rectangle;
+  public selectedHighlightSquare: Phaser.GameObjects.Rectangle
+  public captureHighlightSquare: Phaser.GameObjects.Rectangle
+  public previousMoveHighlightSquare: Phaser.GameObjects.Rectangle
+  public moveHighlightSprite: Phaser.GameObjects.Sprite
+  public moveHighlightTween: Tweens.Tween
   public _piece?: Piece;
   public colour: SquareColour;
   public boardPosition: Position;
@@ -27,20 +32,74 @@ export default class BoardSquare extends Phaser.GameObjects.Container {
     piece?: Piece
   ) {
     super(scene, x, y);
-    this.colour = colour;
-    this.background = new Phaser.GameObjects.Rectangle(
-      scene,
-      0,
-      0,
-      width,
-      width,
-      this.getBackgroundColour()
-    );
-    this.add(this.background);
-    this._piece = piece;
     this.width = width;
     this.height = width;
+    this.colour = colour;
+    this.createBackground();
+    this.createMoveHighlightSquares();
+    this.createMoveHighlightSprite()
+    this.clearHighlights()
+    this._piece = piece;
     this.boardPosition = coordinate;
+  }
+
+  private createBackground() {
+    this.background = new Phaser.GameObjects.Rectangle(
+      this.scene,
+      0,
+      0,
+      this.width,
+      this.width,
+      this.getBackgroundColour()
+    );
+    this.add(this.background)
+  }
+
+  private createMoveHighlightSprite() {
+    this.moveHighlightSprite = this.scene.add.sprite(0, 0, 'coffeeBean')
+    this.moveHighlightSprite.setOrigin(0.5, 0.5)
+    this.moveHighlightSprite.setAlpha(0.9)
+    this.moveHighlightSprite.setScale(0.25)
+    this.moveHighlightSprite.visible = false
+    this.moveHighlightTween = this.scene.tweens.add({
+      targets: this.moveHighlightSprite,
+      yoyo: true,
+      repeat: -1,
+      scale: { from: 0.25, to: 0.2 },
+      ease: 'Sine.easeInOut',
+      duration: 650
+    })
+    this.add(this.moveHighlightSprite)
+  }
+  
+  private createMoveHighlightSquares() {
+    this.selectedHighlightSquare = new Phaser.GameObjects.Rectangle(
+      this.scene,
+      0,
+      0,
+      this.width,
+      this.width,
+      ThemeManager.getTheme().board.highlightColour
+    ).setAlpha(0.8)
+    this.add(this.selectedHighlightSquare)
+    this.captureHighlightSquare = new Phaser.GameObjects.Rectangle(
+      this.scene,
+      0,
+      0,
+      this.width,
+      this.width,
+      ThemeManager.getTheme().board.previousMoveColour
+    ).setAlpha(0.8)
+    this.add(this.captureHighlightSquare)
+    this.previousMoveHighlightSquare = new Phaser.GameObjects.Rectangle(
+      this.scene,
+      0,
+      0,
+      this.width,
+      this.width,
+      ThemeManager.getTheme().board.previousMoveColour
+    ).setAlpha(0.8)
+    this.add(this.previousMoveHighlightSquare)
   }
 
   private getBackgroundColour(): number {
@@ -68,19 +127,37 @@ export default class BoardSquare extends Phaser.GameObjects.Container {
     return this._piece;
   }
 
-  public highlight() {
-    this.background.setFillStyle(ThemeManager.getTheme().board.highlightColour);
+  public highlightSelected() {
+    this.selectedHighlightSquare.visible = true
   }
 
   public highlightCapture() {
-    this.background.setFillStyle(ThemeManager.getTheme().board.attackColour);
+    this.captureHighlightSquare.visible = true
   }
 
   public highlightMove() {
-    this.background.setFillStyle(ThemeManager.getTheme().board.moveColour);
+    this.moveHighlightTween.restart();
+    this.moveHighlightSprite.visible = true
   }
 
-  public clearHighlight() {
-    this.background.setFillStyle(this.getBackgroundColour());
+  public highlightPreviousMove() {
+    this.previousMoveHighlightSquare.visible = true
+  }
+
+  public clearHighlights() {
+    this.moveHighlightSprite.visible = false
+    this.selectedHighlightSquare.visible = false
+    this.captureHighlightSquare.visible = false
+    this.previousMoveHighlightSquare.visible = false
+  }
+
+  public clearActionHighlights() {
+    this.moveHighlightSprite.visible = false
+    this.selectedHighlightSquare.visible = false
+    this.captureHighlightSquare.visible = false
+  }
+
+  public clearPreviousMoveHighlight() {
+    this.previousMoveHighlightSquare.visible = false
   }
 }
