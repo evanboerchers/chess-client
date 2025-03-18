@@ -1,5 +1,6 @@
 import {
   ChessGame,
+  GameOutcome,
   GameState,
   Move,
   PieceColour,
@@ -11,13 +12,14 @@ import { GameInstance } from './instance/GameInstance.types';
 import MultiplayerGameInstance from './instance/MultiplayerGameInstance';
 import LocalGameInstance from './instance/LocalGameInstance';
 import BoardInputController from './BoardInputController';
+import GameSideBarInputController from './GameSideBarInputController';
+import { GameOutcomeReason, GameOverSceneData } from '../view/scenes/GameOverScene';
+import { SceneNames } from '../view/scenes/scenes.enum';
 
 export class GameController {
   boardScene: BoardScene;
   gameSidebarScene: GameSidebarScene;
   gameInstance: GameInstance;
-  whiteAgent: Agent;
-  blackAgent: Agent;
   _currentPlayer: Agent;
 
   constructor() {
@@ -50,28 +52,18 @@ export class GameController {
   setupLocalGame() {
     console.log('setting up local game');
     const model = new ChessGame();
-    const inputController = new BoardInputController(
+    const boardInputController = new BoardInputController(
       this.boardScene.board,
       model
     );
-    this.gameInstance = new LocalGameInstance(inputController, model);
+    const sidebarInputController = new GameSideBarInputController(
+      this.gameSidebarScene
+    )
+    this.gameInstance = new LocalGameInstance(model, boardInputController, sidebarInputController);
   }
 
   handleMove(move: Move) {
     this.redrawBoard();
-  }
-
-  handleResign(colour: PieceColour) {}
-
-  handleDrawOffer(colour: PieceColour) {}
-
-  handleDrawAccepted() {}
-
-  handleDrawDeclined() {}
-
-  handleGameReady() {
-    this.whiteAgent.makeMove();
-    this.blackAgent.waiting();
   }
 
   clearBoardHighlights() {
@@ -81,7 +73,7 @@ export class GameController {
   redrawBoard() {
     this.boardScene.board.clearBoard();
     this.boardScene.board.drawPieces(this.gameInstance.gameModel.board);
-    const previousMove = this.gameInstance.gameModel.moveHistory[0]
+    const previousMove = this.gameInstance.gameModel.moveHistory.slice(-1)[0]
     if (previousMove) {
       this.boardScene.board.highlightPreviousMoveSquare(previousMove.from)
       this.boardScene.board.highlightPreviousMoveSquare(previousMove.to)
@@ -91,6 +83,17 @@ export class GameController {
   flipBoard() {
     this.boardScene.flipBoard();
     this.gameSidebarScene.flip();
+  }
+
+  endGame(outcome: GameOutcome, reason: GameOutcomeReason, rematchCallback: () => void) {
+    const data: GameOverSceneData = {
+      result: {
+        outcome,
+        reason
+      },
+      rematchCallback
+    }
+    this.boardScene.scene.launch(SceneNames.GAME_OVER, data)
   }
 }
 

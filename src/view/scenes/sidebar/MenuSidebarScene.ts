@@ -16,8 +16,6 @@ export default class MenuSidebarScene extends SidebarScene {
     super.create();
     this.buttons = [];
     this.createMenuButtons();
-
-    this.goToLocalPlay()
   }
 
   createMenuButtons() {
@@ -29,7 +27,7 @@ export default class MenuSidebarScene extends SidebarScene {
       })
     );
     this.buttons.unshift(
-      this.createButton('Local Play', () => {this.goToLocalPlay})
+      this.createButton('Local Play', () => {this.goToLocalPlay()})
     );
     let y = 0;
     for (let i = 0; i < this.buttons.length; i++) {
@@ -55,7 +53,9 @@ export default class MenuSidebarScene extends SidebarScene {
 
   goToLocalPlay() {
     this.scene.start(SceneNames.GAME_SIDEBAR, defaultInitData);
-    gameController.setupLocalGame();
+    this.scene.get(SceneNames.GAME_SIDEBAR).events.once('create', () => {
+      gameController.setupLocalGame();
+    });
   }
 
   goToOnlinePlay() {

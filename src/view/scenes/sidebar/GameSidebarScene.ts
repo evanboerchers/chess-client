@@ -73,4 +73,14 @@ export default class GameSidebarScene extends SidebarScene {
     this.whitePanel.y = blackY;
     this.blackPanel.y = whiteY;
   }
+
+  setWhiteButtonHandlers(drawHandler: () => void, resignHandler: () => void) {
+    this.whitePanel.drawHandler = drawHandler
+    this.whitePanel.resignHandler = resignHandler
+  }
+
+  setBlackButtonHandlers(drawHandler: () => void, resignHandler: () => void) {
+    this.blackPanel.drawHandler = drawHandler
+    this.blackPanel.resignHandler = resignHandler
+  }
 }
