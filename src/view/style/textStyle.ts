@@ -64,3 +64,21 @@ export const customizationLabelText: TextStyle = {
   color: '#ffffff',
   align: 'center',
 };
+
+export const gameOverTitleText: TextStyle = {
+  fontFamily: MAIN_FONT,
+  fontSize: 17,
+  strokeThickness: 2,
+  stroke: '#000000',
+  color: '#ffffff',
+  align: 'center',
+};
+
+export const gameOverReasonText: TextStyle = {
+  fontFamily: MAIN_FONT,
+  fontSize: 17,
+  strokeThickness: 2,
+  stroke: '#000000',
+  color: '#ffffff',
+  align: 'center',
+};

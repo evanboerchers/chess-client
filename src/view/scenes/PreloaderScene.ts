@@ -1,5 +1,7 @@
 import { Scene } from 'phaser';
 import { SceneNames } from './scenes.enum';
+import { GameOutcome } from '@evanboerchers/chess-core';
+import { GameOutcomeReason } from './GameOverScene';
 
 export default class PreloaderScene extends Scene {
   constructor() {
@@ -61,5 +63,11 @@ export default class PreloaderScene extends Scene {
   create() {
     this.scene.start(SceneNames.BOARD);
     this.scene.start(SceneNames.MENU_SIDEBAR);
+    this.scene.start(SceneNames.GAME_OVER, {
+      result: {
+        outcome: GameOutcome.DRAW,
+        reason: GameOutcomeReason.INSUFFICIENT_MATERIAL
+      }
+    })
   }
 }
