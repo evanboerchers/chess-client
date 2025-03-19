@@ -1,18 +1,11 @@
 import { Input } from 'phaser';
 import { customizationLabelText, gameOverReasonText, gameOverTitleText, playerNameText } from '../../style/textStyle';
-import ThemeManager from '../../style/ThemeManager';
-import InputTextField, {
-  defaultProperties as inputTextFieldDefaultProperties,
-  InputTextFieldProperties,
-} from './InputTextField';
-import IconSelectionGrid, {
-  defaultProperties as iconSelectionGridDefaultProperties,
-  IconSelectionGridProperties,
-} from './IconSelectionGrid';
-import playerService from '../../../service/PlayerService';
-import Button from './Button';
 import { GameOutcome } from '@evanboerchers/chess-core';
-import { GameOutcomeReason } from '../../scenes/GameOverScene';
+import ThemeManager from '../../style/ThemeManager';
+import Button, { ButtonProperties } from './Button';
+import { GameOutcomeReason } from '../../scenes/GameOutcomeReason.enum';
+import { SceneNames } from '../../scenes/scenes.enum';
+import gameController from '../../../control/GameController';
 
 export interface GameOverModalProperties {
   width?: number;
@@ -26,12 +19,13 @@ export interface GameOverModalProperties {
   titleTextStyle?: Phaser.Types.GameObjects.Text.TextStyle;
   reasonTextStyle?: Phaser.Types.GameObjects.Text.TextStyle;
   reason?: GameOutcomeReason,
-  resignationHandler?: () => any
+  menuHandler?: null | (() => any) 
+  rematchHandler?: null | (() => any) 
 }
 
 export const defaultProperties: Required<GameOverModalProperties> = {
-  width: 500,
-  height: 500,
+  width: 200,
+  height: 200,
   backgroundColour: ThemeManager.getTheme().ui.sidebarColour,
   backgroundAlpha: 1,
   borderColor: 0xffffff,
@@ -41,15 +35,18 @@ export const defaultProperties: Required<GameOverModalProperties> = {
   outcome: GameOutcome.DRAW,
   reasonTextStyle: gameOverReasonText,
   reason: GameOutcomeReason.DRAW,
-  resignationHandler: () => {}
+  menuHandler: null,
+  rematchHandler: null,
 };
 
 export default class GameOverModal extends Phaser.GameObjects.Container {
   private properties: Required<GameOverModalProperties>;
   private contentContainer: Phaser.GameObjects.Container;
-  public background: Phaser.GameObjects.Graphics;
+  private background: Phaser.GameObjects.Graphics;
   public menuButton: Button
   public rematchButton: Button
+  private titleText: Phaser.GameObjects.Text 
+  private reasonText: Phaser.GameObjects.Text 
 
   constructor(
     scene: Phaser.Scene,
@@ -72,36 +69,8 @@ export default class GameOverModal extends Phaser.GameObjects.Container {
     this.add(this.contentContainer);
     scene.add.existing(this);
     this.blockClickThrough();
-  }
-
-  private createText(): void {
-    let title: string;
-    switch (this.properties.outcome) {
-      case GameOutcome.DRAW:
-        title = 'Draw'
-      case GameOutcome.WHITE:
-        title = 'White Wins'
-      case GameOutcome.BLACK:
-        title = 'Black Wins'
-    }
-    this.scene.add.text(0,0,title,this.properties.titleTextStyle)
-    
-    let reason: string;
-    switch (this.properties.reason) {
-      case GameOutcomeReason.ABANDONED:
-        reason = 'By Abandonment'
-      case GameOutcomeReason.CHECKMATE:
-        reason = 'By Checkmate'
-      case GameOutcomeReason.DRAW:
-        reason = 'By Agreement'
-      case GameOutcomeReason.RESIGN:
-        reason = 'By Resignation'
-      case GameOutcomeReason.INSUFFICIENT_MATERIAL:
-        reason = 'By Insufficient Material'
-      case GameOutcomeReason.TIME:
-        reason = 'By Time' 
-    }
-    this.scene.add.text(0,0,reason,this.properties.reasonTextStyle)
+    this.createText();
+    this.createButtons();
   }
 
   private createBackground(): void {
@@ -148,5 +117,63 @@ export default class GameOverModal extends Phaser.GameObjects.Container {
         pointer.event.stopPropagation();
       }
     );
+  }
+
+  private createText(): void {
+    let title: string;
+    switch (this.properties.outcome) {
+      case GameOutcome.DRAW:
+        title = 'Draw'
+      case GameOutcome.WHITE:
+        title = 'White Wins'
+      case GameOutcome.BLACK:
+        title = 'Black Wins'
+    }
+    this.titleText = this.scene.add.text(0,20,title,this.properties.titleTextStyle).setOrigin(0.5)
+
+    let reason: string;
+    switch (this.properties.reason) {
+      case GameOutcomeReason.ABANDONED:
+        reason = 'By Abandonment'
+      case GameOutcomeReason.CHECKMATE:
+        reason = 'By Checkmate'
+      case GameOutcomeReason.DRAW:
+        reason = 'By Agreement'
+      case GameOutcomeReason.RESIGN:
+        reason = 'By Resignation'
+      case GameOutcomeReason.INSUFFICIENT_MATERIAL:
+        reason = 'By Insufficient Material'
+      case GameOutcomeReason.TIME:
+        reason = 'By Time' 
+      default:
+        reason = 'By Resignation'
+    }
+    this.reasonText = this.scene.add.text(0,50,reason,this.properties.reasonTextStyle).setOrigin(0.5)
+    this.contentContainer.add([this.titleText, this.reasonText])
+  }
+
+  private createButtons(): void {
+    const hasRematch = !!this.properties.rematchHandler
+    const menuButtonProps: ButtonProperties = {
+      text: 'Menu',
+      callback: this.properties.menuHandler ?? this.handleMenuClick
+    }  
+    const menuX = hasRematch ? 100 : 0
+    const y = 200
+    this.menuButton = new Button(this.scene, menuX, y, menuButtonProps)
+    this.contentContainer.add(this.menuButton)
+    if (hasRematch) {
+      const rematchButtonProps: ButtonProperties = {
+        text: 'Menu',
+        callback: this.properties.rematchHandler ?? (() => {})
+      }  
+      this.rematchButton = new Button(this.scene, -menuX, y, rematchButtonProps)
+      this.contentContainer.add(this.rematchButton)
+    }
+  }
+
+  handleMenuClick() {
+    this.scene.scene.start(SceneNames.MENU_SIDEBAR)
+    this.scene.scene.start(SceneNames.BOARD)
   }
 }

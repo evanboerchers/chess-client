@@ -1,15 +1,7 @@
 import { GameOutcome, PieceColour } from "@evanboerchers/chess-core"
 import { SceneNames } from "./scenes.enum"
 import GameOverModal from "../gameObjects/ui/GameOverModal"
-
-export enum GameOutcomeReason {
-    CHECKMATE = "checkmate",
-    RESIGN = "resign",
-    TIME = "time",
-    DRAW = "draw",
-    INSUFFICIENT_MATERIAL = "insufficientMaterial",
-    ABANDONED = "abandoned",
-  }
+import { GameOutcomeReason } from "./GameOutcomeReason.enum"
 
 export interface GameOverSceneData {
     result: {

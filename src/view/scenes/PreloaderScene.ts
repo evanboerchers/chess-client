@@ -1,7 +1,7 @@
 import { Scene } from 'phaser';
 import { SceneNames } from './scenes.enum';
 import { GameOutcome } from '@evanboerchers/chess-core';
-import { GameOutcomeReason } from './GameOverScene';
+import { GameOutcomeReason } from './GameOutcomeReason.enum';
 
 export default class PreloaderScene extends Scene {
   constructor() {

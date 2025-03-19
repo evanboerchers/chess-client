@@ -6,14 +6,14 @@ export interface ButtonProperties {
   textStyle?: Phaser.Types.GameObjects.Text.TextStyle;
   background?: Phaser.GameObjects.Sprite;
   hitArea?: Phaser.Geom.Rectangle | Phaser.Geom.Circle | Phaser.Geom.Polygon;
-  callback?: () => void;
+  callback?: () => any;
 }
 
 export default class Button extends Phaser.GameObjects.Container {
   _background: Phaser.GameObjects.Sprite;
   text: Phaser.GameObjects.Text;
   hitArea: Phaser.Geom.Rectangle | Phaser.Geom.Circle | Phaser.Geom.Polygon;
-  callback: () => void;
+  callback: () => any;
 
   constructor(
     scene: Phaser.Scene,

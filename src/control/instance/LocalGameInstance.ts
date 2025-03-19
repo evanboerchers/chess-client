@@ -11,7 +11,7 @@ import BoardInputController from '../BoardInputController';
 import gameController from '../GameController';
 import { GameInstance } from './GameInstance.types';
 import GameSideBarInputController from '../GameSideBarInputController';
-import { GameOutcomeReason } from '../../view/scenes/GameOverScene';
+import { GameOutcomeReason } from '../../view/scenes/GameOutcomeReason.enum';
 
 export default class LocalGameInstance implements GameInstance {
   gameModel: ChessGame;
