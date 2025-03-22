@@ -55,6 +55,14 @@ export default class Button extends Phaser.GameObjects.Container {
     return this.scene.add.sprite(0, 0, texture).setOrigin(0.5).setName(texture);
   }
 
+  default() {
+    
+  }
+
+  highlight() {
+
+  }
+
   createHitArea(): Phaser.Geom.Rectangle {
     const width = 80;
     const height = 30;

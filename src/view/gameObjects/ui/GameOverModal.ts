@@ -25,7 +25,7 @@ export interface GameOverModalProperties {
 
 export const defaultProperties: Required<GameOverModalProperties> = {
   width: 200,
-  height: 200,
+  height: 150,
   backgroundColour: ThemeManager.getTheme().ui.sidebarColour,
   backgroundAlpha: 1,
   borderColor: 0xffffff,
@@ -129,7 +129,7 @@ export default class GameOverModal extends Phaser.GameObjects.Container {
       case GameOutcome.BLACK:
         title = 'Black Wins'
     }
-    this.titleText = this.scene.add.text(0,20,title,this.properties.titleTextStyle).setOrigin(0.5)
+    this.titleText = this.scene.add.text(0,30,title,this.properties.titleTextStyle).setOrigin(0.5)
 
     let reason: string;
     switch (this.properties.reason) {
@@ -148,7 +148,7 @@ export default class GameOverModal extends Phaser.GameObjects.Container {
       default:
         reason = 'By Resignation'
     }
-    this.reasonText = this.scene.add.text(0,50,reason,this.properties.reasonTextStyle).setOrigin(0.5)
+    this.reasonText = this.scene.add.text(0,60,reason,this.properties.reasonTextStyle).setOrigin(0.5)
     this.contentContainer.add([this.titleText, this.reasonText])
   }
 
@@ -159,7 +159,7 @@ export default class GameOverModal extends Phaser.GameObjects.Container {
       callback: this.properties.menuHandler ?? this.handleMenuClick
     }  
     const menuX = hasRematch ? 100 : 0
-    const y = 200
+    const y = 105
     this.menuButton = new Button(this.scene, menuX, y, menuButtonProps)
     this.contentContainer.add(this.menuButton)
     if (hasRematch) {

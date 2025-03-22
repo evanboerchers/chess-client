@@ -66,6 +66,9 @@ export default class Board extends Phaser.GameObjects.Container {
 
   clearBoard(): void {
     this.pieces.forEach((piece) => piece.destroy());
+    this.squares.forEach((row) => row.forEach((square) => {
+      square.clearHighlights()
+    }))
   }
 
   drawPieces(board: BoardData): void {
