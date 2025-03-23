@@ -6,7 +6,7 @@ services:
       context: ..
       dockerfile: deploy/Dockerfile
     image: nginx:alpine
-    container_name: phaser-game
+    container_name: chess-client
     ports:
       - "8080:80"
     restart: unless-stopped
