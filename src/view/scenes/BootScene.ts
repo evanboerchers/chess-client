@@ -6,7 +6,10 @@ export default class BootScene extends Scene {
     super(SceneNames.BOOT);
   }
 
-  preload() {}
+  preload() {
+    this.load.setPath('assets');
+    this.load.image('logo', 'CoffeeChess_logo.webp');
+  }
 
   create() {
     this.scene.start(SceneNames.PRELOADER);

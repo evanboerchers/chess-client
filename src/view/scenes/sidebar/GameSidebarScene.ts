@@ -47,12 +47,12 @@ export default class GameSidebarScene extends SidebarScene {
     super.create();
     this.whitePanel = this.createPlayerPanel(
       0,
-      this.scale.height / 2 + 220,
+      this.scale.height / 2 + 200,
       this.initData.whiteProps
     );
     this.blackPanel = this.createPlayerPanel(
       0,
-      this.scale.height / 2 - 220,
+      this.scale.height / 2 - 200,
       this.initData.blackProps
     );
     this.contentContainer.add([this.whitePanel, this.blackPanel]);

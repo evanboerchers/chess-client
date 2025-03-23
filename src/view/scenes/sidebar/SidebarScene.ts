@@ -5,7 +5,7 @@ import ThemeManager from '../../style/ThemeManager';
 export default class SidebarScene extends Scene {
   contentContainer: Phaser.GameObjects.Container;
   background: Phaser.GameObjects.Rectangle;
-  title: Phaser.GameObjects.Text;
+  title: Phaser.GameObjects.Sprite;
   widthFactor: number;
 
   constructor(key: string, widthFactor: number = 0.25) {
@@ -41,9 +41,10 @@ export default class SidebarScene extends Scene {
 
   createTitle() {
     this.title = this.add
-      .text(this.background.x, 10, 'Coffee Chess')
+      .sprite(this.background.x, 10, 'logo')
       .setInteractive({ useHandCursor: true })
-      .setOrigin(0.5)
+      .setOrigin(0.5, 0)
+      .setScale(0.2)
       .on(Phaser.Input.Events.POINTER_DOWN, () => {
         this.scene.start(SceneNames.MENU_SIDEBAR);
       });

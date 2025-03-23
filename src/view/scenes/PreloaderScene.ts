@@ -9,18 +9,12 @@ export default class PreloaderScene extends Scene {
   }
 
   init() {
-    //  We loaded this image in our Boot Scene, so we can display it here
-    this.add.image(512, 384, 'background');
+    this.add.image(this.scale.width/2, 275, 'logo').setScale(0.75);
 
-    //  A simple progress bar. This is the outline of the bar.
-    this.add.rectangle(512, 384, 468, 32).setStrokeStyle(1, 0xffffff);
-
-    //  This is the progress bar itself. It will increase in size from the left based on the % of progress.
-    const bar = this.add.rectangle(512 - 230, 384, 4, 28, 0xffffff);
-
-    //  Use the 'progress' event emitted by the LoaderPlugin to update the loading bar
+    const barY = 550
+    this.add.rectangle(512, barY, 468, 32).setStrokeStyle(1, 0xffffff);
+    const bar = this.add.rectangle(512 - 230, barY, 4, 28, 0xffffff).setOrigin(0.5);
     this.load.on('progress', (progress: number) => {
-      //  Update the progress bar (our bar is 464px wide, so 100% = 464px)
       bar.width = 4 + 460 * progress;
     });
   }
@@ -63,11 +57,5 @@ export default class PreloaderScene extends Scene {
   create() {
     this.scene.start(SceneNames.BOARD);
     this.scene.start(SceneNames.MENU_SIDEBAR);
-    this.scene.start(SceneNames.GAME_OVER, {
-      result: {
-        outcome: GameOutcome.DRAW,
-        reason: GameOutcomeReason.INSUFFICIENT_MATERIAL
-      }
-    })
   }
 }
