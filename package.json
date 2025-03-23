@@ -10,7 +10,10 @@
   "scripts": {
     "dev": "vite --config vite/config.dev.mjs",
     "build": "vite build --config vite/config.prod.mjs",
-    "prettier": "prettier . --write"
+    "prettier": "prettier . --write",
+    "docker:up": "docker compose -f deploy/docker-compose.yml up -d --build",
+    "docker:down": "docker compose -f deploy/docker-compose.yml down",
+    "docker:restart": "npm run docker:down && npm run docker:up"
   },
   "devDependencies": {
     "terser": "^5.31.0",
