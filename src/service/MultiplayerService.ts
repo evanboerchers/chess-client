@@ -1,4 +1,3 @@
-import { io } from 'socket.io-client';
 import { ServerToClientEvents, GameSocket, PlayerData } from './server.types';
 import {
   GameOutcome,
@@ -217,5 +216,5 @@ export class SocketEventError extends Error {
   }
 }
 
-const multiplayerService = new MultiplayerService('http://localhost:3000');
+const multiplayerService = new MultiplayerService(import.meta.env.VITE_SERVER_URL);
 export default multiplayerService;

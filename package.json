@@ -13,17 +13,21 @@
     "prettier": "prettier . --write",
     "docker:up": "docker compose -f deploy/docker-compose.yml up -d --build",
     "docker:down": "docker compose -f deploy/docker-compose.yml down",
-    "docker:restart": "npm run docker:down && npm run docker:up"
+    "docker:restart": "pnpm run docker:down && pnpm run docker:up",
+    "deploy": "zx deploy/deploy.mjs"
   },
   "devDependencies": {
+    "@types/socket.io-client": "^1.4.36",
+    "dotenv": "^16.4.5",
     "terser": "^5.31.0",
     "typescript": "^5.4.5",
-    "vite": "^5.3.1"
+    "vite": "^5.3.1",
+    "zx": "^8.4.1"
   },
   "dependencies": {
     "@evanboerchers/chess-core": "1.0.0",
-    "socket.io-client": "^4.8.1",
     "phaser": "^3.80.1",
-    "prettier": "^3.3.3"
+    "prettier": "^3.3.3",
+    "socket.io-client": "^4.8.1"
   }
 }
