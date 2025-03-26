@@ -6,5 +6,5 @@ services:
     image: nginx:alpine
     container_name: chess-client
     ports:
-      - "8080:80"
+      - "4040:80"
     restart: unless-stopped

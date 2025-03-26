@@ -1,12 +1,11 @@
 {
-  "name": "chess-client",
-  "description": "A Phaser 3 TypeScript chess client.",
+  "name": "@evanboerchers/chess-client",
+  "description": "Coffee Chess client built in Phaser 3",
   "version": "1.0.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/evankboerchers/chess-client.git"
   },
-  "homepage": "https://github.com/phaserjs/template-vite-ts#readme",
   "scripts": {
     "dev": "vite --config vite/config.dev.mjs",
     "build": "vite build --config vite/config.prod.mjs",
@@ -25,7 +24,7 @@
     "zx": "^8.4.1"
   },
   "dependencies": {
-    "@evanboerchers/chess-core": "1.0.0",
+    "@evanboerchers/chess-core": "^1.0.1",
     "phaser": "^3.80.1",
     "prettier": "^3.3.3",
     "socket.io-client": "^4.8.1"
