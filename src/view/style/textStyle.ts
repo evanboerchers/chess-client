@@ -23,7 +23,7 @@ export const menuInfoText: TextStyle = {
 export const menuText_Hover: TextStyle = {
   fontFamily: MAIN_FONT,
   fontSize: 30,
-  color: '#ff0000',
+  color: '#64CBFF',
   stroke: '#000000',
   strokeThickness: 8,
   align: 'center',
@@ -57,6 +57,24 @@ export const panelButtonText: TextStyle = {
 };
 
 export const customizationLabelText: TextStyle = {
+  fontFamily: MAIN_FONT,
+  fontSize: 17,
+  strokeThickness: 2,
+  stroke: '#000000',
+  color: '#ffffff',
+  align: 'center',
+};
+
+export const gameOverTitleText: TextStyle = {
+  fontFamily: MAIN_FONT,
+  fontSize: 30,
+  strokeThickness: 2,
+  stroke: '#000000',
+  color: '#ffffff',
+  align: 'center',
+};
+
+export const gameOverReasonText: TextStyle = {
   fontFamily: MAIN_FONT,
   fontSize: 17,
   strokeThickness: 2,

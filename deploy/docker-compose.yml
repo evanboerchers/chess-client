@@ -1,0 +1,10 @@
+services:
+  chess-client:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: nginx:alpine
+    container_name: chess-client
+    ports:
+      - "4040:80"
+    restart: unless-stopped

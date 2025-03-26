@@ -6,14 +6,14 @@ export interface ButtonProperties {
   textStyle?: Phaser.Types.GameObjects.Text.TextStyle;
   background?: Phaser.GameObjects.Sprite;
   hitArea?: Phaser.Geom.Rectangle | Phaser.Geom.Circle | Phaser.Geom.Polygon;
-  callback?: () => void;
+  callback?: () => any;
 }
 
 export default class Button extends Phaser.GameObjects.Container {
   _background: Phaser.GameObjects.Sprite;
   text: Phaser.GameObjects.Text;
   hitArea: Phaser.Geom.Rectangle | Phaser.Geom.Circle | Phaser.Geom.Polygon;
-  callback: () => void;
+  callback: () => any;
 
   constructor(
     scene: Phaser.Scene,
@@ -53,6 +53,14 @@ export default class Button extends Phaser.GameObjects.Container {
     background.generateTexture(texture, width + 8, height + 8);
     background.destroy();
     return this.scene.add.sprite(0, 0, texture).setOrigin(0.5).setName(texture);
+  }
+
+  default() {
+    
+  }
+
+  highlight() {
+
   }
 
   createHitArea(): Phaser.Geom.Rectangle {

@@ -7,13 +7,15 @@ import GameSidebarScene from './view/scenes/sidebar/GameSidebarScene';
 import QueueSidebarScene from './view/scenes/sidebar/QueueSidebarScene';
 import MenuSidebarScene from './view/scenes/sidebar/MenuSidebarScene';
 import PlayerCustomScene from './view/scenes/PlayerCustomScene';
+import GameOverScene from './view/scenes/GameOverScene';
+import ThemeManager from './view/style/ThemeManager';
 
 const config: Types.Core.GameConfig = {
   type: Phaser.AUTO,
   width: 1024,
   height: 768,
   parent: 'game-container',
-  backgroundColor: '#fffffff',
+  backgroundColor: ThemeManager.getTheme().ui.sidebarColour,
   roundPixels: true,
   scale: {
     mode: Phaser.Scale.FIT,
@@ -27,6 +29,7 @@ const config: Types.Core.GameConfig = {
     QueueSidebarScene,
     GameSidebarScene,
     PlayerCustomScene,
+    GameOverScene,
   ],
 };
 

@@ -13,6 +13,8 @@ export default class PlayerPanel extends Phaser.GameObjects.Container {
   private buttonContainer: Phaser.GameObjects.Container;
   private drawButton?: Phaser.GameObjects.Container;
   private resignButton?: Phaser.GameObjects.Container;
+  public resignHandler?: () => void
+  public drawHandler?: () => void
 
   constructor(
     scene: Phaser.Scene,
@@ -34,14 +36,14 @@ export default class PlayerPanel extends Phaser.GameObjects.Container {
     const drawProps = {
       text: 'Draw',
       callback: () => {
-        this.emit('drawClicked');
+        this.drawHandler?.()
       },
     };
     this.drawButton = new Button(this.scene, 50, 0, drawProps);
     const resignProps = {
       text: 'Resign',
       callback: () => {
-        this.emit('resignClicked');
+        this.resignHandler?.()
       },
     };
     this.resignButton = new Button(this.scene, -50, 0, resignProps);

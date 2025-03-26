@@ -36,7 +36,7 @@ export default class BoardInputController {
       square.boardPosition
     );
     this.clearBoardActions();
-    square.highlight();
+    square.highlightSelected();
     const potentialMoves = this.gameModel.potentialMoves(square.boardPosition);
     this.setupPieceSelection(colour, moveCallback);
     this.setupPotentialMoves(potentialMoves, moveCallback);
@@ -66,6 +66,6 @@ export default class BoardInputController {
       square.disableInteractive();
       square.off('pointerdown');
     });
-    this.board.clearHighlights();
+    this.board.clearActionHighlights();
   }
 }

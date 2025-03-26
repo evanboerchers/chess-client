@@ -66,6 +66,9 @@ export default class Board extends Phaser.GameObjects.Container {
 
   clearBoard(): void {
     this.pieces.forEach((piece) => piece.destroy());
+    this.squares.forEach((row) => row.forEach((square) => {
+      square.clearHighlights()
+    }))
   }
 
   drawPieces(board: BoardData): void {
@@ -90,11 +93,15 @@ export default class Board extends Phaser.GameObjects.Container {
   }
 
   highlightSquare(coordinate: Position): void {
-    this.getBoardSquare(coordinate).highlight();
+    this.getBoardSquare(coordinate).highlightSelected();
   }
 
   highlightCaptureSquare(coordinate: Position): void {
     this.getBoardSquare(coordinate).highlightCapture();
+  }
+
+  highlightPreviousMoveSquare(coordinate: Position): void {
+    this.getBoardSquare(coordinate).highlightPreviousMove();
   }
 
   highlightMoveSquare(coordinate: Position): void {
@@ -102,7 +109,11 @@ export default class Board extends Phaser.GameObjects.Container {
   }
 
   clearHighlights(): void {
-    this.squares.flat().forEach((square) => square.clearHighlight());
+    this.squares.flat().forEach((square) => square.clearHighlights());
+  }
+
+  clearActionHighlights(): void {
+    this.squares.flat().forEach((square) => square.clearActionHighlights());
   }
 
   enablePieceInteractions(color: PieceColour): void {
