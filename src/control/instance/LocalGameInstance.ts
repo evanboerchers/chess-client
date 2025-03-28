@@ -89,5 +89,6 @@ export default class LocalGameInstance implements GameInstance {
 
   private handleRematch = () => {
     console.log('handle rematch')
+    gameController.setupLocalGame()
   } 
 }

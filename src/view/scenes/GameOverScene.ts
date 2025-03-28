@@ -1,6 +1,6 @@
 import { GameOutcome, PieceColour } from "@evanboerchers/chess-core"
 import { SceneNames } from "./scenes.enum"
-import GameOverModal from "../gameObjects/ui/GameOverModal"
+import GameOverModal, { GameOverModalProperties } from "../gameObjects/ui/GameOverModal"
 import { GameOutcomeReason } from "./GameOutcomeReason.enum"
 
 export interface GameOverSceneData {
@@ -9,6 +9,7 @@ export interface GameOverSceneData {
         reason: GameOutcomeReason
     }
     rematchCallback?: () => void
+    menuCallback?: () => void
 }
 
 export default class GameOverScene extends Phaser.Scene {
@@ -37,13 +38,20 @@ export default class GameOverScene extends Phaser.Scene {
         this.add.existing(this.background);
         this.background.setInteractive()
         this.createModal();
-        if (this.initData.rematchCallback) {
-            
-        }
     }
 
     createModal() {
-        this.modal = new GameOverModal(this, this.scale.width/2, this.scale.height/2)
+        const modalProperties: GameOverModalProperties = {
+            rematchHandler: () => {
+                this.initData.rematchCallback?.()
+                this.scene.stop()
+            },
+            menuHandler: () => {
+                this.initData?.menuCallback?.()
+                this.scene.stop()
+            }
+        }
+        this.modal = new GameOverModal(this, this.scale.width/2, this.scale.height/2, modalProperties)
         this.add.existing(this.modal)
     }
 }

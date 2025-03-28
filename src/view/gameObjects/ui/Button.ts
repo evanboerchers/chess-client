@@ -4,9 +4,15 @@ import ThemeManager from '../../style/ThemeManager';
 export interface ButtonProperties {
   text?: string;
   textStyle?: Phaser.Types.GameObjects.Text.TextStyle;
-  background?: Phaser.GameObjects.Sprite;
+  background?: Phaser.GameObjects.Sprite | GeneratedBackgroundProperties;
   hitArea?: Phaser.Geom.Rectangle | Phaser.Geom.Circle | Phaser.Geom.Polygon;
   callback?: () => any;
+}
+
+interface GeneratedBackgroundProperties {
+  width?: number,
+  height?: number,
+  radius?: number
 }
 
 export default class Button extends Phaser.GameObjects.Container {
@@ -32,18 +38,22 @@ export default class Button extends Phaser.GameObjects.Container {
         properties.textStyle ?? buttonDefaultText
       )
       .setOrigin(0.5);
-    this._background = properties.background ?? this.generateBackground();
+    if (properties.background instanceof Phaser.GameObjects.Sprite) {
+      this._background = properties.background
+    } else {
+      this._background = this.generateBackground(properties.background);
+    }
     this.hitArea = properties.hitArea ?? this.createHitArea();
     this.add([this._background, this.text]);
     this.callback = properties.callback ?? (() => {});
     this.createEvents();
   }
 
-  generateBackground(): Phaser.GameObjects.Sprite {
+  generateBackground(properties?: GeneratedBackgroundProperties): Phaser.GameObjects.Sprite {
     // TODO: Make util for converting graphic to sprite
-    const width = 80;
-    const height = 30;
-    const radius = 10;
+    const width = properties?.width ?? 80;
+    const height = properties?.height ?? 30;
+    const radius = properties?.radius ?? 10;
     const background = this.scene.add.graphics();
     background.lineStyle(4, ThemeManager.getTheme().ui.button.default.stroke);
     background.strokeRoundedRect(4, 4, width, height, radius);
