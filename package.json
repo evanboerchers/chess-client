@@ -16,7 +16,6 @@
     "deploy": "zx deploy/deploy.mjs"
   },
   "devDependencies": {
-    "@types/socket.io-client": "^1.4.36",
     "dotenv": "^16.4.5",
     "terser": "^5.31.0",
     "typescript": "^5.4.5",
