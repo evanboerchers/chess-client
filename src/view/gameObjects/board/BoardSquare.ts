@@ -130,27 +130,27 @@ export default class BoardSquare extends Phaser.GameObjects.Container {
   public highlightSelected() {
     this.selectedHighlightSquare.visible = true
   }
-
+  
   public highlightCapture() {
     this.captureHighlightSquare.visible = true
   }
-
+  
   public highlightMove() {
     this.moveHighlightTween.restart();
     this.moveHighlightSprite.visible = true
   }
-
+  
   public highlightPreviousMove() {
     this.previousMoveHighlightSquare.visible = true
   }
-
+  
   public clearHighlights() {
     this.moveHighlightSprite.visible = false
     this.selectedHighlightSquare.visible = false
     this.captureHighlightSquare.visible = false
     this.previousMoveHighlightSquare.visible = false
   }
-
+  
   public clearActionHighlights() {
     this.moveHighlightSprite.visible = false
     this.selectedHighlightSquare.visible = false

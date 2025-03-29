@@ -49,7 +49,7 @@ export default class Button extends Phaser.GameObjects.Container {
     if (properties.highlight instanceof Phaser.GameObjects.Sprite) {
       this._highlight= properties.highlight
     } else {
-      this._highlight= this.generateHighlight(properties.highlight);
+      this._highlight= this.generateHighlight({...properties.background, ...properties.highlight});
     }
       this.hitArea = properties.hitArea ?? this.createHitArea();
     this.add([this._background, this._highlight, this.text]);
@@ -113,7 +113,7 @@ export default class Button extends Phaser.GameObjects.Container {
     this._highlight.setInteractive({
       useHandCursor: true,
     });
-    this._background.on(Phaser.Input.Events.POINTER_DOWN, this.highlight);
+    this._highlight.on(Phaser.Input.Events.POINTER_DOWN, this.callback);
     this._background.on(Phaser.Input.Events.POINTER_OVER, () => {
       this.highlight()}
     );
