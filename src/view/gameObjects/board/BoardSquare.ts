@@ -88,7 +88,7 @@ export default class BoardSquare extends Phaser.GameObjects.Container {
       0,
       this.width,
       this.width,
-      ThemeManager.getTheme().board.previousMoveColour
+      ThemeManager.getTheme().board.attackColour
     ).setAlpha(0.8)
     this.add(this.captureHighlightSquare)
     this.previousMoveHighlightSquare = new Phaser.GameObjects.Rectangle(
@@ -130,27 +130,27 @@ export default class BoardSquare extends Phaser.GameObjects.Container {
   public highlightSelected() {
     this.selectedHighlightSquare.visible = true
   }
-
+  
   public highlightCapture() {
     this.captureHighlightSquare.visible = true
   }
-
+  
   public highlightMove() {
     this.moveHighlightTween.restart();
     this.moveHighlightSprite.visible = true
   }
-
+  
   public highlightPreviousMove() {
     this.previousMoveHighlightSquare.visible = true
   }
-
+  
   public clearHighlights() {
     this.moveHighlightSprite.visible = false
     this.selectedHighlightSquare.visible = false
     this.captureHighlightSquare.visible = false
     this.previousMoveHighlightSquare.visible = false
   }
-
+  
   public clearActionHighlights() {
     this.moveHighlightSprite.visible = false
     this.selectedHighlightSquare.visible = false

@@ -25,6 +25,10 @@ export interface UITheme {
       stroke: number;
       fill: number;
     };
+    highlight: {
+      stroke: number;
+      fill: number
+    }
   };
 }
 
@@ -35,7 +39,7 @@ const defaultTheme: Theme = {
     darkSquareColour: 0xb58863,
     previousMoveColour: 0x4A90E2, 
     highlightColour: 0x64CBFF,
-    attackColour: 0xff0000,
+    attackColour: 0xf15133,
     moveColour: 0x00ff00,
   },
   ui: {
@@ -50,6 +54,10 @@ const defaultTheme: Theme = {
         stroke: 0x1F5A98,
         fill: 0x64CBFF,
       },
+      highlight: {
+        stroke: 0x113255,
+        fill: 0x64CBFF,
+      }
     },
   },
 };

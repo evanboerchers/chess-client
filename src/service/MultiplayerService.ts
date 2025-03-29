@@ -6,6 +6,7 @@ import {
   PieceColour,
 } from '@evanboerchers/chess-core';
 import playerService from './PlayerService';
+import io  from "socket.io-client"
 
 export class MultiplayerService {
   private socket: GameSocket | null = null;
@@ -25,10 +26,10 @@ export class MultiplayerService {
   }
 
   private setupLogging(): void {
-    this.socket?.onAny((event, ...args) => {
+    this.socket?.onAny((event: any, ...args: any) => {
       console.log(`⬅️ Received event "${event}"`, args);
     });
-    this.socket?.onAnyOutgoing((event, ...args) => {
+    this.socket?.onAnyOutgoing((event: any, ...args: any) => {
       console.log(`➡️ Emitted event "${event}")`, args);
     });
   }

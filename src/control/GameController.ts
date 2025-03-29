@@ -13,8 +13,9 @@ import MultiplayerGameInstance from './instance/MultiplayerGameInstance';
 import LocalGameInstance from './instance/LocalGameInstance';
 import BoardInputController from './BoardInputController';
 import GameSideBarInputController from './GameSideBarInputController';
-import { GameOutcomeReason, GameOverSceneData } from '../view/scenes/GameOverScene';
+import { GameOverSceneData } from '../view/scenes/GameOverScene';
 import { SceneNames } from '../view/scenes/scenes.enum';
+import { GameOutcomeReason } from '../view/scenes/GameOutcomeReason.enum';
 
 export class GameController {
   boardScene: BoardScene;
@@ -47,6 +48,7 @@ export class GameController {
       playerColour
     );
     if (playerColour === PieceColour.BLACK) this.flipBoard();
+    this.redrawBoard();
   }
 
   setupLocalGame() {
@@ -60,6 +62,7 @@ export class GameController {
       this.gameSidebarScene
     )
     this.gameInstance = new LocalGameInstance(model, boardInputController, sidebarInputController);
+    this.redrawBoard();
   }
 
   handleMove(move: Move) {
@@ -86,12 +89,20 @@ export class GameController {
   }
 
   endGame(outcome: GameOutcome, reason: GameOutcomeReason, rematchCallback: () => void) {
+    const menuCallback = () => {
+      console.log("Go to menu")
+      this.gameSidebarScene.scene.launch(SceneNames.MENU_SIDEBAR)
+      this.gameSidebarScene.scene.stop()
+      this.gameInstance = new LocalGameInstance();
+      this.redrawBoard();
+    }
     const data: GameOverSceneData = {
       result: {
         outcome,
         reason
       },
-      rematchCallback
+      rematchCallback,
+      menuCallback
     }
     this.boardScene.scene.launch(SceneNames.GAME_OVER, data)
   }

@@ -16,7 +16,6 @@
     "deploy": "zx deploy/deploy.mjs"
   },
   "devDependencies": {
-    "@types/socket.io-client": "^1.4.36",
     "dotenv": "^16.4.5",
     "terser": "^5.31.0",
     "typescript": "^5.4.5",
@@ -25,7 +24,7 @@
   },
   "dependencies": {
     "@evanboerchers/chess-core": "^1.0.1",
-    "phaser": "^3.80.1",
+    "phaser": "^3.88.2",
     "prettier": "^3.3.3",
     "socket.io-client": "^4.8.1"
   }

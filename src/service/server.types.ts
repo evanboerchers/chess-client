@@ -4,7 +4,7 @@ import {
   Move,
   PieceColour,
 } from '@evanboerchers/chess-core';
-import { Socket } from 'socket.io';
+import { Socket } from "socket.io-client";
 
 export interface ServerToClientEvents {
   queueJoined: () => void;

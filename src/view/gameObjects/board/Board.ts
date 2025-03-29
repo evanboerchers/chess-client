@@ -7,15 +7,6 @@ import {
   Position,
 } from '@evanboerchers/chess-core';
 
-export enum OnEvents {
-  HIGHLIGHT = 'Board:highlightSquare',
-  HIGHLIGHT_CAPTURE = 'Board:highlightCaptureSquare',
-  HIGHLIGHT_MOVE = 'Board:highlightMoveSquare',
-  CLEAR_HIGHLIGHTS = 'Board:clearHighlights',
-  ENABLE_WHITE_INTERACTIONS = 'Board:enableWhiteInteractions',
-  ENABLE_BLACK_INTERACTIONS = 'Board:enableBlackInteractions',
-}
-
 export default class Board extends Phaser.GameObjects.Container {
   rows: number = 8;
   columns: number = 8;

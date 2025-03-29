@@ -72,6 +72,10 @@ export default class GameOverModal extends Phaser.GameObjects.Container {
     this.createText();
     this.createButtons();
   }
+  
+  private hasRematch(): boolean {
+    return !!this.properties.rematchHandler
+  }
 
   private createBackground(): void {
     this.background = this.scene.add.graphics();
@@ -99,6 +103,9 @@ export default class GameOverModal extends Phaser.GameObjects.Container {
       this.properties.cornerRadius
     );
     this.add(this.background);
+    if (this.hasRematch()) {
+      this.background.setScale(1.5, 1)
+    }
   }
 
   private blockClickThrough() {
@@ -153,27 +160,28 @@ export default class GameOverModal extends Phaser.GameObjects.Container {
   }
 
   private createButtons(): void {
-    const hasRematch = !!this.properties.rematchHandler
+    const menuX = this.hasRematch() ? 55 : 0
+    const y = 105
+    const width = 100
     const menuButtonProps: ButtonProperties = {
       text: 'Menu',
-      callback: this.properties.menuHandler ?? this.handleMenuClick
+      background: {
+        width
+      },
+      callback: this.properties.menuHandler || (() => {})
     }  
-    const menuX = hasRematch ? 100 : 0
-    const y = 105
     this.menuButton = new Button(this.scene, menuX, y, menuButtonProps)
     this.contentContainer.add(this.menuButton)
-    if (hasRematch) {
+    if (this.hasRematch()) {
       const rematchButtonProps: ButtonProperties = {
-        text: 'Menu',
+        text: 'Rematch',
+        background: {
+          width
+        },
         callback: this.properties.rematchHandler ?? (() => {})
       }  
       this.rematchButton = new Button(this.scene, -menuX, y, rematchButtonProps)
       this.contentContainer.add(this.rematchButton)
     }
-  }
-
-  handleMenuClick() {
-    this.scene.scene.start(SceneNames.MENU_SIDEBAR)
-    this.scene.scene.start(SceneNames.BOARD)
   }
 }
