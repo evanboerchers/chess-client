@@ -25,6 +25,10 @@ export interface UITheme {
       stroke: number;
       fill: number;
     };
+    highlight: {
+      stroke: number;
+      fill: number
+    }
   };
 }
 
@@ -50,6 +54,10 @@ const defaultTheme: Theme = {
         stroke: 0x1F5A98,
         fill: 0x64CBFF,
       },
+      highlight: {
+        stroke: 0x113255,
+        fill: 0x64CBFF,
+      }
     },
   },
 };
