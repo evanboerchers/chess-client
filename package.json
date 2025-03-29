@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@evanboerchers/chess-core": "^1.0.1",
-    "phaser": "^3.80.1",
+    "phaser": "^3.88.2",
     "prettier": "^3.3.3",
     "socket.io-client": "^4.8.1"
   }

@@ -39,7 +39,7 @@ const defaultTheme: Theme = {
     darkSquareColour: 0xb58863,
     previousMoveColour: 0x4A90E2, 
     highlightColour: 0x64CBFF,
-    attackColour: 0xff0000,
+    attackColour: 0xf15133,
     moveColour: 0x00ff00,
   },
   ui: {

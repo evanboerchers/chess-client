@@ -88,7 +88,7 @@ export default class BoardSquare extends Phaser.GameObjects.Container {
       0,
       this.width,
       this.width,
-      ThemeManager.getTheme().board.previousMoveColour
+      ThemeManager.getTheme().board.attackColour
     ).setAlpha(0.8)
     this.add(this.captureHighlightSquare)
     this.previousMoveHighlightSquare = new Phaser.GameObjects.Rectangle(
