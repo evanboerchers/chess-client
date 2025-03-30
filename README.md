@@ -1,1 +1,1 @@
-# Coffee Chess- Client
+# Coffee Chess - Client

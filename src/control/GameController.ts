@@ -16,6 +16,7 @@ import GameSideBarInputController from './GameSideBarInputController';
 import { GameOverSceneData } from '../view/scenes/GameOverScene';
 import { SceneNames } from '../view/scenes/scenes.enum';
 import { GameOutcomeReason } from '../view/scenes/GameOutcomeReason.enum';
+import testConfigService from '../service/TestConfigService';
 
 export class GameController {
   boardScene: BoardScene;
@@ -62,6 +63,26 @@ export class GameController {
       this.gameSidebarScene
     )
     this.gameInstance = new LocalGameInstance(model, boardInputController, sidebarInputController);
+    this.redrawBoard();
+  }
+
+  setupTestGame() {
+    console.log('setting up local game');
+    const model = new ChessGame();
+    const boardInputController = new BoardInputController(
+      this.boardScene.board,
+      model
+    );
+    const sidebarInputController = new GameSideBarInputController(
+      this.gameSidebarScene
+    )
+    this.gameInstance = new LocalGameInstance(model, boardInputController, sidebarInputController);
+    const saveText = this.boardScene.add.text(10, 10, 'Save State')
+    testConfigService.loadTestScenarioIntoModel(this.gameInstance.gameModel)
+    saveText.setInteractive({useHandCursor: true})
+    saveText.on(Phaser.Input.Events.POINTER_DOWN, () => {
+      testConfigService.saveTestScenario(this.gameInstance.gameModel)
+    })
     this.redrawBoard();
   }
 

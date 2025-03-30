@@ -51,7 +51,7 @@ export default class Button extends Phaser.GameObjects.Container {
     } else {
       this._highlight= this.generateHighlight({...properties.background, ...properties.highlight});
     }
-      this.hitArea = properties.hitArea ?? this.createHitArea();
+    this.hitArea = properties.hitArea ?? this.createHitArea();
     this.add([this._background, this._highlight, this.text]);
     this.callback = properties.callback ?? (() => {});
     this.createEvents();

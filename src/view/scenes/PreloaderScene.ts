@@ -1,7 +1,8 @@
 import { Scene } from 'phaser';
 import { SceneNames } from './scenes.enum';
-import { GameOutcome } from '@evanboerchers/chess-core';
-import { GameOutcomeReason } from './GameOutcomeReason.enum';
+import testConfigService from '../../service/TestConfigService';
+import gameController from '../../control/GameController';
+import { defaultInitData } from './sidebar/GameSidebarScene';
 
 export default class PreloaderScene extends Scene {
   constructor() {
@@ -55,6 +56,24 @@ export default class PreloaderScene extends Scene {
   }
 
   create() {
+    if (testConfigService.isTestScenario()) {
+      this.startTestScenario()   
+    } else {
+      this.startMenu()
+    }
+  }
+
+  startTestScenario() {
+    console.log("Starting test scenario")
+    this.scene.start(SceneNames.BOARD);
+    this.scene.start(SceneNames.GAME_SIDEBAR, defaultInitData);
+    this.scene.get(SceneNames.GAME_SIDEBAR).events.once('create', () => {
+      gameController.setupTestGame();
+    });
+  }
+  
+  startMenu() {
+    console.log("Starting main menu")
     this.scene.start(SceneNames.BOARD);
     this.scene.start(SceneNames.MENU_SIDEBAR);
   }
