@@ -73,6 +73,15 @@ export default class BoardSquare extends Phaser.GameObjects.Container {
   }
   
   private createMoveHighlightSquares() {
+    this.previousMoveHighlightSquare = new Phaser.GameObjects.Rectangle(
+      this.scene,
+      0,
+      0,
+      this.width,
+      this.width,
+      ThemeManager.getTheme().board.previousMoveColour
+    ).setAlpha(0.8)
+    this.add(this.previousMoveHighlightSquare)
     this.selectedHighlightSquare = new Phaser.GameObjects.Rectangle(
       this.scene,
       0,
@@ -91,15 +100,6 @@ export default class BoardSquare extends Phaser.GameObjects.Container {
       ThemeManager.getTheme().board.attackColour
     ).setAlpha(0.8)
     this.add(this.captureHighlightSquare)
-    this.previousMoveHighlightSquare = new Phaser.GameObjects.Rectangle(
-      this.scene,
-      0,
-      0,
-      this.width,
-      this.width,
-      ThemeManager.getTheme().board.previousMoveColour
-    ).setAlpha(0.8)
-    this.add(this.previousMoveHighlightSquare)
   }
 
   private getBackgroundColour(): number {
