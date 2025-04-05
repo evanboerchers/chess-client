@@ -13,7 +13,6 @@ const {
   DEPLOY_USER: username,
   DEPLOY_REMOTE_PATH: remotePath,
   DEPLOY_LOCAL_DEPLOYMENT_DIR: localDeploymentDir,
-  DEPLOY_LOCAL_DIST_DIR: localDistDir
 } = process.env;
 
 // Validate required environment variables
@@ -22,7 +21,6 @@ const requiredVars = [
   'DEPLOY_USER', 
   'DEPLOY_REMOTE_PATH', 
   'DEPLOY_LOCAL_DEPLOYMENT_DIR', 
-  'DEPLOY_LOCAL_DIST_DIR'
 ];
 
 requiredVars.forEach(varName => {
@@ -48,7 +46,7 @@ async function deployProject() {
     
     console.log(chalk.blue('Syncing dist files...'));
     await $`rsync -avz --delete \
-      ${localDistDir}/ \
+      ${localDeploymentDir}/dist/ \
       ${username}@${host}:${remotePath}/dist/`;
     
     console.log(chalk.green('Dist files copied successfully.'));

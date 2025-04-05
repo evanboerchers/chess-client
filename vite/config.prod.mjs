@@ -1,20 +1,8 @@
 import { defineConfig } from 'vite';
-
-const msg = () => {
-  return {
-    name: 'msg',
-    buildStart() {
-      process.stdout.write(`Building for production...\n`);
-    },
-    buildEnd() {
-      process.stdout.write(`✨ Done ✨\n`);
-    },
-  };
-};
+import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 export default defineConfig({
   base: './',
-  logLevel: 'warning',
   build: {
     rollupOptions: {
       output: {
@@ -37,5 +25,16 @@ export default defineConfig({
   server: {
     port: 8080,
   },
-  plugins: [msg()],
+  plugins: [
+    viteStaticCopy({
+      targets: [
+        {
+          src: 'dist',
+          dest: '../deploy'
+        }
+      ],
+      watch: false,
+      flatten: false
+    })
+  ],
 });
