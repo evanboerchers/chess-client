@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "vite --config vite/config.dev.mjs --mode=development",
+    "dev:prod": "vite --config vite/config.dev.mjs --mode=production",
     "build": "vite build --config vite/config.prod.mjs --mode=production",
     "prettier": "prettier . --write",
     "docker:up": "docker compose -f deploy/docker-compose.yml up -d --build",

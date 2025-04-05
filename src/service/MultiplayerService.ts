@@ -7,6 +7,8 @@ import {
 } from '@evanboerchers/chess-core';
 import playerService from './PlayerService';
 import io  from "socket.io-client"
+import { v4 as uuidv4 } from 'uuid';
+
 
 export class MultiplayerService {
   private socket: GameSocket | null = null;
@@ -21,7 +23,7 @@ export class MultiplayerService {
   }
 
   private loadPlayerId() {
-    this.playerId = localStorage.getItem('playerId') || crypto.randomUUID();
+    this.playerId = localStorage.getItem('playerId') || uuidv4();
     localStorage.setItem('playerId', this.playerId);
   }
 
