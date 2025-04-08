@@ -1,4 +1,4 @@
-Oimport BoardScene from './view/scenes/BoardScene';
+import BoardScene from './view/scenes/BoardScene';
 import BootScene from './view/scenes/BootScene';
 import PreloaderScene from './view/scenes/PreloaderScene';
 
@@ -9,7 +9,6 @@ import MenuSidebarScene from './view/scenes/sidebar/MenuSidebarScene';
 import PlayerCustomScene from './view/scenes/PlayerCustomScene';
 import GameOverScene from './view/scenes/GameOverScene';
 import ThemeManager from './view/style/ThemeManager';
-import BoardScene from './view/scenes/BoardScene';
 
 const config: Types.Core.GameConfig = {
   type: Phaser.AUTO,

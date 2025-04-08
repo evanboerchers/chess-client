@@ -14,13 +14,15 @@
     "docker:up": "docker compose -f deploy/docker-compose.yml up -d --build",
     "docker:down": "docker compose -f deploy/docker-compose.yml down",
     "docker:restart": "pnpm run docker:down && pnpm run docker:up",
-    "deploy": "zx deploy/deploy.mjs"
+    "deploy:cloudflare": "wrangler pages deploy dist --project-name=coffee-chess-client",
+    "deploy:custom": "zx deploy/deploy.mjs"
   },
   "devDependencies": {
-    "dotenv": "^16.4.5",
+    "dotenv-cli": "^8.0.0",
     "terser": "^5.31.0",
     "typescript": "^5.4.5",
     "vite": "^5.3.1",
+    "wrangler": "^4.8.0",
     "zx": "^8.4.1"
   },
   "dependencies": {
