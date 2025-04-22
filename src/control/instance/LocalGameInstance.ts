@@ -62,8 +62,8 @@ export default class LocalGameInstance implements GameInstance {
       this.gameModel.currentTurn,
       (move: Move) => {
         this.gameModel.makeMove(move);
-        this.handleMakeMove();
         gameController.handleMove(move);
+        this.handleMakeMove();
       }
     );
   }
