@@ -42,6 +42,8 @@ export default class GameOverScene extends Phaser.Scene {
 
     createModal() {
         const modalProperties: GameOverModalProperties = {
+            outcome: this.initData.result.outcome,
+            reason: this.initData.result.reason,
             rematchHandler: () => {
                 this.initData.rematchCallback?.()
                 this.scene.stop()

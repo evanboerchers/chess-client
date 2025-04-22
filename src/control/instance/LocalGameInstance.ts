@@ -68,7 +68,7 @@ export default class LocalGameInstance implements GameInstance {
     );
   }
 
-  private handleOfferDraw = (colour: PieceColour) => {
+  private handleOfferDraw =   (colour: PieceColour) => {
     console.log('handle draw offered')
     const oppColour = colour === PieceColour.WHITE ? PieceColour.BLACK : PieceColour.WHITE
     this.gameSidebarInputController?.showDrawOfferTo(oppColour, () => this.handleAcceptDraw(oppColour))
