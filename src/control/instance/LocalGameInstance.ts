@@ -3,10 +3,8 @@ import {
   GameOutcome,
   GameState,
   Move,
-  Piece,
   PieceColour,
 } from '@evanboerchers/chess-core';
-import multiplayerService from '../../service/MultiplayerService';
 import BoardInputController from '../BoardInputController';
 import gameController from '../GameController';
 import { GameInstance } from './GameInstance.types';

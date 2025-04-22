@@ -1,11 +1,8 @@
-import { Input } from 'phaser';
-import { customizationLabelText, gameOverReasonText, gameOverTitleText, playerNameText } from '../../style/textStyle';
+import { gameOverReasonText, gameOverTitleText } from '../../style/textStyle';
 import { GameOutcome } from '@evanboerchers/chess-core';
 import ThemeManager from '../../style/ThemeManager';
 import Button, { ButtonProperties } from './Button';
 import { GameOutcomeReason } from '../../scenes/GameOutcomeReason.enum';
-import { SceneNames } from '../../scenes/scenes.enum';
-import gameController from '../../../control/GameController';
 
 export interface GameOverModalProperties {
   width?: number;
@@ -131,10 +128,13 @@ export default class GameOverModal extends Phaser.GameObjects.Container {
     switch (this.properties.outcome) {
       case GameOutcome.DRAW:
         title = 'Draw'
+        break
       case GameOutcome.WHITE:
         title = 'White Wins'
+        break
       case GameOutcome.BLACK:
         title = 'Black Wins'
+        break
     }
     this.titleText = this.scene.add.text(0,30,title,this.properties.titleTextStyle).setOrigin(0.5)
 
@@ -142,16 +142,22 @@ export default class GameOverModal extends Phaser.GameObjects.Container {
     switch (this.properties.reason) {
       case GameOutcomeReason.ABANDONED:
         reason = 'By Abandonment'
+        break
       case GameOutcomeReason.CHECKMATE:
         reason = 'By Checkmate'
+        break
       case GameOutcomeReason.DRAW:
         reason = 'By Agreement'
+        break
       case GameOutcomeReason.RESIGN:
         reason = 'By Resignation'
+        break
       case GameOutcomeReason.INSUFFICIENT_MATERIAL:
         reason = 'By Insufficient Material'
+        break
       case GameOutcomeReason.TIME:
-        reason = 'By Time' 
+        reason = 'By Time'
+        break 
       default:
         reason = 'By Resignation'
     }
