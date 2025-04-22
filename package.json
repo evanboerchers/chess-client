@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "vite --config vite/config.dev.mjs --mode=development",
-    "dev:prod": "vite --config vite/config.dev.mjs --mode=production",
+    "dev:prod": "vite --config vite/config.dev.mjs -  -mode=production",
     "build": "vite build --config vite/config.prod.mjs --mode=production",
     "prettier": "prettier . --write",
     "docker:up": "docker compose -f deploy/docker-compose.yml up -d --build",
@@ -21,6 +21,7 @@
     "dotenv-cli": "^8.0.0",
     "terser": "^5.31.0",
     "typescript": "^5.4.5",
+    "uuid": "^11.0.5",
     "vite": "^5.3.1",
     "wrangler": "^4.8.0",
     "zx": "^8.4.1"
