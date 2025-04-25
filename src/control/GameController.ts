@@ -66,6 +66,12 @@ export class GameController {
     this.redrawBoard();
   }
 
+  setupMenuGame() {
+    const model = new ChessGame();
+    this.gameInstance = new LocalGameInstance(model)
+    this.redrawBoard();
+  }
+
   setupTestGame() {
     console.log('setting up local game');
     const model = new ChessGame();

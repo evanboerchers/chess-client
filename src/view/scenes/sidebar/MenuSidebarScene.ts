@@ -16,6 +16,7 @@ export default class MenuSidebarScene extends SidebarScene {
     super.create();
     this.buttons = [];
     this.createMenuButtons();
+    gameController.setupMenuGame();
   }
 
   createMenuButtons() {
