@@ -60,6 +60,10 @@ export default class Board extends Phaser.GameObjects.Container {
     this.squares.forEach((row) => row.forEach((square) => {
       square.clearHighlights()
     }))
+    this.squares.flat().forEach((square) => {
+      square.disableInteractive();
+      square.off('pointerdown');
+    });
   }
 
   drawPieces(board: BoardData): void {

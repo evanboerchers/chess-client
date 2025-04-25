@@ -22,6 +22,7 @@ export default class MultiplayerGameInstance implements GameInstance {
     this.gameModel = gameModel ?? new ChessGame();
     this.boardInputController = boardInputController;
     this.localPlayer = localPlayer ?? PieceColour.WHITE;
+    gameController.redrawBoard();
     this.registerEvents();
     this.gameReady();
   }

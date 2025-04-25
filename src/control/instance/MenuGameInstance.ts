@@ -4,6 +4,7 @@ import {
   import BoardInputController from '../BoardInputController';
   import { GameInstance } from './GameInstance.types';
   import GameSideBarInputController from '../GameSideBarInputController';
+import gameController from '../GameController';
   
   export default class MenuGameInstance implements GameInstance {
     gameModel: ChessGame;

@@ -17,6 +17,7 @@ import { GameOverSceneData } from '../view/scenes/GameOverScene';
 import { SceneNames } from '../view/scenes/scenes.enum';
 import { GameOutcomeReason } from '../view/scenes/GameOutcomeReason.enum';
 import testConfigService from '../service/TestConfigService';
+import MenuGameInstance from './instance/MenuGameInstance';
 
 export class GameController {
   boardScene: BoardScene;
@@ -25,7 +26,7 @@ export class GameController {
   _currentPlayer: Agent;
 
   constructor() {
-    this.gameInstance = new LocalGameInstance();
+    this.gameInstance = new MenuGameInstance();
   }
 
   setBoardScene(boardScene: BoardScene) {
@@ -49,7 +50,6 @@ export class GameController {
       playerColour
     );
     if (playerColour === PieceColour.BLACK) this.flipBoard();
-    this.redrawBoard();
   }
 
   setupLocalGame() {
@@ -63,13 +63,12 @@ export class GameController {
       this.gameSidebarScene
     )
     this.gameInstance = new LocalGameInstance(model, boardInputController, sidebarInputController);
-    this.redrawBoard();
   }
 
   setupMenuGame() {
     const model = new ChessGame();
-    this.gameInstance = new LocalGameInstance(model)
-    this.redrawBoard();
+    this.gameInstance = new MenuGameInstance(model)
+    gameController.redrawBoard()
   }
 
   setupTestGame() {
@@ -89,7 +88,6 @@ export class GameController {
     saveText.on(Phaser.Input.Events.POINTER_DOWN, () => {
       testConfigService.saveTestScenario(this.gameInstance.gameModel)
     })
-    this.redrawBoard();
   }
 
   handleMove(move: Move) {

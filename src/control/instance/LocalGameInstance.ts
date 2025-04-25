@@ -26,6 +26,7 @@ export default class LocalGameInstance implements GameInstance {
     this.boardInputController = boardInputController;
     this.gameSidebarInputController = gameSidebarInputController
     if (gameSidebarInputController) this.setupButtons();
+    gameController.redrawBoard()
     this.gameReady();
   }
 

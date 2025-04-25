@@ -75,6 +75,10 @@ export default class PreloaderScene extends Scene {
   startMenu() {
     console.log("Starting main menu")
     this.scene.start(SceneNames.BOARD);
-    this.scene.start(SceneNames.MENU_SIDEBAR);
+    // this.scene.start(SceneNames.MENU_SIDEBAR);
+    this.scene.start(SceneNames.GAME_SIDEBAR, defaultInitData);
+    this.scene.get(SceneNames.GAME_SIDEBAR).events.once('create', () => {
+      gameController.setupLocalGame();
+    });
   }
 }
