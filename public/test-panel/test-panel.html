@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/test-panel/test-panel.css" />
+    <title>Test Scenarios Panel</title>
+</head>
+<body>
+    <h1>Test Scenarios Panel</h1>
+    
+    <div class="panel">
+        <div class="control-group">
+            <label for="save-name">Save Current Game State:</label>
+            <input type="text" id="save-name" placeholder="Enter a name for this game state">
+            <button id="save-btn">Save Game State</button>
+        </div>
+        
+        <div id="save-status" class="status"></div>
+    </div>
+    
+    <div class="panel">
+        <div class="control-group">
+            <label for="saved-states">Load Game State:</label>
+            <select id="saved-states">
+                <option value="">Select a saved game state</option>
+            </select>
+            <button id="load-btn" class="load">Load Selected State</button>
+            <button id="refresh-btn">Refresh List</button>
+        </div>
+        
+        <div id="load-status" class="status"></div>
+    </div>
+
+    <!-- Vite will inject the script -->
+    <script type="module" src="/src/test-panel/test-panel.ts"></script>
+</body>
+</html>
