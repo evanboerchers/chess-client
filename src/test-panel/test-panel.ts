@@ -1,13 +1,5 @@
 import { GameState } from "@evanboerchers/chess-core";
-
-interface ScenarioSave {
-    name: string;
-    data: GameState;
-}
-
-interface Scenarios {
-    scenarios: string[]
-}
+import { Scenarios, ScenarioSave, GameWindowInterface } from "./test-panel.types";
 
 const API_BASE_URL = import.meta.env.VITE_SERVER_URL + '/api/test-scenarios';
 
@@ -39,15 +31,20 @@ function showStatus(element: HTMLDivElement, message: string, isSuccess: boolean
     }, 3000);
 }
 
-function getGameState(): GameState | null {
-    const opener = window.opener as any;
-    
-    if (opener && opener.getChessGameState) {
-        return opener.getChessGameState();
+function getGameInterface(): GameWindowInterface {
+    const opener = window.opener
+    const windowInterface = opener?.gameInterface
+    if (opener && windowInterface){
+        return windowInterface
     } else {
-        showStatus(saveStatus, "Cannot access the main game window", false);
-        return null;
+        showStatus(saveStatus, "Cannot access the main game window interface methods", false);
+        throw Error('Opener window does not have valid interface')
     }
+}
+
+function getGameState(): GameState | null {
+    const windowInterface = getGameInterface();
+    return windowInterface.getChessGameState();
 }
 
 async function saveGameState(name: string, gameState: GameState): Promise<ScenarioSave> {
@@ -167,16 +164,14 @@ loadButton.addEventListener('click', async () => {
     
     try {
         const gameState = await fetchGameState(selectedId);
-        
-        // Send the loaded state to the parent window
-        const opener = window.opener as any;
-        
-        if (opener && opener.loadChessGameState) {
-            opener.loadChessGameState(gameState);
-            showStatus(loadStatus, "Game state loaded successfully!", true);
-        } else {
+
+            const gameInterface =getGameInterface()
+            
+            if (gameInterface.loadChessGameState(gameState)){
+                showStatus(loadStatus, "Game state loaded successfully!", true);
+            } else {
             showStatus(loadStatus, "Cannot access the main game window", false);
-        }
+            }
     } catch (error) {
         showStatus(loadStatus, "Failed to load game state", false);
     }
