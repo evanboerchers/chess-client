@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
 import { SceneNames } from './scenes.enum';
-import testConfigService from '../../service/TestConfigService';
+import testService from '../../service/TestService';
 import gameController from '../../control/GameController';
 import { defaultInitData } from './sidebar/GameSidebarScene';
 
@@ -56,7 +56,7 @@ export default class PreloaderScene extends Scene {
   }
 
   create() {
-    if (testConfigService.isTestScenario()) {
+    if (testService.isTestScenario()) {
       this.startTestScenario()   
     } else {
       this.startMenu()
@@ -70,6 +70,7 @@ export default class PreloaderScene extends Scene {
     this.scene.get(SceneNames.GAME_SIDEBAR).events.once('create', () => {
       gameController.setupTestGame();
     });
+    testService.openTestPanel();
   }
   
   startMenu() {

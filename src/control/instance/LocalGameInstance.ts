@@ -29,6 +29,11 @@ export default class LocalGameInstance implements GameInstance {
     gameController.redrawBoard()
     this.gameReady();
   }
+  
+  reload(): void {
+    gameController.redrawBoard();
+    this.gameReady();
+  }
 
   private setupButtons = () => {
     this.gameSidebarInputController?.setupButtonHandlers(

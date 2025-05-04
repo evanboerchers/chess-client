@@ -1,9 +1,9 @@
 import { GameState } from "@evanboerchers/chess-core";
 import { Scenarios, ScenarioSave, GameWindowInterface } from "./test-panel.types";
 
+if(!import.meta.env.VITE_SERVER_URL) throw Error('No server url')
 const API_BASE_URL = import.meta.env.VITE_SERVER_URL + '/api/test-scenarios';
 
-if(!API_BASE_URL) throw Error('No api url')
 
 const saveNameInput = document.getElementById('save-name') as HTMLInputElement;
 const saveButton = document.getElementById('save-btn') as HTMLButtonElement;

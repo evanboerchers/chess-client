@@ -17,5 +17,7 @@ import gameController from '../GameController';
     ) {
       this.gameModel = gameModel ?? new ChessGame();
     }
+
+    reload: () => void;
   }
   

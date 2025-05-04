@@ -16,7 +16,6 @@ import GameSideBarInputController from './GameSideBarInputController';
 import { GameOverSceneData } from '../view/scenes/GameOverScene';
 import { SceneNames } from '../view/scenes/scenes.enum';
 import { GameOutcomeReason } from '../view/scenes/GameOutcomeReason.enum';
-import testConfigService from '../service/TestConfigService';
 import MenuGameInstance from './instance/MenuGameInstance';
 
 export class GameController {
@@ -68,7 +67,7 @@ export class GameController {
   setupMenuGame() {
     const model = new ChessGame();
     this.gameInstance = new MenuGameInstance(model)
-    gameController.redrawBoard()
+    this.redrawBoard()
   }
 
   setupTestGame() {
@@ -82,12 +81,6 @@ export class GameController {
       this.gameSidebarScene
     )
     this.gameInstance = new LocalGameInstance(model, boardInputController, sidebarInputController);
-    const saveText = this.boardScene.add.text(10, 10, 'Save State')
-    testConfigService.loadTestScenarioIntoModel(this.gameInstance.gameModel)
-    saveText.setInteractive({useHandCursor: true})
-    saveText.on(Phaser.Input.Events.POINTER_DOWN, () => {
-      testConfigService.saveTestScenario(this.gameInstance.gameModel)
-    })
   }
 
   handleMove(move: Move) {
@@ -130,6 +123,15 @@ export class GameController {
       menuCallback
     }
     this.boardScene.scene.launch(SceneNames.GAME_OVER, data)
+  }
+
+  getGameState(): GameState {
+    return this.gameInstance.gameModel.gameState
+  }
+
+  loadGameState(gameState: GameState): void {
+    this.gameInstance.gameModel.gameState = gameState
+    this.gameInstance.reload()
   }
 }
 

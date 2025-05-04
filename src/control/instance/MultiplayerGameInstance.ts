@@ -27,6 +27,9 @@ export default class MultiplayerGameInstance implements GameInstance {
     this.gameReady();
   }
 
+  reload(): void {
+  }
+
   private registerEvents() {
     multiplayerService.on('moveMade', this.handleMoveMade);
     multiplayerService.on('waiting', this.handleWaiting);
